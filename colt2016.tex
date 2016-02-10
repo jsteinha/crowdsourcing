@@ -1,0 +1,216 @@
+\documentclass[anon,12pt]{colt2016} % Anonymized submission
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage{hyperref,url}
+\usepackage{import,subfiles}
+%\usepackage{tabularx}
+%\usepackage{algorithm}
+%\usepackage{algorithmic}
+\usepackage{multirow}
+\input{latex-defs.tex}
+\usepackage{breqn}
+
+% \documentclass{colt2016} % Include author names
+
+% The following packages will be automatically loaded:
+% amsmath, amssymb, natbib, graphicx, url, algorithm2e
+
+\title[Adversarial Crowdsourcing without Ground Truth Labels]{Adversarial Crowdsourcing without Ground Truth Labels}
+\usepackage{times}
+ % Use \Name{Author Name} to specify the name.
+ % If the surname contains spaces, enclose the surname
+ % in braces, e.g. \Name{John {Smith Jones}} similarly
+ % if the name has a "von" part, e.g \Name{Jane {de Winter}}.
+ % If the first letter in the forenames is a diacritic
+ % enclose the diacritic in braces, e.g. \Name{{\'E}louise Smith}
+
+ % Two authors with the same address
+  % \coltauthor{\Name{Author Name1} \Email{abc@sample.com}\and
+  %  \Name{Author Name2} \Email{xyz@sample.com}\\
+  %  \addr Address}
+
+ % Three or more authors with the same address:
+ % \coltauthor{\Name{Author Name1} \Email{an1@sample.com}\\
+ %  \Name{Author Name2} \Email{an2@sample.com}\\
+ %  \Name{Author Name3} \Email{an3@sample.com}\\
+ %  \addr Address}
+
+
+ % Authors with different addresses:
+ \coltauthor{\Name{Jacob Steinhardt} \Email{jsteinhardt@cs.stanford.edu}\\
+ \addr 353 Serra Mall, Stanford, CA 94305
+ \AND
+ \Name{Gregory Valiant} \Email{valiant@stanford.edu}\\
+ \addr 353 Serra Mall, Stanford, CA 94305
+ }
+
+\newcommand{\goodfrac}{\alpha}
+\newcommand{\quality}{\epsilon}
+\newcommand{\failprob}{\delta}
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+We consider a crowdsourcing model in which a fraction $\goodfrac$ of 
+workers can both generate high-quality data and correctly evaluate 
+the quality of data, while the remaining workers may behave adversarially. 
+There is no ground truth on which to evaluate worker quality, but the 
+manager of the experiment can manually evaluate the quality of 
+a datum after the fact. Given $N$ workers, we wish to curate a dataset 
+of size $\Omega(\goodfrac N)$, with at most an $\quality$ fraction of low-quality 
+data. We show that this is possible with 
+$\oo\p{\frac{\log(1/\quality\goodfrac)}{\goodfrac\min\p{\quality,\goodfrac}}}$ 
+work per worker, and $\oo\p{\frac{\log(1/\goodfrac)}{\goodfrac\quality}}$ 
+work for the manager.
+\end{abstract}
+
+\begin{keywords}
+\end{keywords}
+
+\section{Introduction}
+
+While several mechanisms have been proposed for ensuring high-quality 
+data in crowdsourcing applications, most assume that there are ``gold labels'' 
+that can be used to assess worker performance during the course of 
+data collection; moreover, most mechanisms make assumptions about the behavior 
+of workers (e.g. that workers that behaved well before will continue to 
+behave well, or that they act to maximize a certain payoff function).
+In this work we are motivated by cases where there is not necessarily a single 
+correct answer --- for instance, tasks such as ``draw an interesting picture'' 
+or ``translate this sentence'', where different workers could generate different 
+equally good answers. In this case, the only way to evaluate quality is 
+via evaluation by other workers or by the manager of the experiment. 
+Moreover, since workers will often try to game the system (in order to 
+get paid), we would like to model non-cooperative workers as adversarial. 
+To formalize both of these desiderata, we adopt the following model:
+\begin{itemize}
+\item There is a manager who controls the experiment, and 
+      $N$ workers.
+\item The goal is to generate data $X \in \sX$ that satisfies 
+      a binary criterion $f : \sX \to \{0,1\}$ (e.g. $f$ could answer
+      ``Is $X$ an interesting picture?'' or ``Is $X$ a correct translation?'').
+      The manager knows $f$.
+\item Each worker $i$ can generate a datum $X_i$, as well as evaluate 
+      data with a function $f_i : \sX \to \{0,1\}$.
+\item There are $\goodfrac N$ \emph{cooperative} workers, such that 
+      $f_i = f$, $f(X_i) = 1$, and the worker 
+      wants to be helpful (they will cooperate with the protocol 
+      specified by the manager).
+\item The rest of the workers could be adversarial; they could generate 
+      good data or bad data, and could output correct or incorrect evaluations. 
+      The adversaries could have knowledge of who they are.
+\end{itemize}
+Our goal is to curate as much good data as possible, while letting very little 
+bad data in. In particular, after allowing both the manager and the workers to 
+make some number of evaluations, we wish to output a dataset 
+$\{X_{i_1}, \ldots, X_{i_m}\}$ such that 
+\begin{equation}
+\label{eq:target}
+m = \Omega(\delta N)\text{ and }\frac{1}{m} \sum_{j=1}^m f(X_{i_j}) \geq 1-\quality.
+\end{equation}
+Note that $m = \Omega(\delta N)$ asks that our dataset be within a constant 
+factor of the number of good workers. We could imagine adding this constant 
+factor as another parameter in the problem, but avoid this for now for simplicity.
+
+Our main result is the following:
+\begin{theorem}
+\label{thm:main}
+For any $\failprob$, there is a protocol that requires 
+$\oo\p{\frac{\log(1/\quality\goodfrac\failprob)}{\goodfrac\min\p{\quality,\goodfrac}}}$ evaluations from each worker, and $\oo\p{\frac{\log(1/\goodfrac\failprob)}{\goodfrac\quality}}$ evaluations from the manager, such that the output dataset 
+satisfies \eqref{eq:target} with probability $1-\failprob$ and with $m \geq \frac{1}{2}\delta N$.
+\end{theorem}
+The proof is not long, though we note that na\"ive approaches will 
+accrue additional $\polylog(N)$ factors on the number of evaluations per worker.
+We think the main aspects of interest in this work are the setting itself 
+(which seems natural but relatively un-studied) as well as the ability to do 
+average work that is independent of $N$.
+
+The idea behind the protocol is the following: after each worker generates their 
+datum, we will have each worker evaluate some number $k$ of other workers at 
+random, and draw directed edges labeled with either $+$ (for a positive 
+evaluation) or $-$ (for a negative evaluation). This is illustrated in 
+Figure~\ref{fig:illustration}. We then search for a large \emph{community}, 
+defined as a set of workers where all edges within the community are positive. 
+We can show that any such community must have either high average quality 
+or very few cooperative workers:
+\begin{lemma}
+\label{lem:community}
+Suppose that each worker evaluates $k = C \cdot \frac{\log(1/\quality\goodfrac\failprob)}{\goodfrac\min(\quality,\goodfrac)}$ 
+other workers for some universal constant $C$. 
+Then, with probability $1-\delta$, every 
+community must have either at most $\frac{1}{2}\quality\goodfrac N$ bad data 
+or at most $\frac{1}{4}\goodfrac^2 N$ cooperative workers.
+\end{lemma}
+We also note that the good workers themselves form a community of size 
+$\goodfrac N$. Therefore, we can perform the following algorithm, which loops 
+until eventually accepting.
+\begin{itemize}
+\item Find a community of size at least $\frac{1}{2}\goodfrac N$.
+\item Sample roughly $\frac{1}{\quality}$ data at random from the community, 
+      and check whether the average quality is at least $1-\quality$.
+\item If it is, use all the data in the community as the dataset, 
+      otherwise remove all members of the community from consideration 
+      and continue.
+\end{itemize}
+This algorithm is given more formally as Algorithm~\ref{alg:algorithm}. 
+Lemma~\ref{lem:community} ensures that, whenever we remove a community 
+from consideration, we are removing only a small number of cooperative 
+workers; in particular, we remove at most $\frac{1}{4}\goodfrac^2 N$ cooperative 
+workers each time, while Algorithm~\ref{alg:algorithm} can loop at most 
+$\frac{2}{\goodfrac}$ times before terminating; therefore, at most 
+$\frac{1}{2}\goodfrac^2 N$ cooperative workers are removed in total, and 
+so we will always have enough cooperative workers left to form a large 
+community with good data.
+
+The remainder of this paper is devoted to proving Theorem~\ref{thm:main}. 
+In Section~\ref{sec:community-proof}, we prove Lemma~\ref{lem:community}, 
+while in Section~\ref{sec:main-proof} we use Lemma~\ref{lem:community} 
+to prove Theorem~\ref{thm:main}.
+
+\section{Proof of Lemma~\ref{lem:community}}
+\label{sec:community-proof}
+
+\newcommand{\nbad}{n_{\mathrm{bad}}}
+\newcommand{\ncoop}{n_{\mathrm{coop}}}
+
+Our proof proceeds via a union bound. 
+We will show that for every set of $\nbad = \frac{1}{2}\quality\goodfrac N$ 
+workers with bad data, and every set of $\ncoop = \frac{1}{4}\goodfrac^2 N$ 
+cooperative workers, the probability that there are no negative 
+edges is very low --- in particular, low enough that we can 
+union bound over all $\binom{N}{\nbad}\binom{N}{\ncoop}$ possible 
+pairs of such sets. To show this, note that any edge from a cooperative 
+worker to a bad worker would be negative, so we have no negative edges only 
+if there are no edges at all. If each worker evaluates $k$ other workers at 
+random, then the probability that this occurs is 
+\begin{equation}
+\label{eq:single-prob}
+(1-\nbad/N)^{k\ncoop} \leq \exp\p{-\frac{1}{8}k\quality\goodfrac^3N}. 
+\end{equation}
+The number of sets we need to union bound over is 
+\begin{align}\binom{N}{\nbad}\binom{N}{\ncoop} &\leq \p{\frac{2e}{\quality\goodfrac}}^{\nbad}\p{\frac{4e}{\goodfrac^2}}^{\ncoop} \\
+\label{eq:union} &\leq \exp\p{\frac{1}{2}\quality\goodfrac N\log\p{\frac{2e}{\quality\goodfrac}} + \frac{1}{4}\goodfrac^2 N\log\p{\frac{4e}{\goodfrac^2}}}.
+\end{align}
+We need the product of \eqref{eq:single-prob} with \eqref{eq:union} to be at most 
+$\delta$, which is satisfied if 
+$k \geq 8\p{\frac{\log\p{\frac{2e}{\quality\goodfrac}}}{\goodfrac\min\p{\quality,\goodfrac}} + \frac{\log\p{\frac{1}{\delta}}}{\quality\goodfrac^3N}}$,
+thus proving Lemma~\ref{lem:community}.
+
+\section{Proof of Theorem~\ref{thm:main}}
+\label{sec:main-proof}
+
+\acks{}
+
+\bibliography{refdb/all.bib}
+
+%\appendix
+%
+%\section{My Proof of Theorem 1}
+%
+%This is a boring technical proof.
+%
+%\section{My Proof of Theorem 2}
+%
+%This is a complete version of a proof sketched in the main text.
+
+\end{document}
