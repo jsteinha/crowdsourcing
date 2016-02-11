@@ -126,7 +126,7 @@ We think the main aspects of interest in this work are the setting itself
 average work that is independent of $N$.
 
 The idea behind the protocol is the following: after each worker generates their 
-datum, we will have each worker evaluate some number $k$ of other workers at 
+datum, we will have each worker evaluate some number $d$ of other workers at 
 random, and draw directed edges labeled with either $+$ (for a positive 
 evaluation) or $-$ (for a negative evaluation). This is illustrated in 
 Figure~\ref{fig:illustration}. We then search for a large \emph{community}, 
@@ -135,7 +135,7 @@ We can show that any such community must have either high average quality
 or very few cooperative workers:
 \begin{lemma}
 \label{lem:community}
-Suppose that each worker evaluates $k = C \cdot \frac{\log(1/\quality\goodfrac\failprob)}{\goodfrac\min(\quality,\goodfrac)}$ 
+Suppose that each worker evaluates $d = C \cdot \frac{\log(1/\quality\goodfrac\failprob)}{\goodfrac\min(\quality,\goodfrac)}$ 
 other workers for some universal constant $C$. 
 Then, with probability $1-\delta$, every 
 community must have either at most $\frac{1}{2}\quality\goodfrac N$ bad data 
@@ -162,9 +162,28 @@ $\frac{1}{2}\goodfrac^2 N$ cooperative workers are removed in total, and
 so we will always have enough cooperative workers left to form a large 
 community with good data.
 
+However, the manager can do even better by \emph{adaptively} choosing 
+which community to sample. In particular, we can modify Algorithm~\ref{alg:algorithm} 
+to return $\frac{2}{\delta}$ candidate communities, such that at least one 
+has quality $1-\epsilon/2$. Then, we perform a multi-armed bandit 
+algorithm to identify at least one high-quality community. Formally, 
+we have the following:
+\begin{lemma}
+\label{lem:bandit}
+Suppose that we are given $k$ datasets of size at least 
+$S$, at least one of which has average 
+quality at least $1-\quality/2$. Then after evaluating 
+$\oo\p{\max\p{k,\frac{1}{\quality}}\log\p{\frac{k}{\failprob}}}$ 
+data, we can output a dataset that with probability $1-\failprob$ 
+has quality at least $1-\quality$.
+\end{lemma}
+Using Lemma~\ref{lem:bandit}, we obtain the better evaluation 
+complexity given in Theorem~\ref{thm:main}.
+
 The remainder of this paper is devoted to proving Theorem~\ref{thm:main}. 
-In Section~\ref{sec:community-proof}, we prove Lemma~\ref{lem:community}, 
-while in Section~\ref{sec:main-proof} we use Lemma~\ref{lem:community} 
+In Section~\ref{sec:community-proof}, we prove Lemma~\ref{lem:community}; 
+in Section~\ref{sec:bandit-proof}, we prove Lemma~\ref{lem:bandit}; 
+and in Section~\ref{sec:main-proof}, we combine these lemmas
 to prove Theorem~\ref{thm:main}.
 
 \section{Proof of Lemma~\ref{lem:community}}
@@ -181,20 +200,60 @@ edges is very low --- in particular, low enough that we can
 union bound over all $\binom{N}{\nbad}\binom{N}{\ncoop}$ possible 
 pairs of such sets. To show this, note that any edge from a cooperative 
 worker to a bad worker would be negative, so we have no negative edges only 
-if there are no edges at all. If each worker evaluates $k$ other workers at 
+if there are no edges at all. If each worker evaluates $d$ other workers at 
 random, then the probability that this occurs is 
 \begin{equation}
 \label{eq:single-prob}
-(1-\nbad/N)^{k\ncoop} \leq \exp\p{-\frac{1}{8}k\quality\goodfrac^3N}. 
+(1-\nbad/N)^{d\ncoop} \leq \exp\p{-\frac{1}{8}d\quality\goodfrac^3N}. 
 \end{equation}
 The number of sets we need to union bound over is 
 \begin{align}\binom{N}{\nbad}\binom{N}{\ncoop} &\leq \p{\frac{2e}{\quality\goodfrac}}^{\nbad}\p{\frac{4e}{\goodfrac^2}}^{\ncoop} \\
 \label{eq:union} &\leq \exp\p{\frac{1}{2}\quality\goodfrac N\log\p{\frac{2e}{\quality\goodfrac}} + \frac{1}{4}\goodfrac^2 N\log\p{\frac{4e}{\goodfrac^2}}}.
 \end{align}
 We need the product of \eqref{eq:single-prob} with \eqref{eq:union} to be at most 
-$\delta$, which is satisfied if 
-$k \geq 8\p{\frac{\log\p{\frac{2e}{\quality\goodfrac}}}{\goodfrac\min\p{\quality,\goodfrac}} + \frac{\log\p{\frac{1}{\delta}}}{\quality\goodfrac^3N}}$,
+$\failprob$, which is satisfied if 
+$d \geq 8\p{\frac{\log\p{\frac{2e}{\quality\goodfrac}}}{\goodfrac\min\p{\quality,\goodfrac}} + \frac{\log\p{\frac{1}{\failprob}}}{\quality\goodfrac^3N}}$,
 thus proving Lemma~\ref{lem:community}.
+
+\section{Proof of Lemma~\ref{lem:bandit}}
+\label{sec:bandit-proof}
+
+We reduce to a $k$-armed bandit setting as follows: 
+label the sets $S_1, \ldots, S_k$, and let $\epsilon_i$ 
+be the fraction of bad examples in set $S_i$. 
+In round $t$, we choose the set $S_{i_t}$ and incur 
+a cost $c^{(t)} = \epsilon_{i_t}$. Note that we cannot observe 
+$c^{(t)}$, but we can obtain an unbiased estimate 
+$\hat{c}^{(t)}$ by sampling $X$ uniformly from $S_{i_t}$ 
+and setting $\hat{c}^{(t)} = 1 - f(X)$. This turns out to be 
+enough to implement a low-regret algorithm.
+
+Formally, the \emph{average regret} of this problem after 
+$T$ iterations is defined to be
+\begin{equation}
+\label{eq:regret-def}
+\Regret \eqdef \frac{1}{T}\sum_{t=1}^T c^{(t)} - \min_{i=1}^k \epsilon_i.
+\end{equation}
+Note that $\min_{i=1}^k \epsilon_i \leq \frac{\epsilon}{2}$ by assumption. 
+Therefore, if the average regret is also at most $\frac{\epsilon}{4}$, 
+then $i_1, \ldots, i_T$ satisfy $\frac{1}{T}\sum_{i=1}^T \epsilon_{i_T} \leq \frac{3\epsilon}{4}$. 
+In other words, we obtain a collection of $T$ datasets 
+$\{S_{i_1}, \ldots, S_{i_T}\}$ (possibly with repeats) 
+such that the quality is at least $1-\frac{3\epsilon}{4}$ \emph{on average} over the $S_{i_t}$.
+
+The final challenge is to use the $S_{i_t}$ to construct a single dataset $S$. 
+We do this as follows: first, let $w_i = \frac{1}{T}\#\{t \mid i_t = i\}$. Then, 
+take a random subset $\tilde{S}_i$ of $S_i$ of size $\lceil w_im\rceil$. Finally, let 
+$S = \bigsqcup_{i=1}^k \tilde{S}_i$. Since $\sum_{i=1}^k w_i = 1$, we clearly have $|S| \geq m$. 
+Furthermore, the expected amount of bad data in $S$ is 
+$\sum_{i=1}^k \lceil w_im\rceil \epsilon_i \leq k + \sum_{i=1}^k w_i\epsilon_i m 
+\leq k + \frac{3\epsilon}{4} m \leq \frac{7\epsilon}{8} m$. We also have the following:
+\begin{lemma}
+The amount $b_i$ of bad data in $\tilde{S}_i$ satisfies 
+$\bP[b_i - \epsilon_i|\tilde{S}_i| \geq t|\tilde{S}_i|] \leq \exp\p{-2t^2|\tilde{S}_i|}$.
+is sub-Gaussian with 
+$\bE\left[\exp\p{\lambda\p{b_i - \bE[b_i]}} \leq \exp\p{\frac{1}{2}\lambda^2}\right]$.
+\end{lemma}
 
 \section{Proof of Theorem~\ref{thm:main}}
 \label{sec:main-proof}
