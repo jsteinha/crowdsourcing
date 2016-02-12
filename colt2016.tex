@@ -53,12 +53,12 @@
 \begin{abstract}
 We consider a crowdsourcing model in which a fraction $\goodfrac$ of 
 workers can both generate high-quality data and correctly evaluate 
-the quality of data, while the remaining workers may behave adversarially. 
+the quality of data, while the remaining workers may behave arbitrarily and possibly adversarially. 
 There is no ground truth on which to evaluate worker quality, but the 
 manager of the experiment can manually evaluate the quality of 
-a datum after the fact. Given $N$ workers, we wish to curate a dataset 
+a given datum. Given $N$ workers, we wish to curate a dataset 
 of size $\Omega(\goodfrac N)$, with at most an $\quality$ fraction of low-quality 
-data. We show that this is possible with 
+data.  Perhaps surprisingly, we show that this is possible with an amount of work required of the manager, and each worker, that does not scale with $N$; specifically, we show that such a dataset can be curated with
 $\oo\p{\frac{\log(1/\quality\goodfrac)}{\goodfrac\min\p{\quality,\goodfrac}}}$ 
 work per worker, and $\oo\p{\frac{\log(1/\goodfrac)}{\goodfrac\quality}}$ 
 work for the manager.
