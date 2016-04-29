@@ -190,6 +190,13 @@ the proof of Lemma~\ref{lem:ones}. Indeed, re-arranging the above
 inequality, we have
 \[ \epsilon \alpha^2 N^2 \geq f(M^*) - f(\M) \geq f(M') - f(\M) \geq \langle M' - \M, Z' \rangle, \]
 where $Z' \in \partial f(M')$, and $M'$ is defined in terms of $\M$ as above. 
-But by Lemma~\ref{lem:subgradient}, we know that $(Z')_{\sC} = \bi \cdot \left[(2\bi_{\sD}-\bi)^{\top} - \mu v_0^{\top}\right]$, 
-where $\|v_0\|_2^2 \leq \frac{1}{|\sC|}$. 
+But by Lemma~\ref{lem:subgradient}, we know that $(Z')_{\sC} = \bi \cdot \left[(2\bi_{\sD}-\bi)^{\top} - \mu v^{\top}\right]$, 
+where $\|v\|_2^2 \leq \frac{1}{|\sC|}$. Since $M_{ij}' = 1$ if $j \in \sD$ and $0$ if $j \not\in D$, and 
+$\M_{ij} \in [0,1]$, we have $Z'_{ij}(M_{ij}'-\M_{ij}) = |M_{ij}' - \M_{ij}| - \mu v_j(M_{ij}'-\M_{ij})$, and hence
+\begin{align}
+\langle M' - \M, Z' \rangle &= \sum_{i \in \sC, j} |M_{ij}' - \M_{ij}| - \mu v_j (M_{ij}' - \M_{ij}) \\
+ &\geq \|M'-\M|_1 - \mu \sqrt{|\sC|\sum_j v_j^2}\sqrt{\sum_{i \in \sC, j} (M_{ij}'-\M_{ij})^2} \\
+ &\geq \|M'-\M\|_1 - \mu \|M' - \M\|_F.
+\end{align}
+In all, we see that $\|M'-\M\|_1 \leq \epsilon \alpha^2 N^2 + \mu \|M' - \M\|_F \leq (\epsilon\alpha N + \mu)\alpha N$.
 \end{document}
