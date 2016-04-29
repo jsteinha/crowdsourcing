@@ -1,0 +1,204 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amsfonts,amsthm,amssymb}
+\usepackage{hyperref,url}
+\usepackage{import,subfiles}
+\usepackage{tabularx}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{multirow}
+\usepackage{fullpage}
+\usepackage{natbib}
+\input{latex-defs.tex}
+\usepackage{breqn}
+\DeclareMathOperator{\Tr}{Tr}
+\newcommand{\M}{\tilde{M}}
+\newcommand{\A}{\hat{A}}
+\DeclareMathOperator{\poly}{poly}
+\newcommand{\sD}{\mathcal{D}}
+\newcommand{\oo}{\mathcal{O}}
+
+\begin{document}
+
+\section{Achieving $\poly(\alpha^{-1})$ degree}
+We assume we have a matrix $A \in \bR^{n \times m}$ and sets 
+$\sC \subset [n], \sD \subset [m]$ satisfying the following:
+\begin{itemize}
+\item $A_{i,j} = +1$ for all $i \in \sC$, $j \in \sD$
+\item $A_{i,j} = -1$ for all $i \in \sC$, $j \not\in \sD$
+\end{itemize}
+Moreover, we let $\alpha \eqdef \frac{|\sC|}{n}$ and $\beta \eqdef \frac{|\sD|}{m}$.
+
+Finally, we let $\A$ be a random matrix with i.i.d. entries such that $\bE[\A] = A$, 
+and $\bE[(\A_{ij}-A_{ij})^{2p}] \leq \frac{(2p)!}{2^pp!} \p{m/d}^{p}$ for all $p \in \{1,2,\ldots\}$ 
+and some fixed $d \in \bR_{>0}$.
+
+Let $\M$ be the solution to the following program:
+\begin{equation}
+\label{eq:optimization-noisy}
+\text{maximize } \langle \A, M \rangle - \mu \|M\|_*, \text{ subject to } 0 \leq M_{ij} \leq 1 \, \forall i,j,
+\end{equation}
+where $\|\cdot\|_*$ denotes the nuclear norm.
+
+We also let $M^*$ be the solution to the ``noiseless'' program
+\begin{equation}
+\label{eq:optimization-noiseless}
+\text{maximize } \langle A, M \rangle - \mu \|M\|_*, \text{ subject to } 0 \leq M_{ij} \leq 1 \, \forall i,j,
+\end{equation}
+
+Our goal is to show that $\M$ and $M^*$ are ``close'' in a well-defined sense. We 
+will proceed in $3$ steps:
+\begin{enumerate}
+\item Show that $\M$ is an approximate optimizer of \eqref{eq:optimization-noiseless}.
+\item Characterize the optimum $M^*$ of \eqref{eq:optimization-noiseless}.
+\item Show that any approximate optimizer of \eqref{eq:optimization-noiseless} is close to $M^*$.
+\end{enumerate}
+
+For the first step, we begin with the trivial observation that 
+$\max\p{\|\M\|_*, \|M^*\|_*} \leq \frac{nm}{\mu}$, since otherwise $M = 0$ 
+would have a larger objective value for (\ref{eq:optimization-noisy},\ref{eq:optimization-noiseless}). 
+We then have the following inequality:
+\begin{lemma}
+With probability $1-\delta$, we have
+\[ |\langle A-\A, M \rangle| \leq \oo\p{\frac{nm}{\mu}\p{\sqrt{\frac{m}{d}}\p{\sqrt{n} + \sqrt{m}} + \frac{m}{d}\log(1/\delta)}} \]
+for all $M$ satisfying $\|M\|_* \leq \frac{nm}{\mu}$.
+\end{lemma}
+\begin{proof}
+We have that 
+\[ \sup_{\|M\|_* \leq nm/\mu} |\langle A-\A, M \rangle| = \frac{nm}{\mu}\|A-\A\|_{\op}. \]
+Therefore, our task is to bound $\|A-\A\|_{\op}$. For this, we make use of \citet{rmt}, 
+Theorem 3.1 \& Corollary 3.2, which states that, for any $\epsilon > 0$, we have that
+\begin{align}
+\bE[\|A-\A\|_{\op}] &\leq (1+\epsilon)\sqrt{\frac{m}{d}}\left\{\sqrt{n} + \sqrt{m} + 5\sqrt{\frac{\log(\min(n,m))}{\log(1+\epsilon)}}\right\} \\
+ &= \oo\p{\sqrt{\frac{m}{d}}\p{\sqrt{n} + \sqrt{m}}}.
+\end{align}
+Then, a form of Talagrand's inequality implies that
+$\bP[\|A-\A\|_{\op} \geq \bE[\|A-\A\|_{\op}] + t] \leq \exp\p{-c\p{td/m}^2}$. 
+Taking $t = (m/d)\sqrt{c^{-1}\log(1/\delta)}$, we have that 
+\[ \bP\left[\|A-\A\|_{\op} \geq \oo\p{\sqrt{\frac{m}{d}}\p{\sqrt{n} + \sqrt{m}} + \frac{m}{d}\log(1/\delta)}\right] \leq \delta, \]
+as was to be shown.
+\end{proof}
+We will take $\mu = \frac{1}{4}\sqrt{\alpha\beta nm}$, and 
+$d = \Theta\p{\frac{\sqrt{m/n}}{\alpha\beta}}$, which yields
+\begin{align}
+|\langle A-\A, M \rangle| &\leq \oo\p{\sqrt{mn}\p{(mn)^{1/4}(\sqrt{n}+\sqrt{m}) + \sqrt{mn\alpha\beta}\log(1/\delta)}} \\
+ &= \oo\p{N^2\p{1 + \sqrt{\alpha\beta\log(1/\delta)}}}.
+\end{align}
+
+\paragraph{Analyzing $\M$.} Now, we are ready to show that 
+$\M$ approximately optimizes \eqref{eq:optimization-noiseless}. Note that we have
+\begin{align}
+\langle A, \M \rangle - \mu \|\M\|_* &\geq \langle \A, \M \rangle - \mu \|\M\|_* - \epsilon N^2 \\
+ &\geq \langle \A, M^* \rangle - \mu \|M^*\|_* - \epsilon N^2 \\
+ &\geq \langle A, M^* \rangle - \mu \|M^*\|_* - 2\epsilon N^2.
+\end{align}
+
+
+
+\section{Chracterizing $M^*$}
+We prove the following two structural lemmas, which show that 
+$\M$ (approximately) inherits the properties of $A$:
+\begin{lemma}
+\label{lem:constant}
+We have $\M_{i,j} = \M_{i',j}$ for all $i,i' \in \sC$.
+\end{lemma}
+
+\begin{lemma}
+\label{lem:ones}
+There is a set $\sC_0 \subseteq \sC$ of size at least 
+$\frac{\alpha N}{4}$ such that 
+$\M_{i,i'} = 1$ for all $i \in \sC$, $i' \in \sC_0$.
+\end{lemma}
+The advantage of using $\M$ instead of $A$ is that \eqref{eq:optimization} is highly 
+noise-robust. Moreover, given $\M$, we can efficiently identify $\sC$: first sample 
+a vertex at random, and with probability $\frac{\alpha}{4}$ obtain some $v \in \sC_0$. 
+Then, take the set $\sC_1$ of all $j$ such that $M_{v,j} = 1$. Finally, take the set 
+$\tilde{\sC}$ of all $i \in \sC_1$ such that $M_{i,j} = 1$ for all $j \in \sC_1$. 
+We can show that the set $\tilde{\sC}$ is a clique containing $\sC_0$:
+\begin{lemma}
+\label{lem:clique}
+The set $\tilde{\sC}$ is a clique ($M_{i,i'} = 1$ for all $i,i' \in \tilde{\sC}$). 
+Moreover, $\sC_0 \subseteq \tilde{\sC}$.
+\end{lemma}
+\begin{proof}
+First, $\tilde{\sC}$ satisfies $M_{i,j} = 1$ for all $i \in \tilde{\sC}, j \in \sC_1$, 
+and $\tilde{\sC} \subseteq \sC_1$, so in particular $M_{i,j} = 1$ for all $i,j \in \tilde{\sC}$ 
+and hence $\tilde{\sC}$ is a clique.
+
+Second, $\sC_0 \subseteq \sC_1$, and furthermore any $i \in \sC_0$ satisfies 
+$M_{i,j} = M_{v,j} = 1$ for all $j \in \sC_1$, so $\sC_0 \subseteq \tilde{\sC}$.
+\end{proof}
+
+We now prove the two structural lemmas.
+\begin{proof}[Proof of Lemma~\ref{lem:constant}]
+Consider the matrix $P \in \bR^{n \times n}$ defined by 
+$P_{i,i'} = \frac{1}{|\sC|}$ if $i,i' \in \sC$, and 
+$P_{i,i'} = \delta_{i,i'}$ otherwise. Then $P$ is clearly a 
+projection matrix, and hence $\|PM\|_* \leq \|M\|_*$ for all 
+matrices $M$. Furthermore, $\Tr(A^{\top}(PM)) = \Tr(A^{\top}M)$. 
+It follows that replacing $M$ by $PM$ weakly increases the value of 
+\eqref{eq:optimization}, and hence we must have $M = PM$, from which 
+the result follows.
+\end{proof}
+
+\begin{proof}[Proof of Lemma~\ref{lem:ones}]
+Let $\M_{\sC}$ be the submatrix of $\M$ restricted 
+to the rows and columns of $\sC$. By Lemma~\ref{lem:constant}, 
+$\M_{\sC}$ takes the form $\bI c^{\top}$ for some vector 
+$c \in [0,1]^{\sC}$. Now, suppose for the sake of contradiction 
+that less than $\frac{\alpha N}{4}$ of the entries of $c$ 
+are equal to $1$. Then there is a vector 
+$s \in \{0,1\}^{\sC}$, containing $\frac{\alpha N}{4}$ 
+$1$'s, such that it is feasible to move $c$ in the direction of 
+$s$, such that $M_{\sC} = \bI (c+\epsilon s)^{\top}$. This 
+increases $\Tr(A^{\top}M)$ by $\frac{1}{4}\epsilon \alpha^2 N^2$, 
+and increases $\frac{\alpha N}{4}\|M\|_*$ by at most 
+$\frac{\epsilon \alpha N}{4}\|\bI s^{\top}\|_* = \frac{1}{8}\epsilon \alpha^2 N^2$. 
+Therefore, moving in the direction of $s$ increases the value of 
+\eqref{eq:optimization}, which contradicts the fact that $\M$ is optimal.
+\end{proof}
+
+\section{Noise-Robustness}
+
+We next show that the optimization problem \eqref{eq:optimization} is 
+noise-robust. More formally, we will replace $A$ with a new matrix $B$ 
+such that $\bE[B] = A$; our goal will be to show that this does 
+not change the optimum of \eqref{eq:optimization} by very much.
+
+Our particular choice of $B$ will be a sub-sampling of $A$. Formally, 
+we will take $B_{i,j} = X_{i,j}A_{i,j}$, where $X_{i,j} = \frac{1}{p}$ 
+with probability $p$ and $0$ otherwise.
+
+\begin{proposition}
+Suppose that $B$ is constructed as above, and let $f(M) = \Tr(B^{\top}M) - \mu \|M\|_*$. 
+Then, if $\mu \geq \frac{2}{\sqrt{p}}\p{5\sqrt{N} + \sqrt{\log\p{\frac{1}{\delta}}}}$, we 
+have $f(PM) \geq f(M)$ for all $M$ with probability $1-\delta$.
+\end{proposition}
+
+\begin{proof}
+Fix $M$, and let $PM = U\Sigma V^{\top}$ be the singular value 
+decomposition of $PM$. We note that 
+$f(M) \leq f(PM) + \langle B + \mu Z, (I-P)M \rangle$ for 
+any matrix $Z$ satisfying $\|Z\|_{\op} \leq 1$ and $\langle Z, PM \rangle = \|PM\|_*$.
+We make the following claim:
+\begin{lemma}
+For any $M$, we have
+\[ \inf\{ \langle Z, (I-P)M \rangle \mid \|Z\|_{\op} \leq 1,\; \langle Z, PM \rangle = \|PM\|_*\} = -\|(I-P)M\|_*. \]
+\end{lemma}
+We also note that $\langle A, (I-P)M \rangle = 0$. Putting these together, we have
+\begin{align}
+f(M) &\leq f(PM) + \langle B-A, (I-P)M \rangle - \mu \|(I-P)M\|_* \\
+ &\leq f(PM) + \p{\|(B-A)_{\sC}\|_{\op} - \mu} \|(I-P)M\|_*,
+\end{align}
+where $(B-A)_{\sC}$ denotes the rows of $B-A$ indexed by $\sC$.
+Thus, as long as $\|(B-A)_{\sC}\|_{\op} \leq \mu$, we will have $f(M) \leq f(PM)$ for all $M$.
+For simplicity of notation let $Y \eqdef (B-A)_{\sC}$ Note that $Y$ is an $(\alpha N) \times N$ 
+matrix, each row of which is an independent zero-mean random variable with variance at most $\frac{1}{p}-1$. 
+We make use of the following matrix concentration inequality (basically Corollary 3.9 of \url{http://arxiv.org/abs/1408.6185}):
+\begin{theorem}
+$\bP\left[\|(B-A)_{\sC}\|_{\op} \geq \frac{2}{\sqrt{p}}\p{5\sqrt{n} + t}\right] \leq \exp\p{-t^2}$.
+\end{theorem}
+This yields the desired result.
+\end{proof}
+Since we would like to set $\mu \approx \frac{\alpha N}{4}$, this yields $p = \Theta\p{\frac{1}{\alpha^2N}}$.
+
+\end{document}
