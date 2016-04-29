@@ -3,6 +3,7 @@
 \usepackage{hyperref,url}
 \usepackage{import,subfiles}
 \usepackage{tabularx}
+\usepackage{bbm}
 \usepackage{algorithm}
 \usepackage{algorithmic}
 \usepackage{multirow}
@@ -16,21 +17,24 @@
 \DeclareMathOperator{\poly}{poly}
 \newcommand{\sD}{\mathcal{D}}
 \newcommand{\oo}{\mathcal{O}}
+\newcommand{\bi}{\mathbbm{1}}
 
 \begin{document}
 
 \section{Achieving $\poly(\alpha^{-1})$ degree}
-We assume we have a matrix $A \in \bR^{n \times m}$ and sets 
-$\sC \subset [n], \sD \subset [m]$ satisfying the following:
+We assume we have a matrix $A \in \bR^{n \times n}$ and sets 
+$\sC \subset [n], \sD \subset [n]$ satisfying the following:
 \begin{itemize}
 \item $A_{i,j} = +1$ for all $i \in \sC$, $j \in \sD$
 \item $A_{i,j} = -1$ for all $i \in \sC$, $j \not\in \sD$
 \end{itemize}
-Moreover, we let $\alpha \eqdef \frac{|\sC|}{n}$ and $\beta \eqdef \frac{|\sD|}{m}$.
+Moreover, assume that $\min(|\sC|, |\sD|) \geq \alpha n$.
 
 Finally, we let $\A$ be a random matrix with i.i.d. entries such that $\bE[\A] = A$, 
-and $\bE[(\A_{ij}-A_{ij})^{2p}] \leq \frac{(2p)!}{2^pp!} \p{m/d}^{p}$ for all $p \in \{1,2,\ldots\}$ 
-and some fixed $d \in \bR_{>0}$.
+and $\bE[(\A_{ij}-A_{ij})^{2p}] \leq \frac{(2p)!}{2^pp!} \p{n/d}^{p}$ for all $p \in \{1,2,\ldots\}$ 
+and some fixed $d \in \bR_{>0}$. For instance, this holds if $\Var[\A_{ij}] \leq \frac{n}{d}$ and $|\A_{ij}| \leq \frac{n}{d}$ almost surely, 
+which we can obtain by sampling each entry of $A$ with probability $\frac{d}{n}$ and scaling appropriately (which results in $d$ entries in 
+each row in expectation).
 
 Let $\M$ be the solution to the following program:
 \begin{equation}
@@ -54,151 +58,138 @@ will proceed in $3$ steps:
 \end{enumerate}
 
 For the first step, we begin with the trivial observation that 
-$\max\p{\|\M\|_*, \|M^*\|_*} \leq \frac{nm}{\mu}$, since otherwise $M = 0$ 
+$\max\p{\|\M\|_*, \|M^*\|_*} \leq \frac{n^2}{\mu}$, since otherwise $M = 0$ 
 would have a larger objective value for (\ref{eq:optimization-noisy},\ref{eq:optimization-noiseless}). 
 We then have the following inequality:
 \begin{lemma}
 With probability $1-\delta$, we have
-\[ |\langle A-\A, M \rangle| \leq \oo\p{\frac{nm}{\mu}\p{\sqrt{\frac{m}{d}}\p{\sqrt{n} + \sqrt{m}} + \frac{m}{d}\log(1/\delta)}} \]
-for all $M$ satisfying $\|M\|_* \leq \frac{nm}{\mu}$.
+\[ |\langle A-\A, M \rangle| \leq \oo\p{\frac{n^3}{\mu}\p{\frac{1}{\sqrt{d}} + \frac{1}{d}\log(1/\delta)}} \]
+for all $M$ satisfying $\|M\|_* \leq \frac{n^2}{\mu}$.
 \end{lemma}
 \begin{proof}
 We have that 
-\[ \sup_{\|M\|_* \leq nm/\mu} |\langle A-\A, M \rangle| = \frac{nm}{\mu}\|A-\A\|_{\op}. \]
+\[ \sup_{\|M\|_* \leq n^2/\mu} |\langle A-\A, M \rangle| = \frac{n^2}{\mu}\|A-\A\|_{\op}. \]
 Therefore, our task is to bound $\|A-\A\|_{\op}$. For this, we make use of \citet{rmt}, 
 Theorem 3.1 \& Corollary 3.2, which states that, for any $\epsilon > 0$, we have that
 \begin{align}
-\bE[\|A-\A\|_{\op}] &\leq (1+\epsilon)\sqrt{\frac{m}{d}}\left\{\sqrt{n} + \sqrt{m} + 5\sqrt{\frac{\log(\min(n,m))}{\log(1+\epsilon)}}\right\} \\
- &= \oo\p{\sqrt{\frac{m}{d}}\p{\sqrt{n} + \sqrt{m}}}.
+\bE[\|A-\A\|_{\op}] &\leq (1+\epsilon)\sqrt{\frac{n}{d}}\left\{2\sqrt{n} + 5\sqrt{\frac{\log(n)}{\log(1+\epsilon)}}\right\} \\
+ &= \oo\p{\frac{n}{\sqrt{d}}}.
 \end{align}
 Then, a form of Talagrand's inequality implies that
-$\bP[\|A-\A\|_{\op} \geq \bE[\|A-\A\|_{\op}] + t] \leq \exp\p{-c\p{td/m}^2}$. 
-Taking $t = (m/d)\sqrt{c^{-1}\log(1/\delta)}$, we have that 
-\[ \bP\left[\|A-\A\|_{\op} \geq \oo\p{\sqrt{\frac{m}{d}}\p{\sqrt{n} + \sqrt{m}} + \frac{m}{d}\log(1/\delta)}\right] \leq \delta, \]
+$\bP[\|A-\A\|_{\op} \geq \bE[\|A-\A\|_{\op}] + t] \leq \exp\p{-c\p{td/n}^2}$. 
+Taking $t = (n/d)\sqrt{c^{-1}\log(1/\delta)}$, we have that 
+\[ \bP\left[\|A-\A\|_{\op} \geq \oo\p{\frac{n}{\sqrt{d}} + \frac{n}{d}\log(1/\delta)}\right] \leq \delta, \]
 as was to be shown.
 \end{proof}
-We will take $\mu = \frac{1}{4}\sqrt{\alpha\beta nm}$, and 
-$d = \Theta\p{\frac{\sqrt{m/n}}{\alpha\beta}}$, which yields
-\begin{align}
-|\langle A-\A, M \rangle| &\leq \oo\p{\sqrt{mn}\p{(mn)^{1/4}(\sqrt{n}+\sqrt{m}) + \sqrt{mn\alpha\beta}\log(1/\delta)}} \\
- &= \oo\p{N^2\p{1 + \sqrt{\alpha\beta\log(1/\delta)}}}.
-\end{align}
-
 \paragraph{Analyzing $\M$.} Now, we are ready to show that 
-$\M$ approximately optimizes \eqref{eq:optimization-noiseless}. Note that we have
+$\M$ approximately optimizes \eqref{eq:optimization-noiseless}. 
+We will take $\mu = \frac{1}{4}\alpha n$, 
+$d = \Omega\p{\max\p{\frac{1}{(\alpha^4\epsilon)^2}, \frac{\log(1/\delta)}{\alpha^4\epsilon}}}$, which yields (for appropriate constants)
 \begin{align}
-\langle A, \M \rangle - \mu \|\M\|_* &\geq \langle \A, \M \rangle - \mu \|\M\|_* - \epsilon N^2 \\
- &\geq \langle \A, M^* \rangle - \mu \|M^*\|_* - \epsilon N^2 \\
- &\geq \langle A, M^* \rangle - \mu \|M^*\|_* - 2\epsilon N^2.
+|\langle A-\A, M \rangle| &\leq \frac{1}{2}\epsilon \alpha^2 N^2.
 \end{align}
-
+We then have
+\begin{align}
+\langle A, \M \rangle - \mu \|\M\|_* &\geq \langle \A, \M \rangle - \mu \|\M\|_* - \frac{1}{2}\epsilon \alpha^2 N^2 \\
+ &\geq \langle \A, M^* \rangle - \mu \|M^*\|_* - \frac{1}{2} \epsilon \alpha^2 N^2 \\
+ &\geq \langle A, M^* \rangle - \mu \|M^*\|_* - \epsilon \alpha^2 N^2.
+\end{align}
+It follows that $\M$ is within $\epsilon \alpha^2N^2$ of the optimum of \eqref{eq:optimization-noiseless}, 
+at least in terms of objective value.
 
 
 \section{Chracterizing $M^*$}
 We prove the following two structural lemmas, which show that 
-$\M$ (approximately) inherits the properties of $A$:
+$M^*$ (approximately) inherits the properties of $A$:
 \begin{lemma}
 \label{lem:constant}
-We have $\M_{i,j} = \M_{i',j}$ for all $i,i' \in \sC$.
+We have $M^*_{i,j} = M^*_{i',j}$ for all $i,i' \in \sC$.
 \end{lemma}
 
 \begin{lemma}
 \label{lem:ones}
-There is a set $\sC_0 \subseteq \sC$ of size at least 
-$\frac{\alpha N}{4}$ such that 
-$\M_{i,i'} = 1$ for all $i \in \sC$, $i' \in \sC_0$.
+For all but $\frac{\mu^2}{\alpha N}$ values of $j \in [n]$, we have
+$M^*_{i,j} = \frac{1 + A_{i,j}}{2}$.
 \end{lemma}
-The advantage of using $\M$ instead of $A$ is that \eqref{eq:optimization} is highly 
-noise-robust. Moreover, given $\M$, we can efficiently identify $\sC$: first sample 
-a vertex at random, and with probability $\frac{\alpha}{4}$ obtain some $v \in \sC_0$. 
-Then, take the set $\sC_1$ of all $j$ such that $M_{v,j} = 1$. Finally, take the set 
-$\tilde{\sC}$ of all $i \in \sC_1$ such that $M_{i,j} = 1$ for all $j \in \sC_1$. 
-We can show that the set $\tilde{\sC}$ is a clique containing $\sC_0$:
-\begin{lemma}
-\label{lem:clique}
-The set $\tilde{\sC}$ is a clique ($M_{i,i'} = 1$ for all $i,i' \in \tilde{\sC}$). 
-Moreover, $\sC_0 \subseteq \tilde{\sC}$.
-\end{lemma}
-\begin{proof}
-First, $\tilde{\sC}$ satisfies $M_{i,j} = 1$ for all $i \in \tilde{\sC}, j \in \sC_1$, 
-and $\tilde{\sC} \subseteq \sC_1$, so in particular $M_{i,j} = 1$ for all $i,j \in \tilde{\sC}$ 
-and hence $\tilde{\sC}$ is a clique.
 
-Second, $\sC_0 \subseteq \sC_1$, and furthermore any $i \in \sC_0$ satisfies 
-$M_{i,j} = M_{v,j} = 1$ for all $j \in \sC_1$, so $\sC_0 \subseteq \tilde{\sC}$.
-\end{proof}
+%The advantage of using $\M$ instead of $A$ is that \eqref{eq:optimization} is highly 
+%noise-robust. Moreover, given $\M$, we can efficiently identify $\sC$: first sample 
+%a vertex at random, and with probability $\frac{\alpha}{4}$ obtain some $v \in \sC_0$. 
+%Then, take the set $\sC_1$ of all $j$ such that $M_{v,j} = 1$. Finally, take the set 
+%$\tilde{\sC}$ of all $i \in \sC_1$ such that $M_{i,j} = 1$ for all $j \in \sC_1$. 
+%We can show that the set $\tilde{\sC}$ is a clique containing $\sC_0$:
+%\begin{lemma}
+%\label{lem:clique}
+%The set $\tilde{\sC}$ is a clique ($M_{i,i'} = 1$ for all $i,i' \in \tilde{\sC}$). 
+%Moreover, $\sC_0 \subseteq \tilde{\sC}$.
+%\end{lemma}
+%\begin{proof}
+%First, $\tilde{\sC}$ satisfies $M_{i,j} = 1$ for all $i \in \tilde{\sC}, j \in \sC_1$, 
+%and $\tilde{\sC} \subseteq \sC_1$, so in particular $M_{i,j} = 1$ for all $i,j \in \tilde{\sC}$ 
+%and hence $\tilde{\sC}$ is a clique.
+%
+%Second, $\sC_0 \subseteq \sC_1$, and furthermore any $i \in \sC_0$ satisfies 
+%$M_{i,j} = M_{v,j} = 1$ for all $j \in \sC_1$, so $\sC_0 \subseteq \tilde{\sC}$.
+%\end{proof}
 
-We now prove the two structural lemmas.
+%
+%We now prove the two structural lemmas.
 \begin{proof}[Proof of Lemma~\ref{lem:constant}]
 Consider the matrix $P \in \bR^{n \times n}$ defined by 
 $P_{i,i'} = \frac{1}{|\sC|}$ if $i,i' \in \sC$, and 
 $P_{i,i'} = \delta_{i,i'}$ otherwise. Then $P$ is clearly a 
 projection matrix, and hence $\|PM\|_* \leq \|M\|_*$ for all 
-matrices $M$. Furthermore, $\Tr(A^{\top}(PM)) = \Tr(A^{\top}M)$. 
+matrices $M$. Furthermore, $\langle A, PM \rangle = \langle A, M \rangle$. 
 It follows that replacing $M$ by $PM$ weakly increases the value of 
-\eqref{eq:optimization}, and hence we must have $M = PM$, from which 
+\eqref{eq:optimization-noiseless}, and hence we must have $M = PM$, from which 
+the result follows.
+\end{proof}
+
+Before proving Lemma~\ref{lem:ones}, we state and prove the 
+following technical lemma which will also be useful later:
+\begin{lemma}
+\label{lem:subgradient}
+Let $f(M) = \langle A, M \rangle - \mu \|M\|_*$, and let 
+$M_0$ satisfy $M_0 = PM_0$. Then,
+there is a $Z_0 \in \partial f(M_0)$ such that, when restricted 
+to the rows lying in $\sC$, we have
+\[ (Z_0)_{\sC} = \bi \cdot \left[(2\bi_{\sD}-\bi)^{\top} - \mu v_0^{\top}\right], \]
+for some vector $v_0$ of norm at most $\frac{1}{\sqrt{|\sC|}}$.
+\end{lemma}
+\begin{proof}[Proof of Lemma~\ref{lem:subgradient}]
+First, we can take $Z_0 = A - \mu UV^{\top}$, where $U \Lambda V^{\top}$ is the singular 
+value decomposition of $M_0$. By assumption, $M_0 = PM_0$, and so $U = PU$ as well. Therefore, 
+we do have $(UV^{\top})_{\sC} = \bi v_0^{\top}$ for some vector $v_0$. It remains to show that 
+$\|v_0\|_2^2 \leq \frac{1}{|\sC|}$.
+
+To see this, observe that $(UV^{\top})_{\sC}$ is a projection of $UV^{\top}$, and hence 
+has operator norm at most $1$. However, because $(UV)^{\top}_{\sC}$ has rank $1$, its 
+operator norm and Frobenius norm are equal, and so $\|\bi v_0^{\top}\|_F^2 \leq 1$. 
+But $\|\bi v_0^{\top}\|_F^2 = \|\bi\|_2^2\|v_0\|_2^2 = |\sC|\|v_0\|_2^2$, from which 
 the result follows.
 \end{proof}
 
 \begin{proof}[Proof of Lemma~\ref{lem:ones}]
-Let $\M_{\sC}$ be the submatrix of $\M$ restricted 
-to the rows and columns of $\sC$. By Lemma~\ref{lem:constant}, 
-$\M_{\sC}$ takes the form $\bI c^{\top}$ for some vector 
-$c \in [0,1]^{\sC}$. Now, suppose for the sake of contradiction 
-that less than $\frac{\alpha N}{4}$ of the entries of $c$ 
-are equal to $1$. Then there is a vector 
-$s \in \{0,1\}^{\sC}$, containing $\frac{\alpha N}{4}$ 
-$1$'s, such that it is feasible to move $c$ in the direction of 
-$s$, such that $M_{\sC} = \bI (c+\epsilon s)^{\top}$. This 
-increases $\Tr(A^{\top}M)$ by $\frac{1}{4}\epsilon \alpha^2 N^2$, 
-and increases $\frac{\alpha N}{4}\|M\|_*$ by at most 
-$\frac{\epsilon \alpha N}{4}\|\bI s^{\top}\|_* = \frac{1}{8}\epsilon \alpha^2 N^2$. 
-Therefore, moving in the direction of $s$ increases the value of 
-\eqref{eq:optimization}, which contradicts the fact that $\M$ is optimal.
+Let $M^*$ be the optimizer of \eqref{eq:optimization-noiseless}, and 
+let $M'$ be $M^*$ with all rows in $\sC$ replaced by $\frac{1+A_{ij}}{2}$.
+Note that by concavity of $f$ we have
+\[ f(M^*) - f(M') \leq \langle Z', M^* - M' \rangle \]
+for any $Z' \in \partial f(M')$. But by Lemma~\ref{lem:subgradient}, we 
+have $(Z')_{\sC} = \bi \cdot \left[(2\bi_{\sD}-\bi)^{\top} - \mu v_0^{\top}\right]$, 
+where $\|v_0\|_2^2 \leq \frac{1}{\alpha N}$. In particular, $(v_0)_j \geq \frac{1}{\mu}$ 
+for at most $\frac{\mu^2}{\alpha N}$ values of $j$. But for all the remaining values of $j$, 
+$\sign(Z'_{ij}) = A_{ij}$ for all $i \in \sC$, and hence we must have $M_{ij} = \frac{1 + A_{ij}}{2}$ 
+for all $i \in \sC$, as was to be shown.
 \end{proof}
 
-\section{Noise-Robustness}
+\section{Bounding $\M - M^*$}
 
-We next show that the optimization problem \eqref{eq:optimization} is 
-noise-robust. More formally, we will replace $A$ with a new matrix $B$ 
-such that $\bE[B] = A$; our goal will be to show that this does 
-not change the optimum of \eqref{eq:optimization} by very much.
-
-Our particular choice of $B$ will be a sub-sampling of $A$. Formally, 
-we will take $B_{i,j} = X_{i,j}A_{i,j}$, where $X_{i,j} = \frac{1}{p}$ 
-with probability $p$ and $0$ otherwise.
-
-\begin{proposition}
-Suppose that $B$ is constructed as above, and let $f(M) = \Tr(B^{\top}M) - \mu \|M\|_*$. 
-Then, if $\mu \geq \frac{2}{\sqrt{p}}\p{5\sqrt{N} + \sqrt{\log\p{\frac{1}{\delta}}}}$, we 
-have $f(PM) \geq f(M)$ for all $M$ with probability $1-\delta$.
-\end{proposition}
-
-\begin{proof}
-Fix $M$, and let $PM = U\Sigma V^{\top}$ be the singular value 
-decomposition of $PM$. We note that 
-$f(M) \leq f(PM) + \langle B + \mu Z, (I-P)M \rangle$ for 
-any matrix $Z$ satisfying $\|Z\|_{\op} \leq 1$ and $\langle Z, PM \rangle = \|PM\|_*$.
-We make the following claim:
-\begin{lemma}
-For any $M$, we have
-\[ \inf\{ \langle Z, (I-P)M \rangle \mid \|Z\|_{\op} \leq 1,\; \langle Z, PM \rangle = \|PM\|_*\} = -\|(I-P)M\|_*. \]
-\end{lemma}
-We also note that $\langle A, (I-P)M \rangle = 0$. Putting these together, we have
-\begin{align}
-f(M) &\leq f(PM) + \langle B-A, (I-P)M \rangle - \mu \|(I-P)M\|_* \\
- &\leq f(PM) + \p{\|(B-A)_{\sC}\|_{\op} - \mu} \|(I-P)M\|_*,
-\end{align}
-where $(B-A)_{\sC}$ denotes the rows of $B-A$ indexed by $\sC$.
-Thus, as long as $\|(B-A)_{\sC}\|_{\op} \leq \mu$, we will have $f(M) \leq f(PM)$ for all $M$.
-For simplicity of notation let $Y \eqdef (B-A)_{\sC}$ Note that $Y$ is an $(\alpha N) \times N$ 
-matrix, each row of which is an independent zero-mean random variable with variance at most $\frac{1}{p}-1$. 
-We make use of the following matrix concentration inequality (basically Corollary 3.9 of \url{http://arxiv.org/abs/1408.6185}):
-\begin{theorem}
-$\bP\left[\|(B-A)_{\sC}\|_{\op} \geq \frac{2}{\sqrt{p}}\p{5\sqrt{n} + t}\right] \leq \exp\p{-t^2}$.
-\end{theorem}
-This yields the desired result.
-\end{proof}
-Since we would like to set $\mu \approx \frac{\alpha N}{4}$, this yields $p = \Theta\p{\frac{1}{\alpha^2N}}$.
-
+We have seen that $f(\M) \geq f(M^*) - \epsilon \alpha^2 N^2$. We will now 
+use this to show that $\M$ is close to $M^*$. Our argument essentially repeats 
+the proof of Lemma~\ref{lem:ones}. Indeed, re-arranging the above 
+inequality, we have
+\[ \epsilon \alpha^2 N^2 \geq f(M^*) - f(\M) \geq f(M') - f(\M) \geq \langle M' - \M, Z' \rangle, \]
+where $Z' \in \partial f(M')$, and $M'$ is defined in terms of $\M$ as above. 
+But by Lemma~\ref{lem:subgradient}, we know that $(Z')_{\sC} = \bi \cdot \left[(2\bi_{\sD}-\bi)^{\top} - \mu v_0^{\top}\right]$, 
+where $\|v_0\|_2^2 \leq \frac{1}{|\sC|}$. 
 \end{document}
