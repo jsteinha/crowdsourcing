@@ -1,0 +1,102 @@
+\usepackage{hyperref,url}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{tikz}
+\usepackage{xspace}
+\usepackage{stmaryrd,wasysym,clrscode}
+\usepackage{etex,etoolbox}
+\usepackage{ifthen}
+\usetikzlibrary{patterns,positioning}
+
+%%% Added by Jonathan %%%
+\def\[#1\]{\begin{align}#1\end{align}}
+\def\(#1\){\begin{align*}#1\end{align*}}
+\newcommand{\ip}[2]{\left\langle #1, #2 \right\rangle}
+\definecolor{NAColor}{rgb}{.75,0,.75}
+\newcommand{\NA}[1]{\textcolor{NAColor}{($\star$) #1}}
+\newcommand{\dee}{\mathrm{d}}
+\def\argmax{\operatornamewithlimits{arg\,max}}
+\def\argmin{\operatornamewithlimits{arg\,min}}
+\newcommand{\defined}{\ensuremath{\triangleq}}
+\newcommand{\bprf}{\begin{proof}}
+\newcommand{\eprf}{\end{proof}}
+\newcommand{\blem}{\begin{lemma}}
+\newcommand{\elem}{\end{lemma}}
+\newcommand{\eps}{\epsilon}
+%%% End added by Jonathan %%%
+
+\newcommand{\p}[1]{\left(#1\right)}
+\DeclareMathOperator{\Geometric}{Geometric}
+\newcommand{\op}{\mathrm{op}}
+\newcommand{\Beta}{B}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\Regret}{Regret}
+\newcommand{\algname}[1]{\textsc{\lowercase{#1}}\xspace}
+\newcommand{\bmd}{\algname{BMD}}
+\newcommand{\primal}{\algname{PBMD}}
+\newcommand{\dual}{\algname{DBMD}}
+\newcommand{\cgd}{\algname{CGD}}
+\newcommand{\md}{\algname{MD}}
+
+\newcommand{\lc}[1]{#1_{\mathrm{loc}}}
+\newcommand{\eq}[1]{\stackrel{\mathrm{#1}}{=}}
+\DeclareMathOperator{\Var}{Var}
+\DeclareMathOperator{\sign}{sign}
+\DeclareMathOperator{\MMD}{MMD}
+\newcommand{\MMDr}{\tilde{\MMD}}
+\DeclareMathOperator{\tr}{tr}
+\newcommand{\inner}[2]{\langle #1, #2 \rangle}
+\newcommand{\E}{\mathcal{E}}
+\newcommand{\eqdef}{\stackrel{\mathrm{def}}{=}}
+\newcommand{\bP}{\mathbb{P}}
+\newcommand{\bI}{\mathbb{I}}
+\newcommand{\bE}{\mathbb{E}}
+\newcommand{\sF}{\mathcal{F}}
+\newcommand{\sV}{\mathcal{V}}
+\newcommand{\sH}{\mathcal{H}}
+\newcommand{\sK}{\mathcal{K}}
+\newcommand{\sA}{\mathcal{A}}
+\newcommand{\sC}{\mathcal{C}}
+\newcommand{\sM}{\mathcal{M}}
+\newcommand{\sE}{\mathcal{E}}
+\newcommand{\C}{\mathcal{C}}
+\newcommand{\sB}{\mathcal{B}}
+\newcommand{\bR}{\mathbb{R}}
+\newcommand{\bN}{\mathbb{N}}
+\newcommand{\bZ}{\mathbb{Z}}
+\newcommand{\bF}{\mathbb{F}}
+\newcommand{\sI}{\mathcal{I}}
+\newcommand{\sP}{\mathcal{P}}
+\newcommand{\sX}{\mathcal{X}}
+\newcommand{\sY}{\mathcal{Y}}
+\newcommand{\sZ}{\mathcal{Z}}
+\newcommand{\sS}{\mathcal{S}}
+\newcommand{\sJ}{\mathcal{J}}
+\newcommand{\sR}{\mathcal{R}}
+\newcommand{\sN}{\mathcal{N}}
+\newcommand{\meet}{\wedge}
+\newcommand{\RE}[2]{\operatorname{RE}\left(#1 \ \| \ #2\right)}
+\newcommand{\KL}[2]{\operatorname{KL}\left(#1 \ \| \ #2\right)}
+\newcommand{\KLm}[2]{\operatorname{KL}_m\left(#1 \ \| \ #2\right)}
+\newcommand{\score}[2]{\operatorname{score}\left(#1 \ \| \ #2\right)}
+\newcommand{\phih}{\hat{\phi}}
+\newcommand{\psih}{\hat{\psi}}
+\DeclareMathOperator{\supp}{supp}
+\DeclareMathOperator{\loc}{loc}
+\DeclareMathOperator{\lub}{lub}
+\newcommand{\atom}[1]{#1^{\circ}}
+\newcommand{\stitch}[2]{\overline{#1}^{#2}}
+%\DeclareMathOperator{\argmin}{argmin}
+%\DeclareMathOperator{\argmax}{argmax}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{assumption}[theorem]{Assumption}
+\theoremstyle{definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{property}[theorem]{Property}
+
+\def\ci{\perp\!\!\!\perp}
