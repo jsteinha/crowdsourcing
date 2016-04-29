@@ -10,6 +10,21 @@
 \usepackage{fullpage}
 \usepackage{natbib}
 \input{latex-defs.tex}
+\definecolor{mydarkblue}{rgb}{0,0.08,0.45}
+\hypersetup{ %
+  pdftitle={},
+  pdfauthor={},
+  pdfsubject={Proceedings of the International Conference on Machine Learning 2016},
+  pdfkeywords={},
+  pdfborder=0 0 0,
+  pdfpagemode=UseNone,
+  colorlinks=true,
+  linkcolor=mydarkblue,
+  citecolor=mydarkblue,
+  filecolor=mydarkblue,
+  urlcolor=mydarkblue,
+  pdfview=FitH}
+\setcitestyle{authoryear,round,citesep={;},aysep={,},yysep={;}}
 \usepackage{breqn}
 \DeclareMathOperator{\Tr}{Tr}
 \newcommand{\M}{\tilde{M}}
@@ -18,6 +33,8 @@
 \newcommand{\sD}{\mathcal{D}}
 \newcommand{\oo}{\mathcal{O}}
 \newcommand{\bi}{\mathbbm{1}}
+\newcommand{\todo}[1]{{\color{red} [TODO: {#1}]}}
+\DeclareMathOperator{\round}{round}
 
 \begin{document}
 
@@ -35,6 +52,7 @@ and $\bE[(\A_{ij}-A_{ij})^{2p}] \leq \frac{(2p)!}{2^pp!} \p{n/d}^{p}$ for all $p
 and some fixed $d \in \bR_{>0}$. For instance, this holds if $\Var[\A_{ij}] \leq \frac{n}{d}$ and $|\A_{ij}| \leq \frac{n}{d}$ almost surely, 
 which we can obtain by sampling each entry of $A$ with probability $\frac{d}{n}$ and scaling appropriately (which results in $d$ entries in 
 each row in expectation).
+\todo{the moment assumption doesn't actually hold in this case, and making it hold costs us a $\sqrt{\log(n)}$ factor}
 
 Let $\M$ be the solution to the following program:
 \begin{equation}
@@ -49,42 +67,29 @@ We also let $M^*$ be the solution to the ``noiseless'' program
 \text{maximize } \langle A, M \rangle - \mu \|M\|_*, \text{ subject to } 0 \leq M_{ij} \leq 1 \, \forall i,j,
 \end{equation}
 
-Our goal is to show that $\M$ and $M^*$ are ``close'' in a well-defined sense. We 
-will proceed in $3$ steps:
+Our goal is to show that $\M$ is ``close'' to giving correct information about $\sC$ and $\sD$. 
+We will proceed in $2$ steps:
 \begin{enumerate}
 \item Show that $\M$ is an approximate optimizer of \eqref{eq:optimization-noiseless}.
-\item Characterize the optimum $M^*$ of \eqref{eq:optimization-noiseless}.
-\item Show that any approximate optimizer of \eqref{eq:optimization-noiseless} is close to $M^*$.
+%\item Characterize the optimum $M^*$ of \eqref{eq:optimization-noiseless}.
+\item Show that any approximate optimizer of \eqref{eq:optimization-noiseless} is close to identifying $\sD$ for most rows in $\sC$.
 \end{enumerate}
+All relevant lemmas are proved in Section~\ref{sec:lemma-proofs}.
 
 For the first step, we begin with the trivial observation that 
 $\max\p{\|\M\|_*, \|M^*\|_*} \leq \frac{n^2}{\mu}$, since otherwise $M = 0$ 
 would have a larger objective value for (\ref{eq:optimization-noisy},\ref{eq:optimization-noiseless}). 
 We then have the following inequality:
 \begin{lemma}
+\label{lem:concentration}
 With probability $1-\delta$, we have
-\[ |\langle A-\A, M \rangle| \leq \oo\p{\frac{n^3}{\mu}\p{\frac{1}{\sqrt{d}} + \frac{1}{d}\log(1/\delta)}} \]
+\[ |\langle A-\A, M \rangle| \leq \oo\p{\frac{n^3}{\mu}\p{\frac{1}{\sqrt{d}} + \frac{1}{d}\sqrt{\log(1/\delta)}}} \]
 for all $M$ satisfying $\|M\|_* \leq \frac{n^2}{\mu}$.
 \end{lemma}
-\begin{proof}
-We have that 
-\[ \sup_{\|M\|_* \leq n^2/\mu} |\langle A-\A, M \rangle| = \frac{n^2}{\mu}\|A-\A\|_{\op}. \]
-Therefore, our task is to bound $\|A-\A\|_{\op}$. For this, we make use of \citet{rmt}, 
-Theorem 3.1 \& Corollary 3.2, which states that, for any $\epsilon > 0$, we have that
-\begin{align}
-\bE[\|A-\A\|_{\op}] &\leq (1+\epsilon)\sqrt{\frac{n}{d}}\left\{2\sqrt{n} + 5\sqrt{\frac{\log(n)}{\log(1+\epsilon)}}\right\} \\
- &= \oo\p{\frac{n}{\sqrt{d}}}.
-\end{align}
-Then, a form of Talagrand's inequality implies that
-$\bP[\|A-\A\|_{\op} \geq \bE[\|A-\A\|_{\op}] + t] \leq \exp\p{-c\p{td/n}^2}$. 
-Taking $t = (n/d)\sqrt{c^{-1}\log(1/\delta)}$, we have that 
-\[ \bP\left[\|A-\A\|_{\op} \geq \oo\p{\frac{n}{\sqrt{d}} + \frac{n}{d}\log(1/\delta)}\right] \leq \delta, \]
-as was to be shown.
-\end{proof}
 \paragraph{Analyzing $\M$.} Now, we are ready to show that 
 $\M$ approximately optimizes \eqref{eq:optimization-noiseless}. 
-We will take $\mu = \frac{1}{4}\alpha n$, 
-$d = \Omega\p{\max\p{\frac{1}{(\alpha^4\epsilon)^2}, \frac{\log(1/\delta)}{\alpha^4\epsilon}}}$, which yields (for appropriate constants)
+We will take $\mu = \epsilon \alpha n$, 
+$d = \Omega\p{\max\p{\frac{1}{(\alpha^3\epsilon^2)^2}, \frac{\sqrt{\log(1/\delta)}}{\alpha^3\epsilon^2}}}$, which yields (for appropriate constants)
 \begin{align}
 |\langle A-\A, M \rangle| &\leq \frac{1}{2}\epsilon \alpha^2 N^2.
 \end{align}
@@ -98,55 +103,18 @@ It follows that $\M$ is within $\epsilon \alpha^2N^2$ of the optimum of \eqref{e
 at least in terms of objective value.
 
 
-\section{Chracterizing $M^*$}
-We prove the following two structural lemmas, which show that 
-$M^*$ (approximately) inherits the properties of $A$:
-\begin{lemma}
-\label{lem:constant}
-We have $M^*_{i,j} = M^*_{i',j}$ for all $i,i' \in \sC$.
-\end{lemma}
+\section{Bounding $M^* - \M$}
+To start, we need some notation. Let $r(M)$ be the matrix such that
+\[ r(M)_{ij} = \left\{ \begin{array}{ccl} \frac{1+A_{ij}}{2} & : & i \in \sC \\ M_{ij} & : & \text{else} \end{array} \right.. \]
+In other words, $r$ replaces the rows in $\sC$ with their target values, and 
+leaves the rest of the rows fixed.
 
-\begin{lemma}
-\label{lem:ones}
-For all but $\frac{\mu^2}{\alpha N}$ values of $j \in [n]$, we have
-$M^*_{i,j} = \frac{1 + A_{i,j}}{2}$.
-\end{lemma}
+We also define the projection matrix $P$ as
+\[ P_{i,i'} = \left\{ \begin{array}{ccl} \frac{1}{|\sC|} & : & i, i' \in \sC \\ \delta_{i,i'} & : \text{else} \end{array} \right.. \]
+Thus $PM = M$ if and only if all rows in $\sC$ are equal to each other.
 
-%The advantage of using $\M$ instead of $A$ is that \eqref{eq:optimization} is highly 
-%noise-robust. Moreover, given $\M$, we can efficiently identify $\sC$: first sample 
-%a vertex at random, and with probability $\frac{\alpha}{4}$ obtain some $v \in \sC_0$. 
-%Then, take the set $\sC_1$ of all $j$ such that $M_{v,j} = 1$. Finally, take the set 
-%$\tilde{\sC}$ of all $i \in \sC_1$ such that $M_{i,j} = 1$ for all $j \in \sC_1$. 
-%We can show that the set $\tilde{\sC}$ is a clique containing $\sC_0$:
-%\begin{lemma}
-%\label{lem:clique}
-%The set $\tilde{\sC}$ is a clique ($M_{i,i'} = 1$ for all $i,i' \in \tilde{\sC}$). 
-%Moreover, $\sC_0 \subseteq \tilde{\sC}$.
-%\end{lemma}
-%\begin{proof}
-%First, $\tilde{\sC}$ satisfies $M_{i,j} = 1$ for all $i \in \tilde{\sC}, j \in \sC_1$, 
-%and $\tilde{\sC} \subseteq \sC_1$, so in particular $M_{i,j} = 1$ for all $i,j \in \tilde{\sC}$ 
-%and hence $\tilde{\sC}$ is a clique.
-%
-%Second, $\sC_0 \subseteq \sC_1$, and furthermore any $i \in \sC_0$ satisfies 
-%$M_{i,j} = M_{v,j} = 1$ for all $j \in \sC_1$, so $\sC_0 \subseteq \tilde{\sC}$.
-%\end{proof}
-
-%
-%We now prove the two structural lemmas.
-\begin{proof}[Proof of Lemma~\ref{lem:constant}]
-Consider the matrix $P \in \bR^{n \times n}$ defined by 
-$P_{i,i'} = \frac{1}{|\sC|}$ if $i,i' \in \sC$, and 
-$P_{i,i'} = \delta_{i,i'}$ otherwise. Then $P$ is clearly a 
-projection matrix, and hence $\|PM\|_* \leq \|M\|_*$ for all 
-matrices $M$. Furthermore, $\langle A, PM \rangle = \langle A, M \rangle$. 
-It follows that replacing $M$ by $PM$ weakly increases the value of 
-\eqref{eq:optimization-noiseless}, and hence we must have $M = PM$, from which 
-the result follows.
-\end{proof}
-
-Before proving Lemma~\ref{lem:ones}, we state and prove the 
-following technical lemma which will also be useful later:
+We have the following technical lemma which controls 
+the subgradient of the objective function:
 \begin{lemma}
 \label{lem:subgradient}
 Let $f(M) = \langle A, M \rangle - \mu \|M\|_*$, and let 
@@ -156,6 +124,58 @@ to the rows lying in $\sC$, we have
 \[ (Z_0)_{\sC} = \bi \cdot \left[(2\bi_{\sD}-\bi)^{\top} - \mu v_0^{\top}\right], \]
 for some vector $v_0$ of norm at most $\frac{1}{\sqrt{|\sC|}}$.
 \end{lemma}
+
+We are now ready to show that $\M$ is close to $M^*$. Indeed, we already 
+have that $f(\M) \geq f(M^*) - \epsilon \alpha^2 N^2$. Letting $M' \eqdef r(\M)$ 
+and re-arranging, we have
+\begin{align}
+\epsilon \alpha^2 N^2 &\geq f(M^*) - f(\M) \\
+ &\geq f(M') - f(\M) \\
+ &\geq \langle M' - \M, Z \rangle,
+\end{align}
+where $Z \in \partial f(M')$.
+By Lemma~\ref{lem:subgradient}, we know that $Z_{\sC} = \bi \cdot \left[(2\bi_{\sD}-\bi)^{\top} - \mu v^{\top}\right]$, 
+where $\|v\|_2^2 \leq \frac{1}{|\sC|}$. Since $M'_{ij} = 1$ if $j \in \sD$ and $0$ if $j \not\in D$, and 
+$\M_{ij} \in [0,1]$, we have $Z_{ij}(M'_{ij}-\M_{ij}) = |M'_{ij} - \M_{ij}| - \mu v_j(\M'_{ij}-\M_{ij})$, and hence
+\begin{align}
+\langle M' - \M, Z \rangle &= \sum_{i \in \sC, j} |M'_{ij} - \M_{ij}| - \mu v_j (M'_{ij} - \M_{ij}) \\
+ &\geq \|M'-\M|_1 - \mu \sqrt{|\sC|\sum_j v_j^2}\sqrt{\sum_{i \in \sC, j} (M_{ij}'-\M_{ij})^2} \\
+ &\geq \|M'-\M\|_1 - \mu \|M' - \M\|_F.
+\end{align}
+In all, we see that $\|M'-\M\|_1 \leq \epsilon \alpha^2 N^2 + \mu \|M' - \M\|_F \leq 2\epsilon \alpha^2 N^2$.
+Since $M' = r(\M)$, this implies the final inequality:
+\begin{theorem}
+\label{thm:bound}
+If $\M$ is the solution to \eqref{eq:optimization-noisy} with $\mu$ and $d$ as defined 
+above, then
+\[ \sum_{i \in \sC, j} \left|\M_{ij} - \frac{1+A_{ij}}{2}\right| \leq 2\epsilon\alpha^2N^2. \]
+In particular, we have
+\[ \#\{i \in \sC, j \in [n] \mid \sign(2M_{ij}-1) \neq A_{ij}\} \leq 4\epsilon\alpha^2N^2. \]
+\end{theorem}
+Let $\round(x) = 1$ if $x \geq \frac{1}{2}$ and $0$ if $x < \frac{1}{2}$. An immediate consequence 
+of Theorem~\ref{thm:bound} is that 
+there are at least $\frac{1}{2}\alpha N$ rows $i$ for which $\round(A_{ij}) = \bI[j \in \sD]$ 
+for all but $8\epsilon \alpha N$ values of $j$. Therefore, if we sample a row randomly, with 
+reasonable (i.e., $\frac{\alpha}{2}$) probability that row will tell us all but an $\oo(\epsilon)$ fraction of $\sD$.
+
+\section{Proofs of Lemmas}
+
+\begin{proof}[Proof of Lemma~\ref{lem:concentration}]
+We have that 
+\[ \sup_{\|M\|_* \leq n^2/\mu} |\langle A-\A, M \rangle| = \frac{n^2}{\mu}\|A-\A\|_{\op}. \]
+Therefore, our task is to bound $\|A-\A\|_{\op}$. For this, we make use of \citet{bandeira2014sharp}, 
+Theorem 3.1 \& Corollary 3.2, which states that, for any $\epsilon > 0$, we have that
+\begin{align}
+\bE[\|A-\A\|_{\op}] &\leq (1+\epsilon)\sqrt{\frac{n}{d}}\left\{2\sqrt{n} + 5\sqrt{\frac{\log(n)}{\log(1+\epsilon)}}\right\} \\
+ &= \oo\p{\frac{n}{\sqrt{d}}}.
+\end{align}
+Then, a form of Talagrand's inequality implies that
+$\bP[\|A-\A\|_{\op} \geq \bE[\|A-\A\|_{\op}] + t] \leq \exp\p{-c\p{td/n}^2}$. 
+Taking $t = (n/d)\sqrt{c^{-1}\log(1/\delta)}$, we have that 
+\[ \bP\left[\|A-\A\|_{\op} \geq \oo\p{\frac{n}{\sqrt{d}} + \frac{n}{d}\sqrt{\log(1/\delta)}}\right] \leq \delta, \]
+as was to be shown.
+\end{proof}
+
 \begin{proof}[Proof of Lemma~\ref{lem:subgradient}]
 First, we can take $Z_0 = A - \mu UV^{\top}$, where $U \Lambda V^{\top}$ is the singular 
 value decomposition of $M_0$. By assumption, $M_0 = PM_0$, and so $U = PU$ as well. Therefore, 
@@ -169,34 +189,7 @@ But $\|\bi v_0^{\top}\|_F^2 = \|\bi\|_2^2\|v_0\|_2^2 = |\sC|\|v_0\|_2^2$, from w
 the result follows.
 \end{proof}
 
-\begin{proof}[Proof of Lemma~\ref{lem:ones}]
-Let $M^*$ be the optimizer of \eqref{eq:optimization-noiseless}, and 
-let $M'$ be $M^*$ with all rows in $\sC$ replaced by $\frac{1+A_{ij}}{2}$.
-Note that by concavity of $f$ we have
-\[ f(M^*) - f(M') \leq \langle Z', M^* - M' \rangle \]
-for any $Z' \in \partial f(M')$. But by Lemma~\ref{lem:subgradient}, we 
-have $(Z')_{\sC} = \bi \cdot \left[(2\bi_{\sD}-\bi)^{\top} - \mu v_0^{\top}\right]$, 
-where $\|v_0\|_2^2 \leq \frac{1}{\alpha N}$. In particular, $(v_0)_j \geq \frac{1}{\mu}$ 
-for at most $\frac{\mu^2}{\alpha N}$ values of $j$. But for all the remaining values of $j$, 
-$\sign(Z'_{ij}) = A_{ij}$ for all $i \in \sC$, and hence we must have $M_{ij} = \frac{1 + A_{ij}}{2}$ 
-for all $i \in \sC$, as was to be shown.
-\end{proof}
+\bibliographystyle{plainnat}
+\bibliography{references}
 
-\section{Bounding $\M - M^*$}
-
-We have seen that $f(\M) \geq f(M^*) - \epsilon \alpha^2 N^2$. We will now 
-use this to show that $\M$ is close to $M^*$. Our argument essentially repeats 
-the proof of Lemma~\ref{lem:ones}. Indeed, re-arranging the above 
-inequality, we have
-\[ \epsilon \alpha^2 N^2 \geq f(M^*) - f(\M) \geq f(M') - f(\M) \geq \langle M' - \M, Z' \rangle, \]
-where $Z' \in \partial f(M')$, and $M'$ is defined in terms of $\M$ as above. 
-But by Lemma~\ref{lem:subgradient}, we know that $(Z')_{\sC} = \bi \cdot \left[(2\bi_{\sD}-\bi)^{\top} - \mu v^{\top}\right]$, 
-where $\|v\|_2^2 \leq \frac{1}{|\sC|}$. Since $M_{ij}' = 1$ if $j \in \sD$ and $0$ if $j \not\in D$, and 
-$\M_{ij} \in [0,1]$, we have $Z'_{ij}(M_{ij}'-\M_{ij}) = |M_{ij}' - \M_{ij}| - \mu v_j(M_{ij}'-\M_{ij})$, and hence
-\begin{align}
-\langle M' - \M, Z' \rangle &= \sum_{i \in \sC, j} |M_{ij}' - \M_{ij}| - \mu v_j (M_{ij}' - \M_{ij}) \\
- &\geq \|M'-\M|_1 - \mu \sqrt{|\sC|\sum_j v_j^2}\sqrt{\sum_{i \in \sC, j} (M_{ij}'-\M_{ij})^2} \\
- &\geq \|M'-\M\|_1 - \mu \|M' - \M\|_F.
-\end{align}
-In all, we see that $\|M'-\M\|_1 \leq \epsilon \alpha^2 N^2 + \mu \|M' - \M\|_F \leq (\epsilon\alpha N + \mu)\alpha N$.
 \end{document}
