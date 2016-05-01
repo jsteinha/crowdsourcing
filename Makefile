@@ -1,5 +1,5 @@
 default: refdb sfig
-	node figures.js
+	#node figures.js
 	pdflatex main
 	bibtex main
 
