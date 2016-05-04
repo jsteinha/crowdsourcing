@@ -164,21 +164,28 @@ $\sP_0 \cap \{M_{\sC} = R_{\sC}\}$. Since $\langle \Aa, M \rangle \leq n + \frac
 any $M$ with $\|M\|_* > \frac{2}{\epsilon\alpha}$ cannot possibly be optimal, since the solution $M = 0$ would 
 be better. This implies that $\mu \leq \mu_0 = \epsilon \alpha n$, as claimed.
 
-
-Now, let $R$ be the matrix such that $R_{ij} = \frac{1}{|\sD|}\bI[i \in \sC, j \in \sD]$. For any 
-$M$, consider an $M'$ obtained by replacing $M_{\sC}$ by $R_{\sC}$, and then scaling the entire 
-matrix back down to ensure that $\|M'\|_* \leq \frac{2}{\epsilon \alpha}$. Also let $M_{\sC} = \bi u^{\top}$ 
-for the $u$ guaranteed to exist in Lemma~\ref{lem:projection}. We then have that
+We next characterize the subgradient of $\|M\|_*$ at $M = M'$.
+Define the projection matrix $P$ as
+\[ P_{i,i'} = \left\{ \begin{array}{ccl} \frac{1}{|\sC|} & : & i, i' \in \sC \\ \delta_{i,i'} & : \text{else} \end{array} \right.. \]
+Thus $PM = M$ if and only if all rows in $\sC$ are equal to each other.
+In particular, $PM' = M'$.
+\begin{lemma}
+\label{lem:subgradient}
+Let $f(M) = \|M\|_*$, and let 
+$M_0$ satisfy $M_0 = PM_0$. Then,
+there is a $Z_0 \in \partial f(M_0)$ such that, when restricted 
+to the rows lying in $\sC$, we have $(Z_0)_{\sC} = \bi_{\sC} v_0^{\top}$
+for some vector $v_0$ of norm at most $\frac{1}{\sqrt{|\sC|}}$.
+\end{lemma}
+This implies the following:
+\begin{proposition}
+There exists a matrix $Z$ such that
 \begin{align}
-\langle A^*, M' \rangle &= \frac{\langle A^*, M \rangle + |\sC|\p{1 - \sum_{j \in \sD} u_j + \sum_{j \not\in \sD} u_j}}{\|M'\|_* / \frac{2}{\epsilon\alpha}} \\
- &> \frac{\langle A^*, M \rangle + \epsilon|\sC|}{1 + \frac{\epsilon\alpha}{2}\sqrt{|\sC|/|\sD|}} \\
- &= 
+\langle \Aa, M' \rangle &\leq \langle \Aa, \M \rangle + \epsilon\alpha n + \mu \langle Z_{\sC}, M'_{\sC}-\M_{\sC} \rangle
+%\langle Z_{\neg \sC}, \M_{\neg \sC} - M'_{\neg \sC} \rangle &\leq 0.
 \end{align}
-%$\|R\|_* = \sqrt{\frac{|\sC|}{|\sC|}}$ 
-%that $\|R\|_* = \sqrt{\frac{|\sC|}{|\sD|}}$ while $\langle A, R \rangle = |\sC|$. Our goal 
-%is to show that, unless $\|R_{\sC}-M_{\sC}\|_1 \leq \epsilon \alpha n$, $M$ cannot possibly 
-%be the optimum of \eqref{eq:optimization-noiseless}. 
-
+Moreover, $Z_{\sC} = \bi_{\sC}v^{\top}$ for a vector $v$ of norm at most $\frac{1}{\sqrt{|\sC|}}$.
+\end{proposition}
 \end{proof}
 
 \section{Bounding $M^* - \M$}
@@ -187,21 +194,7 @@ To start, we need some notation. Let $r(M)$ be the matrix such that
 In other words, $r$ replaces the rows in $\sC$ with their target values, and 
 leaves the rest of the rows fixed.
 
-We also define the projection matrix $P$ as
-\[ P_{i,i'} = \left\{ \begin{array}{ccl} \frac{1}{|\sC|} & : & i, i' \in \sC \\ \delta_{i,i'} & : \text{else} \end{array} \right.. \]
-Thus $PM = M$ if and only if all rows in $\sC$ are equal to each other.
 
-We have the following technical lemma which controls 
-the subgradient of the objective function:
-\begin{lemma}
-\label{lem:subgradient}
-Let $f(M) = \langle A, M \rangle - \mu \|M\|_*$, and let 
-$M_0$ satisfy $M_0 = PM_0$. Then,
-there is a $Z_0 \in \partial f(M_0)$ such that, when restricted 
-to the rows lying in $\sC$, we have
-\[ (Z_0)_{\sC} = \bi \cdot \left[(2\bi_{\sD}-\bi)^{\top} - \mu v_0^{\top}\right], \]
-for some vector $v_0$ of norm at most $\frac{1}{\sqrt{|\sC|}}$.
-\end{lemma}
 
 We are now ready to show that $\M$ is close to $M^*$. Indeed, we already 
 have that $f(\M) \geq f(M^*) - \epsilon \alpha^2 N^2$. Letting $M' \eqdef r(\M)$ 
