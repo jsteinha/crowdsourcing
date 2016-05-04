@@ -116,11 +116,12 @@ at least in terms of objective value.
 \section{Analyzing $M^*$}
 We next show that the optimal $M^*$ identifies $\sC$ and $\sD$ in the following sense:
 \begin{proposition}
+\label{prop:M-bound}
 Suppose that $\M \in \sP$ satisfies $\langle \Aa, \M \rangle \geq \langle \Aa, M^* \rangle - \epsilon \alpha n$. 
 Then, we have 
 \begin{equation}
 \label{eq:M-bound}
-\frac{1}{|\sC|} \sum_{i \in \sC} \p{1 + \sum_{j \not\in \sD} \M_{ij} - \sum_{j \in \sD} \M_{ij}} \leq 2\epsilon.
+\frac{1}{|\sC|} \sum_{i \in \sC} \p{1 + \sum_{j \not\in \sD} \M_{ij} - \sum_{j \in \sD} \M_{ij}} \leq (1+\sqrt{2})\epsilon.
 \end{equation}
 \end{proposition}
 \begin{proof}
@@ -136,13 +137,50 @@ $\langle \Aa_{\neg \sC}, M'_{\neg \sC} \rangle \geq \langle \Aa_{\neg \sC}, \M_{
 
 Looking back at the rows inside $\sC$, we must therefore have 
 $\langle \Aa_{\sC}, \M_{\sC} \rangle \geq \langle \Aa_{\sC}, M'_{\sC} \rangle - \epsilon \alpha n$, 
-which is exactly the statement \eqref{eq:M-bound} with $2\epsilon$ replaced by $\epsilon$.
+which is exactly the statement \eqref{eq:M-bound} with $(1+\sqrt{2})\epsilon$ replaced by $\epsilon$.
 
 The problem with the above argument is that, even though $M'$ is optimized on $\neg \sC$, the rows in 
 $\sC$ and $\neg \sC$ are coupled by the joint constraint $\|M\|_* \leq \frac{2}{\epsilon\alpha}$. We 
 will decouple the rows by taking the subgradient of the Lagrangian at $M'$, which yields an upper bound 
-for our optimization problem.
+for our optimization problem. By doing this we obtain:
 
+\begin{proposition}
+\label{prop:subgradient}
+Let $\mu = \epsilon \alpha n$. There exists a matrix $Z$ such that
+\begin{align}
+\langle \Aa_{\sC} - \mu Z_{\sC}, M'_{\sC} - M_{\sC} \rangle &\leq f(M') - f(M) \text{ for all $M \in \sP$}.
+%\langle \Aa_{\sC}, \M \rangle + \epsilon\alpha n + \mu \langle Z_{\sC}, M'_{\sC}-\M_{\sC} \rangle
+\end{align}
+Moreover, $Z_{\sC} = \bi_{\sC}v^{\top}$ for a vector $v$ of norm at most $\frac{1}{\sqrt{|\sC|}}$.
+\end{proposition}
+
+To finish the proof of Proposition~\ref{prop:M-bound}, plug in $\M$ for $M$ in Proposition~\ref{prop:subgradient}. 
+This yields
+\begin{align}
+\langle \Aa_{\sC} + \mu Z_{\sC}, M'_{\sC} - \M_{\sC} \rangle &\leq f(M') - f(\M) \\
+ &\leq f(M^*) - f(\M) \\
+ &\leq \epsilon \alpha n.
+\end{align}
+On the other hand, we have 
+\begin{align}
+|\langle \mu Z_{\sC}, M'_{\sC} - \M_{\sC} \rangle| &\leq \mu\|Z_{\sC}\|_F\|M'_{\sC} - \M_{\sC}\|_F \\
+ &\leq \mu \sqrt{\sum_{i \in \sC} \|M'_i - \M_i\|_2^2} \\
+ &= \mu \sqrt{\sum_{i \in \sC} \|M'_i - \M_i\|_{\infty}\|M'_i - \M_i\|_1} \\
+ &= \mu \sqrt{\frac{\|M'-\M\|_1}{\alpha n}}.
+\end{align}
+Putting these together, we obtain
+\begin{align}
+\langle \Aa_{\sC}, M'_{\sC} - \M_{\sC} \rangle &\leq \epsilon \alpha n + \frac{\mu}{\sqrt{\alpha n}} \sqrt{\|M' - \M\|_1} \\
+ &\leq \epsilon \alpha n + \sqrt{2}\mu.
+\end{align}
+Using the fact that $\langle \Aa_{\sC}, M'_{\sC} - \M_{\sC} = \sum_{i \in \sC}\p{\sum_{j \in \sD} (1 - \M_{ij}) + \sum_{j \not\in \sD} \M_{ij}}$, 
+together with $\mu \leq \epsilon\alpha n$, we obtain 
+\[ \frac{1}{|\sC|}\sum_{i \in \sC}\p{1 + \sum_{j\not\in \sD} \M_{ij} + \sum_{j \in \sD} \M_{ij}} \leq (1+\sqrt{2})\epsilon, \]
+as was to be shown.
+\end{proof}
+
+
+\subsection{Proof of Proposition~\ref{prop:subgradient}}
 Let $\sP_0$ be the set $\sP$ where we have removed the nuclear norm constraint. By Lagrangian duality we 
 know that there is some $\mu$ such that maximizing $\langle \Aa, M \rangle$ over $\sP \cap \{M_{\sC} = R_{\sC}\}$ 
 is equivalent to maximizing $\langle \Aa, M \rangle + \mu\p{\frac{2}{\epsilon\alpha} - \|M\|_*}$ over 
@@ -178,16 +216,29 @@ to the rows lying in $\sC$, we have $(Z_0)_{\sC} = \bi_{\sC} v_0^{\top}$
 for some vector $v_0$ of norm at most $\frac{1}{\sqrt{|\sC|}}$.
 \end{lemma}
 This implies the following:
-\begin{proposition}
-There exists a matrix $Z$ such that
-\begin{align}
-\langle \Aa, M' \rangle &\leq \langle \Aa, \M \rangle + \epsilon\alpha n + \mu \langle Z_{\sC}, M'_{\sC}-\M_{\sC} \rangle
-%\langle Z_{\neg \sC}, \M_{\neg \sC} - M'_{\neg \sC} \rangle &\leq 0.
-\end{align}
-Moreover, $Z_{\sC} = \bi_{\sC}v^{\top}$ for a vector $v$ of norm at most $\frac{1}{\sqrt{|\sC|}}$.
-\end{proposition}
-\end{proof}
 
+\begin{proof}[Proof of Proposition~\ref{prop:subgradient}]
+First note that
+\begin{align}
+\langle \Aa, \M \rangle + \mu \p{\frac{2}{\epsilon\alpha} - \|\M\|_*} 
+ &\geq \langle \Aa, \M \rangle \\
+ &\geq \langle \Aa, M^* \rangle - \epsilon\alpha n \\
+ &\geq \langle \Aa, M' \rangle - \epsilon\alpha n \\
+ &= \langle \Aa, M' \rangle + \mu\p{\frac{2}{\epsilon} - \|M'\|_*} - \epsilon\alpha n.
+\end{align}
+Continuing, we have
+\begin{align}
+\langle \Aa, M' \rangle &\leq \langle \Aa, \M \rangle + \epsilon\alpha n + \mu\p{\|M'\|_* - \|\M\|_*} \\
+ &\leq \langle A^*, \M \rangle + \epsilon \alpha n + \mu \langle Z, M' - \M \rangle,
+\end{align}
+where $Z \in \partial f(M')$ is as guranteed in Lemma~\ref{lem:subgradient}. Next, let 
+$\M'$ be the matrix with $\M'_{\sC} = R_{\sC}$ and $\M'_{\neg \sC} = \M_{\neg \sC}$. Then, 
+$\M' \in \sP_0 \cap \{M_{\sC} = R_{\sC}\}$, and hence 
+$\langle \Aa, \M' \rangle - \mu \|\M'\|_* \leq \langle \Aa, M' \rangle - \mu \|M'\|_*$. 
+We thus have that $\langle \Aa - \mu Z, \M' - M' \rangle \leq 0$ \todo{check this, make sure it works out}. Since 
+$\langle X, \M' - M' \rangle = \langle X_{\neg C}, \M_{\neg C} - M'_{\neg \sC} \rangle$ for 
+any matrix $X$, the proposition follows.
+\end{proof}
 \section{Bounding $M^* - \M$}
 To start, we need some notation. Let $r(M)$ be the matrix such that
 \[ r(M)_{ij} = \left\{ \begin{array}{ccl} \frac{1+A_{ij}}{2} & : & i \in \sC \\ M_{ij} & : & \text{else} \end{array} \right.. \]
