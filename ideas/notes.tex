@@ -1,0 +1,274 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amsfonts,amsthm,amssymb}
+\usepackage{hyperref,url}
+\usepackage{import,subfiles}
+\usepackage{tabularx}
+\usepackage{bbm}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{multirow}
+\usepackage{fullpage}
+\usepackage{natbib}
+\input{latex-defs.tex}
+\definecolor{mydarkblue}{rgb}{0,0.08,0.45}
+\hypersetup{ %
+  pdftitle={},
+  pdfauthor={},
+  pdfsubject={Proceedings of the International Conference on Machine Learning 2016},
+  pdfkeywords={},
+  pdfborder=0 0 0,
+  pdfpagemode=UseNone,
+  colorlinks=true,
+  linkcolor=mydarkblue,
+  citecolor=mydarkblue,
+  filecolor=mydarkblue,
+  urlcolor=mydarkblue,
+  pdfview=FitH}
+\setcitestyle{authoryear,round,citesep={;},aysep={,},yysep={;}}
+\usepackage{breqn}
+\DeclareMathOperator{\Tr}{Tr}
+\newcommand{\M}{\tilde{M}}
+\newcommand{\A}{\hat{A}}
+\newcommand{\Aa}{A^*}
+\DeclareMathOperator{\poly}{poly}
+\newcommand{\sD}{\mathcal{D}}
+\newcommand{\oo}{\mathcal{O}}
+\newcommand{\bi}{\mathbbm{1}}
+\newcommand{\todo}[1]{{\color{red} [TODO: {#1}]}}
+\DeclareMathOperator{\round}{round}
+
+\begin{document}
+
+\section{Achieving $\poly(\alpha^{-1})$ degree}
+We assume we have a matrix $A \in \bR^{n \times n}$ and sets 
+$\sC \subset [n], \sD \subset [n]$ satisfying the following:
+\begin{itemize}
+\item $A_{i,j} = +1$ for all $i \in \sC$, $j \in \sD$
+\item $A_{i,j} = -1$ for all $i \in \sC$, $j \not\in \sD$
+\end{itemize}
+Moreover, assume that $\min(|\sC|, |\sD|) \geq \alpha n$.
+In addition, we will assume that we have a matrix $\A$ such 
+that $\|\A-A\|_{\op} \leq \frac{n}{\sqrt{d}}$ for a parameter 
+$d$ to be chosen later. Furthermore, we will assume that for the 
+rows indexed by $\sC$, we have $\|\A_{\sC}-A_{\sC}\|_{\op} \leq n\sqrt{\frac{\alpha}{d}}$.
+
+Let $\M$ be the solution to the following program:
+\begin{align}
+\label{eq:optimization-noisy}
+\text{maximize } &\langle \A, M \rangle, \\
+\notag \text{ subject to } &M_{ij} \geq 0 \,\,\, \forall i,j, \\
+\notag  &\sum_j M_{ij} \leq 1 \,\,\, \forall i, \\
+\notag  &\max_j M_{ij} \leq \frac{1}{|\sD|}\sum_j M_{ij} \,\,\, \forall i.
+\notag  &\|M\|_* \leq \frac{2}{\alpha\epsilon},
+\end{align}
+where $\|\cdot\|_*$ denotes the nuclear norm.
+
+Let $\Aa$ be the matrix that is equal to $A$ for the rows in $\sC$, 
+and equal to $\A$ for the rows outside of $\sC$. We will then let $M^*$ 
+be the solution to the ``corrected'' program
+\begin{align}
+\label{eq:optimization-noiseless}
+\text{maximize } &\langle \Aa, M \rangle, \\
+\notag \text{ subject to } &M_{ij} \geq 0 \,\,\, \forall i,j, \\
+\notag  &\sum_j M_{ij} \leq 1 \,\,\, \forall i, \\
+\notag  &\max_j M_{ij} \leq \frac{1}{|\sD|}\sum_j M_{ij} \,\,\, \forall i.
+\notag  &\|M\|_* \leq \frac{2}{\alpha\epsilon},
+\end{align}
+
+Our goal is to show that $\M$ is ``close'' to giving correct information about $\sC$ and $\sD$. 
+We state this in the following theorem:
+\begin{theorem}
+Let $d = \Omega\p{\frac{1}{\alpha^3\epsilon^4}}$. Then, for at least 
+half of the rows $i \in \sC$, it is the case that $\|\M_i - \pi^*\|_1 \leq \epsilon$, 
+where $\pi^*_j = \frac{1}{|\sD|}$ if $j \in \sD$, and $0$ otherwise.
+\end{theorem}
+
+We will proceed in $2$ steps:
+\begin{enumerate}
+\item Show that $\M$ is an approximate optimizer of \eqref{eq:optimization-noiseless}.
+%\item Characterize the optimum $M^*$ of \eqref{eq:optimization-noiseless}, and show that it identifies $\sC$ and $\sD$.
+\item Show that any approximate optimizer of \eqref{eq:optimization-noiseless} is close to identifying $\sC$ and $\sD$.
+\end{enumerate}
+All relevant lemmas are proved in Section~\ref{sec:lemma-proofs}.
+
+\section{Analyzing $\M$}
+For the first step, let $\sP$ denote the constraint set in (\ref{eq:optimization-noisy},\ref{eq:optimization-noiseless}).
+We start with the following two inequalities:
+\begin{lemma}
+\label{lem:concentration-1}
+For all $M \in \sP$, we have
+\[ |\langle \A-\Aa, M \rangle| \leq \frac{2n}{\epsilon\sqrt{\alpha d}}. \]
+\end{lemma}
+With this lemma, we can show that $\M$ approximately optimizes \eqref{eq:optimization-noiseless}. 
+We will take $d = \Omega\p{\frac{1}{\alpha^3\epsilon^4}}$, which yields (for appropriate constants)
+\begin{align}
+|\langle \A-\Aa, M \rangle| &\leq \frac{1}{2}\epsilon \alpha n.
+\end{align}
+We then have
+\begin{align}
+\langle \Aa, \M \rangle  &\geq \langle \A, \M \rangle - \frac{1}{2}\epsilon \alpha n \\
+ &\geq \langle \A, M^* \rangle - \frac{1}{2} \epsilon \alpha n \\
+ &\geq \langle \Aa, M^* \rangle - \epsilon \alpha n.
+\end{align}
+It follows that $\M$ is within $\epsilon \alpha n$ of the optimum of \eqref{eq:optimization-noiseless}, 
+at least in terms of objective value.
+
+\section{Analyzing $M^*$}
+We next show that the optimal $M^*$ identifies $\sC$ and $\sD$ in the following sense:
+\begin{proposition}
+Suppose that $\M \in \sP$ satisfies $\langle \Aa, \M \rangle \geq \langle \Aa, M^* \rangle - \epsilon \alpha n$. 
+Then, we have 
+\begin{equation}
+\label{eq:M-bound}
+\frac{1}{|\sC|} \sum_{i \in \sC} \p{1 + \sum_{j \not\in \sD} \M_{ij} - \sum_{j \in \sD} \M_{ij}} \leq 2\epsilon.
+\end{equation}
+\end{proposition}
+\begin{proof}
+Let $R$ be the matrix such that $R_{ij} = \frac{1}{|\sD|}\bI[i \in \sC, j \in \sD]$. 
+We define the matrix $M'$ by maximizing $\langle \Aa, M \rangle$ subject to $M \in \sP$ and 
+$M_{\sC} = R_{\sC}$. Note that 
+$\langle \Aa, M \rangle \geq \langle \Aa, M^* \rangle - \epsilon \alpha n \geq \langle \Aa, M' \rangle - \epsilon \alpha n$. 
+We will use this to show that $\M$ and $M'$ are ``close''.
+
+At a high level, our strategy is the following --- since $M'$ is already optimized 
+on the rows outside of $\sC$, we should (``morally'', though not in actuality) have 
+$\langle \Aa_{\neg \sC}, M'_{\neg \sC} \rangle \geq \langle \Aa_{\neg \sC}, \M_{\neg \sC} \rangle$. 
+
+Looking back at the rows inside $\sC$, we must therefore have 
+$\langle \Aa_{\sC}, \M_{\sC} \rangle \geq \langle \Aa_{\sC}, M'_{\sC} \rangle - \epsilon \alpha n$, 
+which is exactly the statement \eqref{eq:M-bound} with $2\epsilon$ replaced by $\epsilon$.
+
+The problem with the above argument is that, even though $M'$ is optimized on $\neg \sC$, the rows in 
+$\sC$ and $\neg \sC$ are coupled by the joint constraint $\|M\|_* \leq \frac{2}{\epsilon\alpha}$. We 
+will decouple the rows by taking the subgradient of the Lagrangian at $M'$, which yields an upper bound 
+for our optimization problem.
+
+Let $\sP_0$ be the set $\sP$ where we have removed the nuclear norm constraint. By Lagrangian duality we 
+know that there is some $\mu$ such that maximizing $\langle \Aa, M \rangle$ over $\sP \cap \{M_{\sC} = R_{\sC}\}$ 
+is equivalent to maximizing $\langle \Aa, M \rangle + \mu\p{\frac{2}{\epsilon\alpha} - \|M\|_*}$ over 
+$\sP_0 \cap \{M_{\sC} = R_{\sC}\}$. 
+
+We start by bounding $\mu$. We claim that $\mu \leq \epsilon \alpha n$. 
+To show this, note that we have
+\begin{lemma}
+\label{lem:concentration-2}
+For all $M \in \sP$, we have
+\[ |\langle \Aa, M\rangle| \leq n + \frac{2n}{\epsilon\alpha\sqrt{d}}. \]
+\end{lemma}
+Since $d = \Omega\p{\frac{1}{\alpha^3\epsilon^4}} = \Omega\p{\frac{1}{\alpha^2\epsilon^2}}$, 
+we have $\frac{n}{\epsilon\alpha\sqrt{d}} \leq n$. Therefore, Lemma~\ref{lem:concentration-2} 
+implies that $|\langle \Aa, M \rangle| \leq 2n$.
+
+Now, suppose that we take $\mu_0 = \epsilon \alpha n$ and optimize $\langle \Aa, M \rangle - \mu_0\|M\|_*$ over 
+$\sP_0 \cap \{M_{\sC} = R_{\sC}\}$. Since $\langle \Aa, M \rangle \leq n + \frac{\epsilon \alpha n}{2}\|M\|_*$, 
+any $M$ with $\|M\|_* > \frac{2}{\epsilon\alpha}$ cannot possibly be optimal, since the solution $M = 0$ would 
+be better. This implies that $\mu \leq \mu_0 = \epsilon \alpha n$, as claimed.
+
+
+Now, let $R$ be the matrix such that $R_{ij} = \frac{1}{|\sD|}\bI[i \in \sC, j \in \sD]$. For any 
+$M$, consider an $M'$ obtained by replacing $M_{\sC}$ by $R_{\sC}$, and then scaling the entire 
+matrix back down to ensure that $\|M'\|_* \leq \frac{2}{\epsilon \alpha}$. Also let $M_{\sC} = \bi u^{\top}$ 
+for the $u$ guaranteed to exist in Lemma~\ref{lem:projection}. We then have that
+\begin{align}
+\langle A^*, M' \rangle &= \frac{\langle A^*, M \rangle + |\sC|\p{1 - \sum_{j \in \sD} u_j + \sum_{j \not\in \sD} u_j}}{\|M'\|_* / \frac{2}{\epsilon\alpha}} \\
+ &> \frac{\langle A^*, M \rangle + \epsilon|\sC|}{1 + \frac{\epsilon\alpha}{2}\sqrt{|\sC|/|\sD|}} \\
+ &= 
+\end{align}
+%$\|R\|_* = \sqrt{\frac{|\sC|}{|\sC|}}$ 
+%that $\|R\|_* = \sqrt{\frac{|\sC|}{|\sD|}}$ while $\langle A, R \rangle = |\sC|$. Our goal 
+%is to show that, unless $\|R_{\sC}-M_{\sC}\|_1 \leq \epsilon \alpha n$, $M$ cannot possibly 
+%be the optimum of \eqref{eq:optimization-noiseless}. 
+
+\end{proof}
+
+\section{Bounding $M^* - \M$}
+To start, we need some notation. Let $r(M)$ be the matrix such that
+\[ r(M)_{ij} = \left\{ \begin{array}{ccl} \frac{1+A_{ij}}{2} & : & i \in \sC \\ M_{ij} & : & \text{else} \end{array} \right.. \]
+In other words, $r$ replaces the rows in $\sC$ with their target values, and 
+leaves the rest of the rows fixed.
+
+We also define the projection matrix $P$ as
+\[ P_{i,i'} = \left\{ \begin{array}{ccl} \frac{1}{|\sC|} & : & i, i' \in \sC \\ \delta_{i,i'} & : \text{else} \end{array} \right.. \]
+Thus $PM = M$ if and only if all rows in $\sC$ are equal to each other.
+
+We have the following technical lemma which controls 
+the subgradient of the objective function:
+\begin{lemma}
+\label{lem:subgradient}
+Let $f(M) = \langle A, M \rangle - \mu \|M\|_*$, and let 
+$M_0$ satisfy $M_0 = PM_0$. Then,
+there is a $Z_0 \in \partial f(M_0)$ such that, when restricted 
+to the rows lying in $\sC$, we have
+\[ (Z_0)_{\sC} = \bi \cdot \left[(2\bi_{\sD}-\bi)^{\top} - \mu v_0^{\top}\right], \]
+for some vector $v_0$ of norm at most $\frac{1}{\sqrt{|\sC|}}$.
+\end{lemma}
+
+We are now ready to show that $\M$ is close to $M^*$. Indeed, we already 
+have that $f(\M) \geq f(M^*) - \epsilon \alpha^2 N^2$. Letting $M' \eqdef r(\M)$ 
+and re-arranging, we have
+\begin{align}
+\epsilon \alpha^2 N^2 &\geq f(M^*) - f(\M) \\
+ &\geq f(M') - f(\M) \\
+ &\geq \langle M' - \M, Z \rangle,
+\end{align}
+where $Z \in \partial f(M')$.
+By Lemma~\ref{lem:subgradient}, we know that $Z_{\sC} = \bi \cdot \left[(2\bi_{\sD}-\bi)^{\top} - \mu v^{\top}\right]$, 
+where $\|v\|_2^2 \leq \frac{1}{|\sC|}$. Since $M'_{ij} = 1$ if $j \in \sD$ and $0$ if $j \not\in D$, and 
+$\M_{ij} \in [0,1]$, we have $Z_{ij}(M'_{ij}-\M_{ij}) = |M'_{ij} - \M_{ij}| - \mu v_j(\M'_{ij}-\M_{ij})$, and hence
+\begin{align}
+\langle M' - \M, Z \rangle &= \sum_{i \in \sC, j} |M'_{ij} - \M_{ij}| - \mu v_j (M'_{ij} - \M_{ij}) \\
+ &\geq \|M'-\M|_1 - \mu \sqrt{|\sC|\sum_j v_j^2}\sqrt{\sum_{i \in \sC, j} (M_{ij}'-\M_{ij})^2} \\
+ &\geq \|M'-\M\|_1 - \mu \|M' - \M\|_F.
+\end{align}
+In all, we see that $\|M'-\M\|_1 \leq \epsilon \alpha^2 N^2 + \mu \|M' - \M\|_F \leq 2\epsilon \alpha^2 N^2$.
+Since $M' = r(\M)$, this implies the final inequality:
+\begin{theorem}
+\label{thm:bound}
+If $\M$ is the solution to \eqref{eq:optimization-noisy} with $\mu$ and $d$ as defined 
+above, then
+\[ \sum_{i \in \sC, j} \left|\M_{ij} - \frac{1+A_{ij}}{2}\right| \leq 2\epsilon\alpha^2N^2. \]
+In particular, we have
+\[ \#\{i \in \sC, j \in [n] \mid \sign(2M_{ij}-1) \neq A_{ij}\} \leq 4\epsilon\alpha^2N^2. \]
+\end{theorem}
+Let $\round(x) = 1$ if $x \geq \frac{1}{2}$ and $0$ if $x < \frac{1}{2}$. An immediate consequence 
+of Theorem~\ref{thm:bound} is that 
+there are at least $\frac{1}{2}\alpha N$ rows $i$ for which $\round(A_{ij}) = \bI[j \in \sD]$ 
+for all but $8\epsilon \alpha N$ values of $j$. Therefore, if we sample a row randomly, with 
+reasonable (i.e., $\frac{\alpha}{2}$) probability that row will tell us all but an $\oo(\epsilon)$ fraction of $\sD$.
+
+\section{Proofs of Lemmas}
+\label{sec:lemma-proofs}
+
+\begin{proof}[Proof of Lemma~\ref{lem:concentration}]
+We have that 
+\[ \sup_{\|M\|_* \leq n^2/\mu} |\langle A-\A, M \rangle| = \frac{n^2}{\mu}\|A-\A\|_{\op}. \]
+Therefore, our task is to bound $\|A-\A\|_{\op}$. For this, we make use of \citet{bandeira2014sharp}, 
+Theorem 3.1 \& Corollary 3.2, which states that, for any $\epsilon > 0$, we have that
+\begin{align}
+\bE[\|A-\A\|_{\op}] &\leq (1+\epsilon)\sqrt{\frac{n}{d}}\left\{2\sqrt{n} + 5\sqrt{\frac{\log(n)}{\log(1+\epsilon)}}\right\} \\
+ &= \oo\p{\frac{n}{\sqrt{d}}}.
+\end{align}
+Then, a form of Talagrand's inequality implies that
+$\bP[\|A-\A\|_{\op} \geq \bE[\|A-\A\|_{\op}] + t] \leq \exp\p{-c\p{td/n}^2}$. 
+Taking $t = (n/d)\sqrt{c^{-1}\log(1/\delta)}$, we have that 
+\[ \bP\left[\|A-\A\|_{\op} \geq \oo\p{\frac{n}{\sqrt{d}} + \frac{n}{d}\sqrt{\log(1/\delta)}}\right] \leq \delta, \]
+as was to be shown.
+\end{proof}
+
+\begin{proof}[Proof of Lemma~\ref{lem:subgradient}]
+First, we can take $Z_0 = A - \mu UV^{\top}$, where $U \Lambda V^{\top}$ is the singular 
+value decomposition of $M_0$. By assumption, $M_0 = PM_0$, and so $U = PU$ as well. Therefore, 
+we do have $(UV^{\top})_{\sC} = \bi v_0^{\top}$ for some vector $v_0$. It remains to show that 
+$\|v_0\|_2^2 \leq \frac{1}{|\sC|}$.
+
+To see this, observe that $(UV^{\top})_{\sC}$ is a projection of $UV^{\top}$, and hence 
+has operator norm at most $1$. However, because $(UV)^{\top}_{\sC}$ has rank $1$, its 
+operator norm and Frobenius norm are equal, and so $\|\bi v_0^{\top}\|_F^2 \leq 1$. 
+But $\|\bi v_0^{\top}\|_F^2 = \|\bi\|_2^2\|v_0\|_2^2 = |\sC|\|v_0\|_2^2$, from which 
+the result follows.
+\end{proof}
+
+\bibliographystyle{plainnat}
+\bibliography{references}
+
+\end{document}
