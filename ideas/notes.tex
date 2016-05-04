@@ -28,7 +28,8 @@
 \usepackage{breqn}
 \DeclareMathOperator{\Tr}{Tr}
 \newcommand{\M}{\tilde{M}}
-\newcommand{\A}{\hat{A}}
+\newcommand{\Mm}{M^*}
+\newcommand{\A}{\tilde{A}}
 \newcommand{\Aa}{A^*}
 \DeclareMathOperator{\poly}{poly}
 \newcommand{\sD}{\mathcal{D}}
@@ -36,10 +37,11 @@
 \newcommand{\bi}{\mathbbm{1}}
 \newcommand{\todo}[1]{{\color{red} [TODO: {#1}]}}
 \DeclareMathOperator{\round}{round}
+\DeclareMathOperator{\rank}{rank}
 
 \begin{document}
 
-\section{Achieving $\poly(\alpha^{-1})$ degree}
+\section{Assumptions and Main Result}
 We assume we have a matrix $A \in \bR^{n \times n}$ and sets 
 $\sC \subset [n], \sD \subset [n]$ satisfying the following:
 \begin{itemize}
@@ -58,155 +60,147 @@ Let $\M$ be the solution to the following program:
 \text{maximize } &\langle \A, M \rangle, \\
 \notag \text{ subject to } &M_{ij} \geq 0 \,\,\, \forall i,j, \\
 \notag  &\sum_j M_{ij} \leq 1 \,\,\, \forall i, \\
-\notag  &\max_j M_{ij} \leq \frac{1}{|\sD|}\sum_j M_{ij} \,\,\, \forall i.
+\notag  &\max_j M_{ij} \leq \frac{1}{|\sD|}\sum_j M_{ij} \,\,\, \forall i, \\
 \notag  &\|M\|_* \leq \frac{2}{\alpha\epsilon},
 \end{align}
 where $\|\cdot\|_*$ denotes the nuclear norm.
 
 Let $\Aa$ be the matrix that is equal to $A$ for the rows in $\sC$, 
-and equal to $\A$ for the rows outside of $\sC$. We will then let $M^*$ 
-be the solution to the ``corrected'' program
+and equal to $\A$ for the rows outside of $\sC$. Also let $R_{ij} = \frac{1}{|\sD|}\bI[i \in \sC, j \in \sD]$. 
+Ideally, we would like to have $M_{\sC} = R_{\sC}$, i.e. $M$ matches $R$ on 
+all the rows of $\sC$. In light of this, 
+we will let $\Mm$ be the solution to the ``corrected'' program, which 
+we don't have access to (since it involves knowledge of $A$ and $\sC$), but which 
+will be useful for analysis purposes:
 \begin{align}
 \label{eq:optimization-noiseless}
 \text{maximize } &\langle \Aa, M \rangle, \\
-\notag \text{ subject to } &M_{ij} \geq 0 \,\,\, \forall i,j, \\
+\notag \text{ subject to } &M_{\sC} = R_{\sC}, \\
+\notag  &M_{ij} \geq 0 \,\,\, \forall i,j, \\
 \notag  &\sum_j M_{ij} \leq 1 \,\,\, \forall i, \\
-\notag  &\max_j M_{ij} \leq \frac{1}{|\sD|}\sum_j M_{ij} \,\,\, \forall i.
-\notag  &\|M\|_* \leq \frac{2}{\alpha\epsilon},
+\notag  &\max_j M_{ij} \leq \frac{1}{|\sD|}\sum_j M_{ij} \,\,\, \forall i, \\
+\notag  &\|M\|_* \leq \frac{2}{\alpha\epsilon}.
 \end{align}
 
-Our goal is to show that $\M$ is ``close'' to giving correct information about $\sC$ and $\sD$. 
-We state this in the following theorem:
+Our goal is to show that $\M$ is ``close'' to $M^*$ and hence gives information about $\sC$ and $\sD$. 
+We formalize this in the following theorem:
 \begin{theorem}
+\label{thm:main}
 Let $d = \Omega\p{\frac{1}{\alpha^3\epsilon^4}}$. Then, for at least 
-half of the rows $i \in \sC$, it is the case that $\|\M_i - \pi^*\|_1 \leq \epsilon$, 
-where $\pi^*_j = \frac{1}{|\sD|}$ if $j \in \sD$, and $0$ otherwise.
+half of the rows $i \in \sC$, it is the case that 
+$1 - \sum_{j \in \sD} \M_{ij} + \sum_{j \not\in \sD} \M_{ij} \leq \epsilon$.
+%$\|\M_i - \pi^*\|_1 \leq \epsilon$, 
+%where $\pi^*_j = \frac{1}{|\sD|}$ if $j \in \sD$, and $0$ otherwise.
 \end{theorem}
-
-We will proceed in $2$ steps:
-\begin{enumerate}
-\item Show that $\M$ is an approximate optimizer of \eqref{eq:optimization-noiseless}.
-%\item Characterize the optimum $M^*$ of \eqref{eq:optimization-noiseless}, and show that it identifies $\sC$ and $\sD$.
-\item Show that any approximate optimizer of \eqref{eq:optimization-noiseless} is close to identifying $\sC$ and $\sD$.
-\end{enumerate}
-All relevant lemmas are proved in Section~\ref{sec:lemma-proofs}.
-
-\section{Analyzing $\M$}
-For the first step, let $\sP$ denote the constraint set in (\ref{eq:optimization-noisy},\ref{eq:optimization-noiseless}).
-We start with the following two inequalities:
-\begin{lemma}
-\label{lem:concentration-1}
-For all $M \in \sP$, we have
-\[ |\langle \A-\Aa, M \rangle| \leq \frac{2n}{\epsilon\sqrt{\alpha d}}. \]
-\end{lemma}
-With this lemma, we can show that $\M$ approximately optimizes \eqref{eq:optimization-noiseless}. 
-We will take $d = \Omega\p{\frac{1}{\alpha^3\epsilon^4}}$, which yields (for appropriate constants)
-\begin{align}
-|\langle \A-\Aa, M \rangle| &\leq \frac{1}{2}\epsilon \alpha n.
-\end{align}
-We then have
-\begin{align}
-\langle \Aa, \M \rangle  &\geq \langle \A, \M \rangle - \frac{1}{2}\epsilon \alpha n \\
- &\geq \langle \A, M^* \rangle - \frac{1}{2} \epsilon \alpha n \\
- &\geq \langle \Aa, M^* \rangle - \epsilon \alpha n.
-\end{align}
-It follows that $\M$ is within $\epsilon \alpha n$ of the optimum of \eqref{eq:optimization-noiseless}, 
-at least in terms of objective value.
-
-\section{Analyzing $M^*$}
-We next show that the optimal $M^*$ identifies $\sC$ and $\sD$ in the following sense:
+The two key components in proving Theorem~\ref{thm:main} are 
+given as propositions below.
+We use $\sP$ to denote the constraint set in (\ref{eq:optimization-noisy}).
 \begin{proposition}
-\label{prop:M-bound}
-Suppose that $\M \in \sP$ satisfies $\langle \Aa, \M \rangle \geq \langle \Aa, M^* \rangle - \epsilon \alpha n$. 
-Then, we have 
+\label{prop:objective-bound}
+Let $d = \Omega\p{\frac{1}{\alpha^3\epsilon^4}}$. For $\M$ and $\Mm$ as defined above, we have
 \begin{equation}
-\label{eq:M-bound}
-\frac{1}{|\sC|} \sum_{i \in \sC} \p{1 + \sum_{j \not\in \sD} \M_{ij} - \sum_{j \in \sD} \M_{ij}} \leq (1+\sqrt{2})\epsilon.
+\label{eq:objective-bound}
+\langle \Aa, \M \rangle \geq \langle \Aa, \Mm \rangle - \epsilon \alpha n.
 \end{equation}
 \end{proposition}
-\begin{proof}
-Let $R$ be the matrix such that $R_{ij} = \frac{1}{|\sD|}\bI[i \in \sC, j \in \sD]$. 
-We define the matrix $M'$ by maximizing $\langle \Aa, M \rangle$ subject to $M \in \sP$ and 
-$M_{\sC} = R_{\sC}$. Note that 
-$\langle \Aa, M \rangle \geq \langle \Aa, M^* \rangle - \epsilon \alpha n \geq \langle \Aa, M' \rangle - \epsilon \alpha n$. 
-We will use this to show that $\M$ and $M'$ are ``close''.
-
-At a high level, our strategy is the following --- since $M'$ is already optimized 
-on the rows outside of $\sC$, we should (``morally'', though not in actuality) have 
-$\langle \Aa_{\neg \sC}, M'_{\neg \sC} \rangle \geq \langle \Aa_{\neg \sC}, \M_{\neg \sC} \rangle$. 
-
-Looking back at the rows inside $\sC$, we must therefore have 
-$\langle \Aa_{\sC}, \M_{\sC} \rangle \geq \langle \Aa_{\sC}, M'_{\sC} \rangle - \epsilon \alpha n$, 
-which is exactly the statement \eqref{eq:M-bound} with $(1+\sqrt{2})\epsilon$ replaced by $\epsilon$.
-
-The problem with the above argument is that, even though $M'$ is optimized on $\neg \sC$, the rows in 
-$\sC$ and $\neg \sC$ are coupled by the joint constraint $\|M\|_* \leq \frac{2}{\epsilon\alpha}$. We 
-will decouple the rows by taking the subgradient of the Lagrangian at $M'$, which yields an upper bound 
-for our optimization problem. By doing this we obtain:
-
 \begin{proposition}
 \label{prop:subgradient}
-Let $\mu = \epsilon \alpha n$. There exists a matrix $Z$ such that
+Let $d = \Omega\p{\frac{1}{\alpha^2\epsilon^2}}$. Then there exists a matrix $Z$ with 
+$\rank(Z) = 1$, $\|Z\|_F \leq \epsilon \alpha n$ such that
 \begin{align}
-\langle \Aa_{\sC} - \mu Z_{\sC}, M'_{\sC} - M_{\sC} \rangle &\leq f(M') - f(M) \text{ for all $M \in \sP$}.
-%\langle \Aa_{\sC}, \M \rangle + \epsilon\alpha n + \mu \langle Z_{\sC}, M'_{\sC}-\M_{\sC} \rangle
+\langle \Aa_{\sC} - Z_{\sC}, \Mm_{\sC} - M_{\sC} \rangle &\leq \langle \Aa, \Mm - M \rangle \text{ for all $M \in \sP$}.
 \end{align}
-Moreover, $Z_{\sC} = \bi_{\sC}v^{\top}$ for a vector $v$ of norm at most $\frac{1}{\sqrt{|\sC|}}$.
 \end{proposition}
+In the remainder of this section, we will prove Theorem~\ref{thm:main} from Propositions~\ref{prop:objective-bound} 
+and \ref{prop:subgradient}. The propositions themselves will be proved in later sections.
 
-To finish the proof of Proposition~\ref{prop:M-bound}, plug in $\M$ for $M$ in Proposition~\ref{prop:subgradient}. 
-This yields
+\begin{proof}[Proof of Theorem~\ref{thm:main}]
+We start by plugging in $\M$ for $M$ in Proposition~\ref{prop:subgradient}. This yields
 \begin{align}
-\langle \Aa_{\sC} + \mu Z_{\sC}, M'_{\sC} - \M_{\sC} \rangle &\leq f(M') - f(\M) \\
- &\leq f(M^*) - f(\M) \\
- &\leq \epsilon \alpha n.
+\langle \Aa_{\sC} + \mu Z_{\sC}, \Mm_{\sC} - \M_{\sC} \rangle &\leq \langle \Aa, \Mm - \M \rangle \\
+ &\leq \epsilon \alpha n
 \end{align}
+by Proposition~\ref{prop:objective-bound}.
 On the other hand, we have 
 \begin{align}
-|\langle \mu Z_{\sC}, M'_{\sC} - \M_{\sC} \rangle| &\leq \mu\|Z_{\sC}\|_F\|M'_{\sC} - \M_{\sC}\|_F \\
- &\leq \mu \sqrt{\sum_{i \in \sC} \|M'_i - \M_i\|_2^2} \\
- &= \mu \sqrt{\sum_{i \in \sC} \|M'_i - \M_i\|_{\infty}\|M'_i - \M_i\|_1} \\
- &= \mu \sqrt{\frac{\|M'-\M\|_1}{\alpha n}}.
+|\langle Z_{\sC}, \Mm_{\sC} - \M_{\sC} \rangle| &\leq \|Z_{\sC}\|_F\|\Mm_{\sC} - \M_{\sC}\|_F \\
+ &\leq \epsilon\alpha n \sqrt{\sum_{i \in \sC} \|\Mm_i - \M_i\|_2^2} \\
+ &\leq \epsilon\alpha n \sqrt{\sum_{i \in \sC} \|\Mm_i - \M_i\|_{\infty}\|\Mm_i - \M_i\|_1} \\
+ &= \epsilon\alpha n \sqrt{\frac{\|\Mm-\M\|_1}{\alpha n}} \\
+ &= \epsilon\alpha n \sqrt{2}.
 \end{align}
 Putting these together, we obtain
 \begin{align}
-\langle \Aa_{\sC}, M'_{\sC} - \M_{\sC} \rangle &\leq \epsilon \alpha n + \frac{\mu}{\sqrt{\alpha n}} \sqrt{\|M' - \M\|_1} \\
- &\leq \epsilon \alpha n + \sqrt{2}\mu.
+\langle \Aa_{\sC}, \Mm_{\sC} - \M_{\sC} \rangle &\leq (1+\sqrt{2})\epsilon \alpha n.
 \end{align}
-Using the fact that $\langle \Aa_{\sC}, M'_{\sC} - \M_{\sC} = \sum_{i \in \sC}\p{\sum_{j \in \sD} (1 - \M_{ij}) + \sum_{j \not\in \sD} \M_{ij}}$, 
-together with $\mu \leq \epsilon\alpha n$, we obtain 
-\[ \frac{1}{|\sC|}\sum_{i \in \sC}\p{1 + \sum_{j\not\in \sD} \M_{ij} + \sum_{j \in \sD} \M_{ij}} \leq (1+\sqrt{2})\epsilon, \]
-as was to be shown.
+Expanding $\langle \Aa_{\sC}, \Mm_{\sC} - \M_{\sC} \rangle$ as 
+$\sum_{i \in \sC}\p{\sum_{j \in \sD} (1 - \M_{ij}) + \sum_{j \not\in \sD} \M_{ij}}$, 
+we obtain 
+\[ \frac{1}{|\sC|}\sum_{i \in \sC}\p{1 + \sum_{j\not\in \sD} \M_{ij} + \sum_{j \in \sD} \M_{ij}} \leq (1+\sqrt{2})\epsilon. \]
+The desired result then follows by Markov's inequality (after scaling down $\epsilon$ by a factor of $2\p{1+\sqrt{2}}$).
 \end{proof}
 
+\section{Proof of Proposition~\ref{prop:objective-bound}}
+By H\"{o}older's inequality, we have 
+\begin{align}
+|\langle \A-\Aa, M \rangle| &\leq \|\A-\Aa\|_{\op}\|M\|_* \\
+ &= \|\A_{\sC}-A_{\sC}\|_{\op}\|M\|_* \\
+ &\leq n\sqrt{\frac{\alpha}{d}} \cdot \frac{2}{\epsilon\alpha} \\
+ &= \frac{2n}{\epsilon\sqrt{\alpha d}}.
+\end{align}
+Since $d = \Omega\p{\frac{1}{\alpha^3\epsilon^4}}$, we thus have (for appropriate constants)
+\begin{align}
+|\langle \A-\Aa, M \rangle| &\leq \frac{1}{2}\epsilon \alpha n.
+\end{align}
+We then see that
+\begin{align}
+\langle \Aa, \M \rangle  &\geq \langle \A, \M \rangle - \frac{1}{2}\epsilon \alpha n \\
+ &\geq \langle \A, \Mm \rangle - \frac{1}{2} \epsilon \alpha n \text{ (since $\M$ is optimal for $\A$)} \\
+ &\geq \langle \Aa, \Mm \rangle - \epsilon \alpha n,
+\end{align}
+which completes the proof. $\qed$
+
+%%% TODO --- this is good intuition, should include it somewhere
+%%% At a high level, our strategy is the following --- since $\Mm$ is already optimized 
+%%% on the rows outside of $\sC$, we should (``morally'', though not in actuality) have 
+%%% $\langle \Aa_{\neg \sC}, \Mm_{\neg \sC} \rangle \geq \langle \Aa_{\neg \sC}, \M_{\neg \sC} \rangle$. 
+%%% 
+%%% Looking back at the rows inside $\sC$, we must therefore have 
+%%% $\langle \Aa_{\sC}, \M_{\sC} \rangle \geq \langle \Aa_{\sC}, \Mm_{\sC} \rangle - \epsilon \alpha n$, 
+%%% which is exactly the statement \eqref{eq:M-bound} with $(1+\sqrt{2})\epsilon$ replaced by $\epsilon$.
+%%% 
+%%% The problem with the above argument is that, even though $\Mm$ is optimized on $\neg \sC$, the rows in 
+%%% $\sC$ and $\neg \sC$ are coupled by the joint constraint $\|M\|_* \leq \frac{2}{\epsilon\alpha}$. We 
+%%% will decouple the rows by taking the subgradient of the Lagrangian at $\Mm$, which yields an upper bound 
+%%% for our optimization problem. By doing this we obtain:
 
 \subsection{Proof of Proposition~\ref{prop:subgradient}}
 Let $\sP_0$ be the set $\sP$ where we have removed the nuclear norm constraint. By Lagrangian duality we 
 know that there is some $\mu$ such that maximizing $\langle \Aa, M \rangle$ over $\sP \cap \{M_{\sC} = R_{\sC}\}$ 
-is equivalent to maximizing $\langle \Aa, M \rangle + \mu\p{\frac{2}{\epsilon\alpha} - \|M\|_*}$ over 
+is equivalent to maximizing $f_\mu(M) \eqdef \langle \Aa, M \rangle + \mu\p{\frac{2}{\epsilon\alpha} - \|M\|_*}$ over 
 $\sP_0 \cap \{M_{\sC} = R_{\sC}\}$. 
 
 We start by bounding $\mu$. We claim that $\mu \leq \epsilon \alpha n$. 
-To show this, note that we have
-\begin{lemma}
-\label{lem:concentration-2}
-For all $M \in \sP$, we have
-\[ |\langle \Aa, M\rangle| \leq n + \frac{2n}{\epsilon\alpha\sqrt{d}}. \]
-\end{lemma}
-Since $d = \Omega\p{\frac{1}{\alpha^3\epsilon^4}} = \Omega\p{\frac{1}{\alpha^2\epsilon^2}}$, 
-we have $\frac{n}{\epsilon\alpha\sqrt{d}} \leq n$. Therefore, Lemma~\ref{lem:concentration-2} 
-implies that $|\langle \Aa, M \rangle| \leq 2n$.
+To show this, first note that for any $M \in \sP_0$, we have 
+\begin{align}
+\langle \Aa, M \rangle &\leq \langle A, M \rangle + \langle \Aa - A, M \rangle \\
+ &\leq n + \|\Aa - A\|_{\op}\|M\|_* \\
+ &\leq n + \frac{n}{\sqrt{d}}\|M\|_* \\
+ &\leq n + \frac{\epsilon\alpha n}{2}\|M\|_*,
+\end{align}
+where in the last step we used the assumption $d = \Omega\p{\frac{1}{\alpha^2\epsilon^2}}$.
 
 Now, suppose that we take $\mu_0 = \epsilon \alpha n$ and optimize $\langle \Aa, M \rangle - \mu_0\|M\|_*$ over 
-$\sP_0 \cap \{M_{\sC} = R_{\sC}\}$. Since $\langle \Aa, M \rangle \leq n + \frac{\epsilon \alpha n}{2}\|M\|_*$, 
+$\sP_0 \cap \{M_{\sC} = R_{\sC}\}$. Since $\langle \Aa, M \rangle - \mu_0\|M\|_* \leq n - \frac{\epsilon \alpha n}{2}\|M\|_*$, 
 any $M$ with $\|M\|_* > \frac{2}{\epsilon\alpha}$ cannot possibly be optimal, since the solution $M = 0$ would 
-be better. This implies that $\mu \leq \mu_0 = \epsilon \alpha n$, as claimed.
+be better. Hence, $\mu_0$ is a large enough Lagrange multiplier to ensure that $M \in \sP$, and so 
+$\mu \leq \mu_0 = \epsilon \alpha n$, as claimed.
 
-We next characterize the subgradient of $\|M\|_*$ at $M = M'$.
+We next characterize the subgradient of $f_{\mu}$ at $M = \Mm$.
 Define the projection matrix $P$ as
 \[ P_{i,i'} = \left\{ \begin{array}{ccl} \frac{1}{|\sC|} & : & i, i' \in \sC \\ \delta_{i,i'} & : \text{else} \end{array} \right.. \]
 Thus $PM = M$ if and only if all rows in $\sC$ are equal to each other.
-In particular, $PM' = M'$.
+In particular, $P\Mm = \Mm$.
 \begin{lemma}
 \label{lem:subgradient}
 Let $f(M) = \|M\|_*$, and let 
@@ -223,20 +217,20 @@ First note that
 \langle \Aa, \M \rangle + \mu \p{\frac{2}{\epsilon\alpha} - \|\M\|_*} 
  &\geq \langle \Aa, \M \rangle \\
  &\geq \langle \Aa, M^* \rangle - \epsilon\alpha n \\
- &\geq \langle \Aa, M' \rangle - \epsilon\alpha n \\
- &= \langle \Aa, M' \rangle + \mu\p{\frac{2}{\epsilon} - \|M'\|_*} - \epsilon\alpha n.
+ &\geq \langle \Aa, \Mm \rangle - \epsilon\alpha n \\
+ &= \langle \Aa, \Mm \rangle + \mu\p{\frac{2}{\epsilon} - \|\Mm\|_*} - \epsilon\alpha n.
 \end{align}
 Continuing, we have
 \begin{align}
-\langle \Aa, M' \rangle &\leq \langle \Aa, \M \rangle + \epsilon\alpha n + \mu\p{\|M'\|_* - \|\M\|_*} \\
- &\leq \langle A^*, \M \rangle + \epsilon \alpha n + \mu \langle Z, M' - \M \rangle,
+\langle \Aa, \Mm \rangle &\leq \langle \Aa, \M \rangle + \epsilon\alpha n + \mu\p{\|\Mm\|_* - \|\M\|_*} \\
+ &\leq \langle A^*, \M \rangle + \epsilon \alpha n + \mu \langle Z, \Mm - \M \rangle,
 \end{align}
-where $Z \in \partial f(M')$ is as guranteed in Lemma~\ref{lem:subgradient}. Next, let 
-$\M'$ be the matrix with $\M'_{\sC} = R_{\sC}$ and $\M'_{\neg \sC} = \M_{\neg \sC}$. Then, 
-$\M' \in \sP_0 \cap \{M_{\sC} = R_{\sC}\}$, and hence 
-$\langle \Aa, \M' \rangle - \mu \|\M'\|_* \leq \langle \Aa, M' \rangle - \mu \|M'\|_*$. 
-We thus have that $\langle \Aa - \mu Z, \M' - M' \rangle \leq 0$ \todo{check this, make sure it works out}. Since 
-$\langle X, \M' - M' \rangle = \langle X_{\neg C}, \M_{\neg C} - M'_{\neg \sC} \rangle$ for 
+where $Z \in \partial f(\Mm)$ is as guranteed in Lemma~\ref{lem:subgradient}. Next, let 
+$\Mm$ be the matrix with $\Mm_{\sC} = R_{\sC}$ and $\Mm_{\neg \sC} = \M_{\neg \sC}$. Then, 
+$\Mm \in \sP_0 \cap \{M_{\sC} = R_{\sC}\}$, and hence 
+$\langle \Aa, \Mm \rangle - \mu \|\Mm\|_* \leq \langle \Aa, \Mm \rangle - \mu \|\Mm\|_*$. 
+We thus have that $\langle \Aa - \mu Z, \Mm - \Mm \rangle \leq 0$ \todo{check this, make sure it works out}. Since 
+$\langle X, \Mm - \Mm \rangle = \langle X_{\neg C}, \M_{\neg C} - \Mm_{\neg \sC} \rangle$ for 
 any matrix $X$, the proposition follows.
 \end{proof}
 \section{Bounding $M^* - \M$}
@@ -248,24 +242,24 @@ leaves the rest of the rows fixed.
 
 
 We are now ready to show that $\M$ is close to $M^*$. Indeed, we already 
-have that $f(\M) \geq f(M^*) - \epsilon \alpha^2 N^2$. Letting $M' \eqdef r(\M)$ 
+have that $f(\M) \geq f(M^*) - \epsilon \alpha^2 N^2$. Letting $\Mm \eqdef r(\M)$ 
 and re-arranging, we have
 \begin{align}
 \epsilon \alpha^2 N^2 &\geq f(M^*) - f(\M) \\
- &\geq f(M') - f(\M) \\
- &\geq \langle M' - \M, Z \rangle,
+ &\geq f(\Mm) - f(\M) \\
+ &\geq \langle \Mm - \M, Z \rangle,
 \end{align}
-where $Z \in \partial f(M')$.
+where $Z \in \partial f(\Mm)$.
 By Lemma~\ref{lem:subgradient}, we know that $Z_{\sC} = \bi \cdot \left[(2\bi_{\sD}-\bi)^{\top} - \mu v^{\top}\right]$, 
-where $\|v\|_2^2 \leq \frac{1}{|\sC|}$. Since $M'_{ij} = 1$ if $j \in \sD$ and $0$ if $j \not\in D$, and 
-$\M_{ij} \in [0,1]$, we have $Z_{ij}(M'_{ij}-\M_{ij}) = |M'_{ij} - \M_{ij}| - \mu v_j(\M'_{ij}-\M_{ij})$, and hence
+where $\|v\|_2^2 \leq \frac{1}{|\sC|}$. Since $\Mm_{ij} = 1$ if $j \in \sD$ and $0$ if $j \not\in D$, and 
+$\M_{ij} \in [0,1]$, we have $Z_{ij}(\Mm_{ij}-\M_{ij}) = |\Mm_{ij} - \M_{ij}| - \mu v_j(\Mm_{ij}-\M_{ij})$, and hence
 \begin{align}
-\langle M' - \M, Z \rangle &= \sum_{i \in \sC, j} |M'_{ij} - \M_{ij}| - \mu v_j (M'_{ij} - \M_{ij}) \\
- &\geq \|M'-\M|_1 - \mu \sqrt{|\sC|\sum_j v_j^2}\sqrt{\sum_{i \in \sC, j} (M_{ij}'-\M_{ij})^2} \\
- &\geq \|M'-\M\|_1 - \mu \|M' - \M\|_F.
+\langle \Mm - \M, Z \rangle &= \sum_{i \in \sC, j} |\Mm_{ij} - \M_{ij}| - \mu v_j (\Mm_{ij} - \M_{ij}) \\
+ &\geq \|\Mm-\M|_1 - \mu \sqrt{|\sC|\sum_j v_j^2}\sqrt{\sum_{i \in \sC, j} (M_{ij}'-\M_{ij})^2} \\
+ &\geq \|\Mm-\M\|_1 - \mu \|\Mm - \M\|_F.
 \end{align}
-In all, we see that $\|M'-\M\|_1 \leq \epsilon \alpha^2 N^2 + \mu \|M' - \M\|_F \leq 2\epsilon \alpha^2 N^2$.
-Since $M' = r(\M)$, this implies the final inequality:
+In all, we see that $\|\Mm-\M\|_1 \leq \epsilon \alpha^2 N^2 + \mu \|\Mm - \M\|_F \leq 2\epsilon \alpha^2 N^2$.
+Since $\Mm = r(\M)$, this implies the final inequality:
 \begin{theorem}
 \label{thm:bound}
 If $\M$ is the solution to \eqref{eq:optimization-noisy} with $\mu$ and $d$ as defined 
