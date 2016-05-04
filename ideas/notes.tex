@@ -158,7 +158,7 @@ We then see that
  &\geq \langle \A, \Mm \rangle - \frac{1}{2} \epsilon \alpha n \text{ (since $\M$ is optimal for $\A$)} \\
  &\geq \langle \Aa, \Mm \rangle - \epsilon \alpha n,
 \end{align}
-which completes the proof. $\qed$
+which completes the proof.
 
 %%% TODO --- this is good intuition, should include it somewhere
 %%% At a high level, our strategy is the following --- since $\Mm$ is already optimized 
@@ -174,7 +174,7 @@ which completes the proof. $\qed$
 %%% will decouple the rows by taking the subgradient of the Lagrangian at $\Mm$, which yields an upper bound 
 %%% for our optimization problem. By doing this we obtain:
 
-\subsection{Proof of Proposition~\ref{prop:subgradient}}
+\section{Proof of Proposition~\ref{prop:subgradient}}
 Let $\sP_0$ be the set $\sP$ where we have removed the nuclear norm constraint. By Lagrangian duality we 
 know that there is some $\mu$ such that maximizing $\langle \Aa, M \rangle$ over $\sP \cap \{M_{\sC} = R_{\sC}\}$ 
 is equivalent to maximizing $f_\mu(M) \eqdef \langle \Aa, M \rangle + \mu\p{\frac{2}{\epsilon\alpha} - \|M\|_*}$ over 
@@ -200,113 +200,53 @@ We next characterize the subgradient of $f_{\mu}$ at $M = \Mm$.
 Define the projection matrix $P$ as
 \[ P_{i,i'} = \left\{ \begin{array}{ccl} \frac{1}{|\sC|} & : & i, i' \in \sC \\ \delta_{i,i'} & : \text{else} \end{array} \right.. \]
 Thus $PM = M$ if and only if all rows in $\sC$ are equal to each other.
-In particular, $P\Mm = \Mm$.
+In particular, $PM = M$ whenever $M_{\sC} = R_{\sC}$. Now, since $\Mm$ is the maximum 
+of $f_{\mu}(M)$ over all $M \in \sP_0 \cap \{M_{\sC} = R_{\sC}\}$, there must be some 
+$B \in \partial f(\Mm)$ such that $\langle B, M - \Mm \rangle \leq 0$ for all $M \in \sP_0 \cap \{M_{\sC} = R_{\sC}\}$.
 \begin{lemma}
 \label{lem:subgradient}
-Let $f(M) = \|M\|_*$, and let 
-$M_0$ satisfy $M_0 = PM_0$. Then,
-there is a $Z_0 \in \partial f(M_0)$ such that, when restricted 
-to the rows lying in $\sC$, we have $(Z_0)_{\sC} = \bi_{\sC} v_0^{\top}$
-for some vector $v_0$ of norm at most $\frac{1}{\sqrt{|\sC|}}$.
+Suppose that $B \in \partial f(\Mm)$ satisfies $\langle B, M - \Mm \rangle \leq 0$ for all $M \in \sP_0 \cap \{M_{\sC} = R_{\sC}\}$. 
+Then, $PB$ satisfies the same property, and lies in $\partial f(\Mm)$ as well.
 \end{lemma}
-This implies the following:
-
-\begin{proof}[Proof of Proposition~\ref{prop:subgradient}]
-First note that
+We can further note (by differentiating $f_{\mu}$) that 
+$B = \Aa - \mu Z_0$, where $\|Z_0\|_{\op} \leq 1$. Hence 
+$PB = P\Aa - \mu PZ_0 = \Aa - \mu PZ_0$. Let $r(M)$ denote the 
+matrix where $M_{\sC}$ is replaced with $R_{\sC}$ (so $r(M) \in \sP_0 \cap \{R_{\sC} = M_{\sC}\}$ 
+whenever $M \in \sP_0$). The rest of the proof is basically algebra:
 \begin{align}
-\langle \Aa, \M \rangle + \mu \p{\frac{2}{\epsilon\alpha} - \|\M\|_*} 
- &\geq \langle \Aa, \M \rangle \\
- &\geq \langle \Aa, M^* \rangle - \epsilon\alpha n \\
- &\geq \langle \Aa, \Mm \rangle - \epsilon\alpha n \\
- &= \langle \Aa, \Mm \rangle + \mu\p{\frac{2}{\epsilon} - \|\Mm\|_*} - \epsilon\alpha n.
+\langle \Aa, M - \Mm \rangle &\stackrel{(i)}{\leq} f_{\mu}(M) - f_{\mu}(\Mm) \\
+ &\stackrel{(ii)}{\leq} \langle \Aa - \mu PZ_0, M - \Mm \rangle \\
+ &= \langle \Aa - \mu PZ_0, M - r(M) \rangle + \langle \Aa - \mu PZ_0, r(M) - \Mm \rangle \\
+ &\stackrel{(iii)}{\leq} \langle \Aa - \mu PZ_0, M - r(M) \rangle \\
+ &= \langle \Aa_{\sC} - \mu (PZ_0)_{\sC}, M_{\sC} - r(M)_{\sC} \rangle \\
+ &= \langle \Aa_{\sC} - \mu (PZ_0)_{\sC}, M_{\sC} - \Mm_{\sC} \rangle,
 \end{align}
-Continuing, we have
+where (i) is by complementary slackness (either $\mu = 0$ or $\|\Mm\|_* = \frac{2}{\alpha\epsilon}$); 
+(ii) is concavity of $f_{\mu}$, and the fact that $\Aa - \mu PZ_0$ is a subgradient; and 
+(iii) is the property from Lemma~\ref{lem:subgradient} ($\langle \Aa - \mu PZ_0, r(M) - \Mm \rangle \leq 0$ since 
+$r(M) \in \sP_0$).
+
+To finish, we will take $Z = \mu (PZ_0)_{\sC}$. We note that
+$\|Z\|_{\op} = \|\mu (PZ)_{\sC}\|_{\op} \leq \mu \|PZ\|_{\op} \leq \mu \|Z\|_{\op} \leq \mu$.
+Moreover, $Z$ has rank $1$ and so $\|Z\|_F = \|Z\|_{\op} \leq \mu \leq \epsilon\alpha n$, as was to be shown.
+
+\subsection{Proof of Lemma~\ref{lem:subgradient}}
+First, since $PM = M$ for all $M \in \sP_0 \cap \{M_{\sC} = R_{\sC}\}$, and $PM^* = M^*$, 
+it is clear that $\langle PB, M-M^* \rangle = \langle B, P(M-M^*) \rangle = \langle B, M-M^* \rangle \leq 0$, 
+so we need only show that $PB$ is still a subgradient of $f_{\mu}$. Indeed, we have (for any $M$)
 \begin{align}
-\langle \Aa, \Mm \rangle &\leq \langle \Aa, \M \rangle + \epsilon\alpha n + \mu\p{\|\Mm\|_* - \|\M\|_*} \\
- &\leq \langle A^*, \M \rangle + \epsilon \alpha n + \mu \langle Z, \Mm - \M \rangle,
+\langle PB, M-M^* \rangle &= \langle B, PM - M^* \rangle \\
+ &\stackrel{(i)}{\geq} f_{\mu}(PM) - f_{\mu}(M^*) \\
+ &= \langle A^*, PM \rangle - \mu \|PM\|_* - f_{\mu}(M^*) \\
+ &= \langle A^*, M \rangle - \mu \|PM\|_* - f_{\mu}(M^*) \\
+ &\stackrel{(ii)}{\geq} \langle A^*, M \rangle - \mu \|M\|_* - f_{\mu}(M^*) \\
+ &= f_{\mu}(M) - f_{\mu}(M^*),
 \end{align}
-where $Z \in \partial f(\Mm)$ is as guranteed in Lemma~\ref{lem:subgradient}. Next, let 
-$\Mm$ be the matrix with $\Mm_{\sC} = R_{\sC}$ and $\Mm_{\neg \sC} = \M_{\neg \sC}$. Then, 
-$\Mm \in \sP_0 \cap \{M_{\sC} = R_{\sC}\}$, and hence 
-$\langle \Aa, \Mm \rangle - \mu \|\Mm\|_* \leq \langle \Aa, \Mm \rangle - \mu \|\Mm\|_*$. 
-We thus have that $\langle \Aa - \mu Z, \Mm - \Mm \rangle \leq 0$ \todo{check this, make sure it works out}. Since 
-$\langle X, \Mm - \Mm \rangle = \langle X_{\neg C}, \M_{\neg C} - \Mm_{\neg \sC} \rangle$ for 
-any matrix $X$, the proposition follows.
-\end{proof}
-\section{Bounding $M^* - \M$}
-To start, we need some notation. Let $r(M)$ be the matrix such that
-\[ r(M)_{ij} = \left\{ \begin{array}{ccl} \frac{1+A_{ij}}{2} & : & i \in \sC \\ M_{ij} & : & \text{else} \end{array} \right.. \]
-In other words, $r$ replaces the rows in $\sC$ with their target values, and 
-leaves the rest of the rows fixed.
+where (i) is because $B \in \partial f_{\mu}(M^*)$, and (ii) is because projecting 
+decreases the nuclear norm. Since the inequality $\langle PB, M-M^* \rangle \geq f_{\mu}(M) - f_{\mu}(M^*)$ 
+is the defining property of $\partial f_{\mu}(M^*)$, the proof is complete.
 
-
-
-We are now ready to show that $\M$ is close to $M^*$. Indeed, we already 
-have that $f(\M) \geq f(M^*) - \epsilon \alpha^2 N^2$. Letting $\Mm \eqdef r(\M)$ 
-and re-arranging, we have
-\begin{align}
-\epsilon \alpha^2 N^2 &\geq f(M^*) - f(\M) \\
- &\geq f(\Mm) - f(\M) \\
- &\geq \langle \Mm - \M, Z \rangle,
-\end{align}
-where $Z \in \partial f(\Mm)$.
-By Lemma~\ref{lem:subgradient}, we know that $Z_{\sC} = \bi \cdot \left[(2\bi_{\sD}-\bi)^{\top} - \mu v^{\top}\right]$, 
-where $\|v\|_2^2 \leq \frac{1}{|\sC|}$. Since $\Mm_{ij} = 1$ if $j \in \sD$ and $0$ if $j \not\in D$, and 
-$\M_{ij} \in [0,1]$, we have $Z_{ij}(\Mm_{ij}-\M_{ij}) = |\Mm_{ij} - \M_{ij}| - \mu v_j(\Mm_{ij}-\M_{ij})$, and hence
-\begin{align}
-\langle \Mm - \M, Z \rangle &= \sum_{i \in \sC, j} |\Mm_{ij} - \M_{ij}| - \mu v_j (\Mm_{ij} - \M_{ij}) \\
- &\geq \|\Mm-\M|_1 - \mu \sqrt{|\sC|\sum_j v_j^2}\sqrt{\sum_{i \in \sC, j} (M_{ij}'-\M_{ij})^2} \\
- &\geq \|\Mm-\M\|_1 - \mu \|\Mm - \M\|_F.
-\end{align}
-In all, we see that $\|\Mm-\M\|_1 \leq \epsilon \alpha^2 N^2 + \mu \|\Mm - \M\|_F \leq 2\epsilon \alpha^2 N^2$.
-Since $\Mm = r(\M)$, this implies the final inequality:
-\begin{theorem}
-\label{thm:bound}
-If $\M$ is the solution to \eqref{eq:optimization-noisy} with $\mu$ and $d$ as defined 
-above, then
-\[ \sum_{i \in \sC, j} \left|\M_{ij} - \frac{1+A_{ij}}{2}\right| \leq 2\epsilon\alpha^2N^2. \]
-In particular, we have
-\[ \#\{i \in \sC, j \in [n] \mid \sign(2M_{ij}-1) \neq A_{ij}\} \leq 4\epsilon\alpha^2N^2. \]
-\end{theorem}
-Let $\round(x) = 1$ if $x \geq \frac{1}{2}$ and $0$ if $x < \frac{1}{2}$. An immediate consequence 
-of Theorem~\ref{thm:bound} is that 
-there are at least $\frac{1}{2}\alpha N$ rows $i$ for which $\round(A_{ij}) = \bI[j \in \sD]$ 
-for all but $8\epsilon \alpha N$ values of $j$. Therefore, if we sample a row randomly, with 
-reasonable (i.e., $\frac{\alpha}{2}$) probability that row will tell us all but an $\oo(\epsilon)$ fraction of $\sD$.
-
-\section{Proofs of Lemmas}
-\label{sec:lemma-proofs}
-
-\begin{proof}[Proof of Lemma~\ref{lem:concentration}]
-We have that 
-\[ \sup_{\|M\|_* \leq n^2/\mu} |\langle A-\A, M \rangle| = \frac{n^2}{\mu}\|A-\A\|_{\op}. \]
-Therefore, our task is to bound $\|A-\A\|_{\op}$. For this, we make use of \citet{bandeira2014sharp}, 
-Theorem 3.1 \& Corollary 3.2, which states that, for any $\epsilon > 0$, we have that
-\begin{align}
-\bE[\|A-\A\|_{\op}] &\leq (1+\epsilon)\sqrt{\frac{n}{d}}\left\{2\sqrt{n} + 5\sqrt{\frac{\log(n)}{\log(1+\epsilon)}}\right\} \\
- &= \oo\p{\frac{n}{\sqrt{d}}}.
-\end{align}
-Then, a form of Talagrand's inequality implies that
-$\bP[\|A-\A\|_{\op} \geq \bE[\|A-\A\|_{\op}] + t] \leq \exp\p{-c\p{td/n}^2}$. 
-Taking $t = (n/d)\sqrt{c^{-1}\log(1/\delta)}$, we have that 
-\[ \bP\left[\|A-\A\|_{\op} \geq \oo\p{\frac{n}{\sqrt{d}} + \frac{n}{d}\sqrt{\log(1/\delta)}}\right] \leq \delta, \]
-as was to be shown.
-\end{proof}
-
-\begin{proof}[Proof of Lemma~\ref{lem:subgradient}]
-First, we can take $Z_0 = A - \mu UV^{\top}$, where $U \Lambda V^{\top}$ is the singular 
-value decomposition of $M_0$. By assumption, $M_0 = PM_0$, and so $U = PU$ as well. Therefore, 
-we do have $(UV^{\top})_{\sC} = \bi v_0^{\top}$ for some vector $v_0$. It remains to show that 
-$\|v_0\|_2^2 \leq \frac{1}{|\sC|}$.
-
-To see this, observe that $(UV^{\top})_{\sC}$ is a projection of $UV^{\top}$, and hence 
-has operator norm at most $1$. However, because $(UV)^{\top}_{\sC}$ has rank $1$, its 
-operator norm and Frobenius norm are equal, and so $\|\bi v_0^{\top}\|_F^2 \leq 1$. 
-But $\|\bi v_0^{\top}\|_F^2 = \|\bi\|_2^2\|v_0\|_2^2 = |\sC|\|v_0\|_2^2$, from which 
-the result follows.
-\end{proof}
-
-\bibliographystyle{plainnat}
-\bibliography{references}
+%\bibliographystyle{plainnat}
+%\bibliography{references}
 
 \end{document}
