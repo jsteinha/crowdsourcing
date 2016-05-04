@@ -55,53 +55,65 @@ each row in expectation).
 \todo{the moment assumption doesn't actually hold in this case, and making it hold costs us a $\sqrt{\log(n)}$ factor}
 
 Let $\M$ be the solution to the following program:
-\begin{equation}
+\begin{align}
 \label{eq:optimization-noisy}
-\text{maximize } \langle \A, M \rangle - \mu \|M\|_*, \text{ subject to } 0 \leq M_{ij} \leq 1 \, \forall i,j,
-\end{equation}
+\text{maximize } &\langle \A, M \rangle, \\
+\notag \text{ subject to } &M_{ij} \geq 0 \,\,\, \forall i,j, \\
+\notag  &\sum_j M_{ij} \leq 1 \,\,\, \forall i, \\
+\notag  &\|M\|_* \leq \frac{1}{\alpha},
+\end{align}
 where $\|\cdot\|_*$ denotes the nuclear norm.
 
 We also let $M^*$ be the solution to the ``noiseless'' program
-\begin{equation}
+\begin{align}
 \label{eq:optimization-noiseless}
-\text{maximize } \langle A, M \rangle - \mu \|M\|_*, \text{ subject to } 0 \leq M_{ij} \leq 1 \, \forall i,j,
-\end{equation}
+\text{maximize } &\langle A, M \rangle, \\
+\notag \text{ subject to } &M_{ij} \geq 0 \,\,\, \forall i,j, \\
+\notag  &\sum_j M_{ij} \leq 1 \,\,\, \forall i, \\
+\notag  &\|M\|_* \leq \frac{1}{\alpha},
+\end{align}
 
 Our goal is to show that $\M$ is ``close'' to giving correct information about $\sC$ and $\sD$. 
-We will proceed in $2$ steps:
+We will proceed in $3$ steps:
 \begin{enumerate}
 \item Show that $\M$ is an approximate optimizer of \eqref{eq:optimization-noiseless}.
-%\item Characterize the optimum $M^*$ of \eqref{eq:optimization-noiseless}.
-\item Show that any approximate optimizer of \eqref{eq:optimization-noiseless} is close to identifying $\sD$ for most rows in $\sC$.
+\item Characterize the optimum $M^*$ of \eqref{eq:optimization-noiseless}, and show that it identifies $\sC$ and $\sD$.
+\item Show that any approximate optimizer of \eqref{eq:optimization-noiseless} is close to $M^*$.
 \end{enumerate}
 All relevant lemmas are proved in Section~\ref{sec:lemma-proofs}.
 
-For the first step, we begin with the trivial observation that 
-$\max\p{\|\M\|_*, \|M^*\|_*} \leq \frac{n^2}{\mu}$, since otherwise $M = 0$ 
-would have a larger objective value for (\ref{eq:optimization-noisy},\ref{eq:optimization-noiseless}). 
-We then have the following inequality:
+\section{Analyzing $\M$}
+For the first step, let $\sP$ denote the constraint set in (\ref{eq:optimization-noisy},\ref{eq:optimization-noiseless}). 
+We start with the following inequality:
 \begin{lemma}
 \label{lem:concentration}
 With probability $1-\delta$, we have
-\[ |\langle A-\A, M \rangle| \leq \oo\p{\frac{n^3}{\mu}\p{\frac{1}{\sqrt{d}} + \frac{1}{d}\sqrt{\log(1/\delta)}}} \]
-for all $M$ satisfying $\|M\|_* \leq \frac{n^2}{\mu}$.
+\[ |\langle A-\A, M \rangle| \leq \oo\p{\frac{n}{\alpha}\p{\frac{1}{\sqrt{d}} + \frac{1}{d}\sqrt{\log(1/\delta)}}} \]
+for all $M \in \sP$.
 \end{lemma}
-\paragraph{Analyzing $\M$.} Now, we are ready to show that 
-$\M$ approximately optimizes \eqref{eq:optimization-noiseless}. 
-We will take $\mu = \epsilon \alpha n$, 
-$d = \Omega\p{\max\p{\frac{1}{(\alpha^3\epsilon^2)^2}, \frac{\sqrt{\log(1/\delta)}}{\alpha^3\epsilon^2}}}$, which yields (for appropriate constants)
+With this lemma, we can show that $\M$ approximately optimizes \eqref{eq:optimization-noiseless}. 
+We will take $d = \Omega\p{\max\p{\frac{1}{(\alpha^2\epsilon)^2}, \frac{\sqrt{\log(1/\delta)}}{\alpha^2\epsilon}}}$, which yields (for appropriate constants)
 \begin{align}
-|\langle A-\A, M \rangle| &\leq \frac{1}{2}\epsilon \alpha^2 N^2.
+|\langle A-\A, M \rangle| &\leq \frac{1}{2}\epsilon \alpha n.
 \end{align}
 We then have
 \begin{align}
-\langle A, \M \rangle - \mu \|\M\|_* &\geq \langle \A, \M \rangle - \mu \|\M\|_* - \frac{1}{2}\epsilon \alpha^2 N^2 \\
- &\geq \langle \A, M^* \rangle - \mu \|M^*\|_* - \frac{1}{2} \epsilon \alpha^2 N^2 \\
- &\geq \langle A, M^* \rangle - \mu \|M^*\|_* - \epsilon \alpha^2 N^2.
+\langle A, \M \rangle  &\geq \langle \A, \M \rangle - \frac{1}{2}\epsilon \alpha n \\
+ &\geq \langle \A, M^* \rangle - \frac{1}{2} \epsilon \alpha n \\
+ &\geq \langle A, M^* \rangle - \epsilon \alpha n.
 \end{align}
-It follows that $\M$ is within $\epsilon \alpha^2N^2$ of the optimum of \eqref{eq:optimization-noiseless}, 
+It follows that $\M$ is within $\epsilon \alpha n$ of the optimum of \eqref{eq:optimization-noiseless}, 
 at least in terms of objective value.
 
+\section{Analyzing $M^*$}
+We next show that the optimal $M^*$ identifies $\sC$ and $\sD$ in the following sense:
+\begin{proposition}
+For all $i \in \sC$, we have $M^*_{ij} = \frac{1}{|\sD|}\bI[j \in \sD]$.
+\end{proposition}
+\begin{proof}
+Let $R$ be the matrix such that $R_{ij} = \frac{1}{|\sD|}\bI[i \in \sC, j \in \sD]$. Note 
+that $\|R\|_* = \sqrt{\frac{|\sC|}{|\sD|}}$ while $\langle A, R \rangle = |\sC|$. 
+\end{proof}
 
 \section{Bounding $M^* - \M$}
 To start, we need some notation. Let $r(M)$ be the matrix such that
