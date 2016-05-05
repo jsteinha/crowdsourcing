@@ -1,0 +1,341 @@
+\documentclass[anon,12pt]{colt2016} % Anonymized submission
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage{hyperref,url}
+\usepackage{import,subfiles}
+%\usepackage{tabularx}
+%\usepackage{algorithm}
+%\usepackage{algorithmic}
+\usepackage{multirow}
+\input{latex-defs.tex}
+\usepackage{breqn}
+
+% \documentclass{colt2016} % Include author names
+
+% The following packages will be automatically loaded:
+% amsmath, amssymb, natbib, graphicx, url, algorithm2e
+
+\title[Avoiding Imposters and Delinquents: Adversarial Crowdsourcing without Ground Truth Labels]{Adversarial Crowdsourcing without Ground Truth Labels}
+\usepackage{times}
+ % Use \Name{Author Name} to specify the name.
+ % If the surname contains spaces, enclose the surname
+ % in braces, e.g. \Name{John {Smith Jones}} similarly
+ % if the name has a "von" part, e.g \Name{Jane {de Winter}}.
+ % If the first letter in the forenames is a diacritic
+ % enclose the diacritic in braces, e.g. \Name{{\'E}louise Smith}
+
+ % Two authors with the same address
+  % \coltauthor{\Name{Author Name1} \Email{abc@sample.com}\and
+  %  \Name{Author Name2} \Email{xyz@sample.com}\\
+  %  \addr Address}
+
+ % Three or more authors with the same address:
+ % \coltauthor{\Name{Author Name1} \Email{an1@sample.com}\\
+ %  \Name{Author Name2} \Email{an2@sample.com}\\
+ %  \Name{Author Name3} \Email{an3@sample.com}\\
+ %  \addr Address}
+
+
+ % Authors with different addresses:
+ \coltauthor{\Name{Jacob Steinhardt} \Email{jsteinhardt@cs.stanford.edu}\\
+ \addr 353 Serra Mall, Stanford, CA 94305
+ \AND
+ \Name{Gregory Valiant} \Email{valiant@stanford.edu}\\
+ \addr 353 Serra Mall, Stanford, CA 94305
+ }
+
+\newcommand{\goodfrac}{\alpha}
+\newcommand{\quality}{\epsilon}
+\newcommand{\failprob}{\delta}
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+We consider a crowdsourcing model in which a fraction $\goodfrac$ of 
+workers can both generate high-quality data and correctly evaluate 
+the quality of data, while the remaining workers may behave arbitrarily and possibly adversarially. 
+There is no ground truth on which to evaluate worker quality, but the 
+manager of the experiment can manually evaluate the quality of 
+a given datum. Given $N$ workers, we wish to curate a dataset 
+of size $\Omega(\goodfrac N)$, with at most an $\quality$ fraction of low-quality 
+data.  Perhaps surprisingly, we show that this is possible with an amount of work required of the manager, and each worker, that does not scale with $N$; specifically, we show that such a dataset can be curated with
+$\oo\p{\frac{\log(1/\quality\goodfrac)}{\goodfrac\min\p{\quality,\goodfrac}}}$ 
+work per worker, and $\oo\p{\frac{\log(1/\goodfrac)}{\goodfrac\quality}}$ 
+work for the manager.
+\end{abstract}
+
+\begin{keywords}
+\end{keywords}
+
+\section{Introduction}
+Consider the following hypothetical scenario: it is the night before the COLT deadline, and you are a professor with an army of $N$ graduate students, each of whom has written a paper.  Some fraction, $\goodfrac$, of these students are ``highly competent''---namely, they both produce good papers, as well as accurately review papers (i.e. determine whether a given paper is good or not).  The remaining $1-\goodfrac$ fraction of your graduate students behave arbitrarily---some of them might still produce great papers, and some might still give accurate reviews.  Of course, as the professor, you are also capable of accurately reviewing papers.  You want to choose a large subset of the students' papers to submit to COLT, at least $\goodfrac N$, and you want to ensure that most of the submitted papers are good.  The question is how to choose this subset while minimizing the amount of work you do (i.e. the number of papers you review), as well as minimizing the number of papers you assign each student to review.  Perhaps surprisingly, we show that even with an arbitrarily large number of students, $N$, and even if the non-competent students are all colluding to get their papers submitted, you can successfully accomplish this task while performing only a constant amount of work yourself (dependent on the fraction of ``highly competent'' students), and having each student only do a constant amount of work!
+
+Perhaps more realistically, this setup also models the challenge of crowdsourcing the creation of a large dataset.  While several mechanisms have been proposed for ensuring high-quality 
+data in crowdsourcing applications, most assume that there are ``gold labels'' 
+that can be used to assess worker performance during the course of 
+data collection; moreover, most mechanisms make assumptions about the behavior 
+of workers (e.g. that workers that behaved well before will continue to 
+behave well, or that they act to maximize a certain payoff function).
+In this work we are motivated by cases where there is not necessarily a single 
+correct answer --- for instance, tasks such as ``draw an interesting picture'' 
+or ``translate this sentence'', where different workers could generate different 
+equally good answers. In this case, the only way to evaluate quality is 
+via evaluation by other workers or by the manager of the experiment. 
+Moreover, since workers will often try to game the system (in order to 
+get paid), we would like to model non-cooperative workers as adversarial. 
+To formalize both of these desiderata, we adopt the following model:
+\begin{itemize}
+\item There is a manager who controls the experiment, and 
+      $N$ workers.
+\item The goal is to generate data $X \in \sX$ that satisfies 
+      a binary criterion $f : \sX \to \{0,1\}$ (e.g. $f$ could answer
+      ``Is $X$ an interesting picture?'' or ``Is $X$ a correct translation?'').
+      The manager knows $f$.
+\item Each worker $i$ can generate a datum $X_i$, as well as evaluate 
+      data with a function $f_i : \sX \to \{0,1\}$.
+\item There are $\goodfrac N$ \emph{cooperative} workers, such that 
+      $f_i = f$, $f(X_i) = 1$, and the worker 
+      wants to be helpful (they will cooperate with the protocol 
+      specified by the manager).
+\item The rest of the workers could be adversarial; they could generate 
+      good data or bad data, and could output correct or incorrect evaluations. 
+      The adversaries could have knowledge of who they are.
+\end{itemize}
+Our goal is to curate as much good data as possible, while letting very little 
+bad data in. In particular, after allowing both the manager and the workers to 
+make some number of evaluations, we wish to output a dataset 
+$\{X_{i_1}, \ldots, X_{i_m}\}$ such that 
+\begin{equation}
+\label{eq:target}
+m = \Omega(\delta N)\text{ and }\frac{1}{m} \sum_{j=1}^m f(X_{i_j}) \geq 1-\quality.
+\end{equation}
+Note that $m = \Omega(\delta N)$ asks that our dataset be within a constant 
+factor of the number of good workers. We could imagine adding this constant 
+factor as another parameter in the problem, but avoid this for now, for simplicity.
+
+Our main result is the following:
+\begin{theorem}
+\label{thm:main}
+For any $\failprob$, there is a protocol that requires 
+$\oo\p{\frac{\log(1/\quality\goodfrac\failprob)}{\goodfrac\min\p{\quality,\goodfrac}}}$ evaluations from each worker, and $\oo\p{\frac{\log(1/\goodfrac\failprob)}{\goodfrac\quality}}$ evaluations from the manager, such that the output dataset 
+satisfies \eqref{eq:target} with probability $1-\failprob$ and with $m \geq \frac{1}{2}\delta N$.
+\end{theorem}
+The proof is not long, though we note that na\"ive approaches will 
+accrue additional $\polylog(N)$ factors on the number of evaluations per worker.
+We think the main aspects of interest in this work are the setting itself 
+(which seems natural but relatively un-studied) as well as the ability for the manager and each worker to perform an amount of work that is independent of $N$.
+
+The idea behind the protocol is the following: after each worker generates their 
+datum, we will have each worker evaluate some number $d$ of other workers at 
+random, and draw directed edges labeled with either $+$ (for a positive 
+evaluation) or $-$ (for a negative evaluation). This is illustrated in 
+Figure~\ref{fig:illustration}. We then search for a large \emph{community}, 
+defined as a set of workers where all edges within the community are positive. 
+We can show that any such community must have either high average quality 
+or very few cooperative workers:
+\begin{lemma}
+\label{lem:community}
+Suppose that each worker evaluates $d = C \cdot \frac{\log(1/\quality\goodfrac\failprob)}{\goodfrac\min(\quality,\goodfrac)}$ 
+other workers for some universal constant $C$. 
+Then, with probability $1-\delta$, every 
+community must have either at most $\frac{1}{2}\quality\goodfrac N$ bad data 
+or at most $\frac{1}{4}\goodfrac^2 N$ cooperative workers.
+\end{lemma}
+We also note that the good workers themselves form a community of size 
+$\goodfrac N$. Therefore, we can perform the following algorithm, which loops 
+until eventually accepting.
+\begin{itemize}
+\item Find a community of size at least $\frac{1}{2}\goodfrac N$.
+\item Sample roughly $\frac{1}{\quality}$ data at random from the community, 
+      and check whether the average quality is at least $1-\quality$.
+\item If it is, use all the data in the community as the dataset, 
+      otherwise remove all members of the community from consideration 
+      and continue.
+\end{itemize}
+This algorithm is given more formally as Algorithm~\ref{alg:algorithm}. 
+Lemma~\ref{lem:community} ensures that, whenever we remove a community 
+from consideration, we are removing only a small number of cooperative 
+workers; in particular, we remove at most $\frac{1}{4}\goodfrac^2 N$ cooperative 
+workers each time, while Algorithm~\ref{alg:algorithm} can loop at most 
+$\frac{2}{\goodfrac}$ times before terminating; therefore, at most 
+$\frac{1}{2}\goodfrac^2 N$ cooperative workers are removed in total, and 
+so we will always have enough cooperative workers left to form a large 
+community with good data.
+
+However, the manager can do even better by \emph{adaptively} choosing 
+which community to sample. In particular, we can modify Algorithm~\ref{alg:algorithm} 
+to return $\frac{2}{\delta}$ candidate communities, such that at least one 
+has quality $1-\epsilon/2$. Then, we perform a multi-armed bandit 
+algorithm to identify at least one high-quality community. Formally, 
+we have the following:
+\begin{lemma}
+\label{lem:bandit}
+Suppose that we are given $k$ datasets of size at least 
+$S$, at least one of which has average 
+quality at least $1-\quality/2$. Then after evaluating 
+$\oo\p{\max\p{k,\frac{1}{\quality}}\log\p{\frac{k}{\failprob}}}$ 
+data, we can output a dataset that with probability $1-\failprob$ 
+has quality at least $1-\quality$.
+\end{lemma}
+Using Lemma~\ref{lem:bandit}, we obtain the better evaluation 
+complexity given in Theorem~\ref{thm:main}.
+
+The remainder of this paper is devoted to proving Theorem~\ref{thm:main}. 
+In Section~\ref{sec:community-proof}, we prove Lemma~\ref{lem:community}; 
+in Section~\ref{sec:bandit-proof}, we prove Lemma~\ref{lem:bandit}; 
+and in Section~\ref{sec:main-proof}, we combine these lemmas
+to prove Theorem~\ref{thm:main}.
+
+\section{Proof of Lemma~\ref{lem:community}}
+\label{sec:community-proof}
+
+\newcommand{\nbad}{n_{\mathrm{bad}}}
+\newcommand{\ncoop}{n_{\mathrm{coop}}}
+
+Our proof proceeds via a union bound. 
+We will show that for every set of $\nbad = \frac{1}{2}\quality\goodfrac N$ 
+workers with bad data, and every set of $\ncoop = \frac{1}{4}\goodfrac^2 N$ 
+cooperative workers, the probability that there are no negative 
+edges is very low --- in particular, low enough that we can 
+union bound over all $\binom{N}{\nbad}\binom{N}{\ncoop}$ possible 
+pairs of such sets. To show this, note that any edge from a cooperative 
+worker to a bad worker would be negative, so we have no negative edges only 
+if there are no edges at all. If each worker evaluates $d$ other workers at 
+random, then the probability that this occurs is 
+\begin{equation}
+\label{eq:single-prob}
+(1-\nbad/N)^{d\ncoop} \leq \exp\p{-\frac{1}{8}d\quality\goodfrac^3N}. 
+\end{equation}
+The number of sets we need to union bound over is 
+\begin{align}\binom{N}{\nbad}\binom{N}{\ncoop} &\leq \p{\frac{2e}{\quality\goodfrac}}^{\nbad}\p{\frac{4e}{\goodfrac^2}}^{\ncoop} \\
+\label{eq:union} &\leq \exp\p{\frac{1}{2}\quality\goodfrac N\log\p{\frac{2e}{\quality\goodfrac}} + \frac{1}{4}\goodfrac^2 N\log\p{\frac{4e}{\goodfrac^2}}}.
+\end{align}
+We need the product of \eqref{eq:single-prob} with \eqref{eq:union} to be at most 
+$\failprob$, which is satisfied if 
+$d \geq 8\p{\frac{\log\p{\frac{2e}{\quality\goodfrac}}}{\goodfrac\min\p{\quality,\goodfrac}} + \frac{\log\p{\frac{1}{\failprob}}}{\quality\goodfrac^3N}}$,
+thus proving Lemma~\ref{lem:community}.
+
+\section{Proof of Lemma~\ref{lem:bandit}}
+\label{sec:bandit-proof}
+
+We reduce to a $k$-armed bandit setting as follows: 
+label the sets $S_1, \ldots, S_k$, and let $\epsilon_i$ 
+be the fraction of bad examples in set $S_i$. 
+In round $t$, we choose the set $S_{i_t}$ and incur 
+a cost $c^{(t)} = \epsilon_{i_t}$. Note that we cannot observe 
+$c^{(t)}$, but we can obtain an unbiased estimate 
+$\hat{c}^{(t)}$ by sampling $X$ uniformly from $S_{i_t}$ 
+and setting $\hat{c}^{(t)} = 1 - f(X)$. This turns out to be 
+enough to implement a low-regret algorithm.
+
+Formally, the \emph{average regret} of this problem after 
+$T$ iterations is defined to be
+\begin{equation}
+\label{eq:regret-def}
+\Regret \eqdef \frac{1}{T}\sum_{t=1}^T c^{(t)} - \min_{i=1}^k \epsilon_i.
+\end{equation}
+Note that $\min_{i=1}^k \epsilon_i \leq \frac{\epsilon}{2}$ by assumption. 
+Therefore, if the average regret is also at most $\frac{\epsilon}{4}$, 
+then $i_1, \ldots, i_T$ satisfy $\frac{1}{T}\sum_{i=1}^T \epsilon_{i_T} \leq \frac{3\epsilon}{4}$. 
+In other words, we obtain a collection of $T$ datasets 
+$\{S_{i_1}, \ldots, S_{i_T}\}$ (possibly with repeats) 
+such that the quality is at least $1-\frac{3\epsilon}{4}$ \emph{on average} over the $S_{i_t}$.
+
+We now provide an algorithm that has low regret with high probability:
+
+\begin{algorithm}
+\SetAlgoLined
+%\KwData{this text}
+%\KwResult{how to write algorithm with \LaTeX2e }
+%initialization\;
+$z_i^{(1)} \gets 0$ for $i = 1, \ldots, k$.
+
+\For{$t = 1,\ldots,T$}{
+Sample $i_t$ with probability $\pi_i^{(t)} \propto \exp(z_i^{(t)})$.\\
+Sample $X_t \sim \Uniform(S_{i_t})$.\\
+\eIf{$f(X_t) = 1$}{
+Incur cost $\hat{c}^{(t)} = 0$.\\
+$z^{(t+1)} \gets z^{(t)}$.
+}{
+Incur cost $\hat{c}^{(t)} = 1$.\\
+$z_{i_t}^{(t+1)} \gets z_{i_t}^{(t)} - \frac{1}{\pi_{i_t}^{(t)}}$, and \\
+$z_{i}^{(t+1)} \gets z_i^{(t)}$ for all $i \neq i_t$.
+}
+}
+\caption{Multi-armed bandit algorithm}
+\label{alg:bandit}
+\end{algorithm}
+
+Algorithm~\ref{alg:bandit} satisfies the following regret bound, 
+which follows from a standard analysis (see Section~\ref{sec:regret-proof} 
+for a proof):
+\begin{lemma}
+\label{lem:regret}
+With probablity $1-\failprob$, the regret of 
+Algorithm~\ref{alg:bandit} is at most TBD.
+\end{lemma}
+
+The final challenge is to use the $S_{i_t}$ to construct a single dataset $S$. 
+We do this as follows: first, let $w_i = \frac{1}{T}\#\{t \mid i_t = i\}$. Then, 
+take a random subset $\tilde{S}_i$ of $S_i$ of size $\lceil w_im\rceil$. Finally, let 
+$S = \bigsqcup_{i=1}^k \tilde{S}_i$. Since $\sum_{i=1}^k w_i = 1$, we clearly have $|S| \geq m$. 
+Furthermore, the expected amount of bad data in $S$ is 
+$\sum_{i=1}^k \lceil w_im\rceil \epsilon_i \leq k + \sum_{i=1}^k w_i\epsilon_i m 
+\leq k + \frac{3\epsilon}{4} m \leq \frac{7\epsilon}{8} m$. We also have the following:
+\begin{lemma}
+The amount $b_i$ of bad data in $\tilde{S}_i$ satisfies 
+$\bP[b_i - \epsilon_i|\tilde{S}_i| \geq t|\tilde{S}_i|] \leq \exp\p{-2t^2|\tilde{S}_i|}$.
+is sub-Gaussian with 
+$\bE\left[\exp\p{\lambda\p{b_i - \bE[b_i]}} \leq \exp\p{\frac{1}{2}\lambda^2}\right]$.
+\end{lemma}
+
+\section{Proof of Theorem~\ref{thm:main}}
+\label{sec:main-proof}
+
+\acks{}
+
+\bibliography{refdb/all.bib}
+
+\appendix
+
+\section{Proof of Lemma~\ref{lem:regret}}
+\label{sec:regret-proof}
+First, we will reduce to an online learning as follows: 
+for each $i$ and $t$, we sample 
+$X_{t,i} \sim \Uniform(S_{i})$, and obtain a loss 
+vector $z_{t} \in \bR^k$ with $z_{t,i} = f(X_{t,i})$. 
+We then select $i_t$, observe $X_t = X_{t,i_t}$, and obtain loss 
+$z_{t,i_t}$.
+We will primarily be interested in bounding the following regret:
+\newcommand{\Regi}{\Regret'}
+\newcommand{\Regii}{\Regret''}
+\begin{equation}
+\Regi = \sum_{t=1}^T \langle \pi^{(t)}, z^{(t)} \rangle - \min_{i=1}^k \sum_{t=1}^T z_i^{(t)}.
+\end{equation}
+We also let $\hat{z}^{(t)}$ be the vector that is $\frac{z_i^{(t)}}{\pi_i^{(t)}}$ 
+at coordinate $i = i_t$, and $0$ elsewhere. We are also interested in the 
+regret under $\hat{z}$:
+\begin{equation}
+\Regii = \sum_{t=1}^T \langle \pi^{(t)}, \hat{z}^{(t)} \rangle - \min_{i=1}^k \sum_{t=1}^T \hat{z}_i^{(t)}.
+\end{equation}
+First, note that Algorithm~\ref{alg:bandit} is playing the normalized
+exponentiated gradient algorithm on the loss vector $\hat{z}^{(t)}$. Therefore, 
+we have:
+\begin{lemma}[Theorem 2.22 of \citet{shalev2011online}]
+The quantity $\Regii$ satisfies
+\begin{equation}
+\Regii \leq \frac{\log(k)}{\eta} + \eta \sum_{t=1}^T \sum_{i=1}^k \pi_{i}^{(t)} \p{\hat{z}_{i}^{(t)}}^2
+\end{equation}
+\end{lemma}
+By definition of $\hat{z}$, we then have
+\begin{equation}
+\Regii \leq \frac{\log(k)}{\eta} + \eta \sum_{t=1}^T \frac{\Big(z_{i_t}^{(t)}\Big)^2}{\pi_{i_t}^{(t)}}.
+\end{equation}
+Taking expectations, we have
+\begin{align}
+\bE[\Regii] &\leq \frac{\log(k)}{\eta} + \eta \sum_{t=1}^T \sum_{i=1}^T \bE[\p{z_i^{(t)}}^2] \\
+ &= \frac{\log(k)}{\eta} + \eta \sum_{t=1}^T \sum_{i=1}^k \epsilon_i \\
+ &\leq \frac{\log(k)}{\eta} + \eta kT
+\end{align}
+
+\end{document}
