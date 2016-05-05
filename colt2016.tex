@@ -14,7 +14,7 @@
 % The following packages will be automatically loaded:
 % amsmath, amssymb, natbib, graphicx, url, algorithm2e
 
-\title[Adversarial Crowdsourcing without Ground Truth Labels]{Adversarial Crowdsourcing without Ground Truth Labels}
+\title[Avoiding Imposters and Delinquents: Adversarial Crowdsourcing without Ground Truth Labels]{Adversarial Crowdsourcing without Ground Truth Labels}
 \usepackage{times}
  % Use \Name{Author Name} to specify the name.
  % If the surname contains spaces, enclose the surname
@@ -53,12 +53,12 @@
 \begin{abstract}
 We consider a crowdsourcing model in which a fraction $\goodfrac$ of 
 workers can both generate high-quality data and correctly evaluate 
-the quality of data, while the remaining workers may behave adversarially. 
+the quality of data, while the remaining workers may behave arbitrarily and possibly adversarially. 
 There is no ground truth on which to evaluate worker quality, but the 
 manager of the experiment can manually evaluate the quality of 
-a datum after the fact. Given $N$ workers, we wish to curate a dataset 
+a given datum. Given $N$ workers, we wish to curate a dataset 
 of size $\Omega(\goodfrac N)$, with at most an $\quality$ fraction of low-quality 
-data. We show that this is possible with 
+data.  Perhaps surprisingly, we show that this is possible with an amount of work required of the manager, and each worker, that does not scale with $N$; specifically, we show that such a dataset can be curated with
 $\oo\p{\frac{\log(1/\quality\goodfrac)}{\goodfrac\min\p{\quality,\goodfrac}}}$ 
 work per worker, and $\oo\p{\frac{\log(1/\goodfrac)}{\goodfrac\quality}}$ 
 work for the manager.
@@ -68,8 +68,9 @@ work for the manager.
 \end{keywords}
 
 \section{Introduction}
+Consider the following hypothetical scenario: it is the night before the COLT deadline, and you are a professor with an army of $N$ graduate students, each of whom has written a paper.  Some fraction, $\goodfrac$, of these students are ``highly competent''---namely, they both produce good papers, as well as accurately review papers (i.e. determine whether a given paper is good or not).  The remaining $1-\goodfrac$ fraction of your graduate students behave arbitrarily---some of them might still produce great papers, and some might still give accurate reviews.  Of course, as the professor, you are also capable of accurately reviewing papers.  You want to choose a large subset of the students' papers to submit to COLT, at least $\goodfrac N$, and you want to ensure that most of the submitted papers are good.  The question is how to choose this subset while minimizing the amount of work you do (i.e. the number of papers you review), as well as minimizing the number of papers you assign each student to review.  Perhaps surprisingly, we show that even with an arbitrarily large number of students, $N$, and even if the non-competent students are all colluding to get their papers submitted, you can successfully accomplish this task while performing only a constant amount of work yourself (dependent on the fraction of ``highly competent'' students), and having each student only do a constant amount of work!
 
-While several mechanisms have been proposed for ensuring high-quality 
+Perhaps more realistically, this setup also models the challenge of crowdsourcing the creation of a large dataset.  While several mechanisms have been proposed for ensuring high-quality 
 data in crowdsourcing applications, most assume that there are ``gold labels'' 
 that can be used to assess worker performance during the course of 
 data collection; moreover, most mechanisms make assumptions about the behavior 
@@ -110,7 +111,7 @@ m = \Omega(\delta N)\text{ and }\frac{1}{m} \sum_{j=1}^m f(X_{i_j}) \geq 1-\qual
 \end{equation}
 Note that $m = \Omega(\delta N)$ asks that our dataset be within a constant 
 factor of the number of good workers. We could imagine adding this constant 
-factor as another parameter in the problem, but avoid this for now for simplicity.
+factor as another parameter in the problem, but avoid this for now, for simplicity.
 
 Our main result is the following:
 \begin{theorem}
@@ -122,8 +123,7 @@ satisfies \eqref{eq:target} with probability $1-\failprob$ and with $m \geq \fra
 The proof is not long, though we note that na\"ive approaches will 
 accrue additional $\polylog(N)$ factors on the number of evaluations per worker.
 We think the main aspects of interest in this work are the setting itself 
-(which seems natural but relatively un-studied) as well as the ability to do 
-average work that is independent of $N$.
+(which seems natural but relatively un-studied) as well as the ability for the manager and each worker to perform an amount of work that is independent of $N$.
 
 The idea behind the protocol is the following: after each worker generates their 
 datum, we will have each worker evaluate some number $d$ of other workers at 
