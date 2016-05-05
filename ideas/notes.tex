@@ -69,7 +69,7 @@ Let $\Aa$ be the matrix that is equal to $A$ for the rows in $\sC$,
 and equal to $\A$ for the rows outside of $\sC$. Also let $R_{ij} = \frac{1}{|\sD|}\bI[i \in \sC, j \in \sD]$. 
 Ideally, we would like to have $M_{\sC} = R_{\sC}$, i.e. $M$ matches $R$ on 
 all the rows of $\sC$. In light of this, 
-we will let $\Mm$ be the solution to the ``corrected'' program, which 
+we will let $\Mm$ be the solution to the following ``corrected'' program, which 
 we don't have access to (since it involves knowledge of $A$ and $\sC$), but which 
 will be useful for analysis purposes:
 \begin{align}
@@ -126,8 +126,8 @@ On the other hand, we have
 |\langle Z_{\sC}, \Mm_{\sC} - \M_{\sC} \rangle| &\leq \|Z_{\sC}\|_F\|\Mm_{\sC} - \M_{\sC}\|_F \\
  &\leq \epsilon\alpha n \sqrt{\sum_{i \in \sC} \|\Mm_i - \M_i\|_2^2} \\
  &\leq \epsilon\alpha n \sqrt{\sum_{i \in \sC} \|\Mm_i - \M_i\|_{\infty}\|\Mm_i - \M_i\|_1} \\
- &= \epsilon\alpha n \sqrt{\frac{\|\Mm-\M\|_1}{\alpha n}} \\
- &= \epsilon\alpha n \sqrt{2}.
+ &= \epsilon\alpha n \sqrt{\frac{\|\Mm_{\sC}-\M_{\sC}\|_1}{\alpha n}} \\
+ &\leq \epsilon\alpha n \sqrt{2}.
 \end{align}
 Putting these together, we obtain
 \begin{align}
