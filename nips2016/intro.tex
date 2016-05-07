@@ -1,12 +1,101 @@
 \section{Introduction}
 
-Statistical NLP is great \citep{manning99nlp}.
-\citet{manning99nlp} is a book.
+Consider the following hypothetical scenario: it is the night before the 
+NIPS deadline, and you are a professor with an army of $n$ graduate students, 
+each of whom has written a paper.  Some fraction, $\goodraters$, of these 
+students are ``highly competent''---namely, they both produce good papers, as 
+well as accurately review papers (i.e. determine whether a given paper is good 
+or not).  The remaining $1-\goodraters$ fraction of your graduate students 
+behave arbitrarily---some of them might still produce great papers, and some 
+might still give accurate reviews.  Of course, as the professor, you are also 
+capable of accurately reviewing papers.  You want to choose a large subset of 
+the students' papers to submit to NIPS, at least $\goodraters n$, and you want 
+to ensure that most of the submitted papers are good.  The question is how to 
+choose this subset while minimizing the amount of work you do (i.e. the number 
+of papers you review), as well as minimizing the number of papers you assign 
+each student to review. Unfortunately, you yourself have forgotten which students 
+in your lab are competent, so part of the task is to determine this.
+%
+Perhaps surprisingly, we show that even with an arbitrarily large number of 
+students, $n$, and even if the non-competent students are all colluding to 
+get their papers submitted, you can successfully accomplish this task while 
+performing only a constant amount of work yourself (dependent on the fraction 
+of ``highly competent'' students), and having each student only do a constant 
+amount of work!
 
-\reffig{framework} shows our framework.
+We can model this problem more precisely (as well as more generally) as follows: 
+we assume that there are $m$ items and $n$ raters. We define a matrix 
+$M \in \bR^{n \times m}$ where $M_{ij}$ denotes the rating that rater $i$ assigns 
+to item $j$; in the setting above, the raters are graduate students and the items 
+are papers. If rater $i$ does not rate item $j$, then $M_{ij} = 0$; otherwise, 
+$M_{ij}$ takes values in $[-1,1]$. We let the vector $v^* \in \bR^n$ denote the 
+ratings that we ourselves would have assigned.
+We make the following assumptions:
+\begin{enumerate}
+\item There is a set $\sC$ of honest raters of size at least $\goodraters n$, 
+      such that $M_i$ agrees with $v^*$ in the sense that $\bE[M_i] = c_i v^*$ 
+      for some scalar $c_i$.
+\item For the dishonest raters, $M_{ij}$ can be chosen adversarially, with full 
+      knowledge of which ratings everyone was assigned and how the honest users 
+      behaved, and in collusion with all of the other dishonest raters.
+\end{enumerate}
+Our goal is to obtain a set $T \subseteq [m]$ of size $\gooditems m$, such that 
+$\frac{1}{\gooditems m} \sum_{j \in T} v_j^*$ is within $\error$ of the best 
+possible set $T$. In other words, we would like to approximate the 
+$\beta$-quartile of good items. We let $Q_{\beta}$ denote this $\beta$-quartile 
+(i.e., the set of $\beta m$ items with the highest ratings by us). 
+Our main result shows that we can do this with minimal work per rater:
+\begin{theorem}
+\label{thm:main-1}
+Suppose that each rater is assigned $d$ items to rate at random, and that we rate 
+$d_0$ items at random. Then, with probability $1-\delta$, we can recover a 
+set $T$ of size $\gooditems m$, such that
+\[ \frac{1}{\gooditems m} \p{ \sum_{j \in T} v_j^* - \sum_{j \in Q_{\beta}} v_j^*} \leq \oo\p{\frac{1}{\alpha d^{1/4}} + \frac{\sqrt{\log(1/\delta)}}{\alpha d^{1/2}} + \frac{\sqrt{\log(1/\alpha\delta)}}{\alpha d_0^{1/2}}}. \]
+\end{theorem}
 
-\refsec{experiments} contains our experiments.
+Beyond the professorial scenario above, our setting encompasses many increasingly 
+important applied problems, which we describe below.
 
-%\Fig{figures.slides/framework}{0.5}{framework}{
-  %Our framework.
-%}
+\paragraph{Crowdsourcing}
+
+\paragraph{Community Detection}
+
+\paragraph{Collaborative Filtering}
+We can generalize Theorem~\ref{thm:main-1} to include the setting 
+where the ratings of the good users comprise an arbitrary rank-$r$ matrix (note 
+that our previous assumptions implied that $M_{\sC}$ had rank $1$).
+
+%This setup also models the challenge of crowdsourcing the creation of a large 
+%dataset. While several mechanisms have been proposed for ensuring high-quality 
+%data in crowdsourcing applications, most assume that there are ``gold labels'' 
+%that can be used to assess worker performance during the course of 
+%data collection; moreover, most mechanisms make assumptions about the behavior 
+%of workers (e.g. that workers that behaved well before will continue to 
+%behave well, or that they act to maximize a certain payoff function).
+%In this work we are motivated by cases where there is not necessarily a single 
+%correct answer --- for instance, tasks such as ``draw an interesting picture'' 
+%or ``translate this sentence'', where different workers could generate different 
+%equally good answers. In this case, the only way to evaluate quality is 
+%via evaluation by other workers or by the manager of the experiment. 
+%Moreover, since workers will often try to game the system (in order to 
+%get paid), we would like to model non-cooperative workers as adversarial. 
+%To formalize both of these desiderata, we adopt the following model:
+%\begin{itemize}
+%\item There is a manager who controls the experiment, and 
+%      $N$ workers.
+%\item The goal is to generate data $X \in \sX$ that satisfies 
+%      a binary criterion $f : \sX \to \{0,1\}$ (e.g. $f$ could answer
+%      ``Is $X$ an interesting picture?'' or ``Is $X$ a correct translation?'').
+%      The manager knows $f$.
+%\item Each worker $i$ can generate a datum $X_i$, as well as evaluate 
+%      data with a function $f_i : \sX \to \{0,1\}$.
+%\item There are $\goodraters N$ \emph{cooperative} workers, such that 
+%      $f_i = f$, $f(X_i) = 1$, and the worker 
+%      wants to be helpful (they will cooperate with the protocol 
+%      specified by the manager).
+%\item The rest of the workers could be adversarial; they could generate 
+%      good data or bad data, and could output correct or incorrect evaluations. 
+%      The adversaries could have knowledge of who they are.
+%\end{itemize}
+
+\todo{describe rest of paper}

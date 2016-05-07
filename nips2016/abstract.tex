@@ -1,1 +1,14 @@
-This is an abstract.
+We consider a crowdsourcing model in which a fraction $\goodraters$ of 
+workers can both generate high-quality data and correctly evaluate 
+the quality of data, while the remaining workers may behave arbitrarily and 
+possibly adversarially. 
+There is no ground truth on which to evaluate worker quality, but the 
+manager of the experiment can manually evaluate the quality of 
+a given datum. Given $N$ workers, we wish to curate a dataset 
+of size $\Omega(\goodraters N)$, with at most an $\error$ fraction of 
+low-quality data.  Perhaps surprisingly, we show that this is possible with an 
+amount of work required of the manager, and each worker, that does not scale 
+with $N$; specifically, we show that such a dataset can be curated with
+$\oo\p{\frac{1}{\goodraters^4\error^4}}$ 
+work per worker, and $\oo\p{\frac{\log(1/\goodraters)}{\goodraters^2\error^2}}$ 
+work for the manager.
