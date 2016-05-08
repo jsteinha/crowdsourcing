@@ -129,9 +129,13 @@ The conditions that $\robs$ needs to satisfy are substantialy simpler, and
 are given in the condition below:
 \begin{assumption}
 \label{ass:r}
-The observed rating vector $\robs$ satisfies \todo{include condition}
+For some $\fac_0$, the observed rating vector $\robs$ satisfies 
+$\|\robs - \rtrue\|_{\infty} \leq \frac{m}{\fac_0}$ almost surely, 
+$\bE[\|\robs-\rtrue\|_2^2] \leq \frac{m^2}{\fac_0}$, 
+and the coordinates of $\robs$ are jointly independent.
 \end{assumption}
-\todo{include elaboration}
+If we suppose that 
+$\robs_j = \frac{m}{k_0}I_j\rtrue_j$, where $I_j$ is $\operatorname{Bernoulli}\p{\frac{k_0}{m}}$, then Assumption~\ref{ass:r} holds for $k = \fac_0$.
 
 \paragraph{Main result.}
 With Assumptions~\ref{ass:quantile}, \ref{ass:lipschitz}, and \ref{ass:r} 
