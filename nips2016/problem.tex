@@ -1,49 +1,44 @@
 \section{Problem statement}
 \label{sec:assumptions}
 
-% setting to keep in mind: rating matrix A
-% observe d entries in each row at random, scale up by n/d
-We will start with a running example to keep in mind, and 
-then state the general formal properties needed for our 
-results to hold. At the end, we will verify that these properties 
-apply to our running example, as well as to some other situations 
-of interest such as the stochastic block model.
-
-\paragraph{Running Example.}
-We suppose that there is a matrix 
-$\Aavg \in [-1,1]^{n \times m}$ of ratings, such that $\Aavg_{ij}$ 
-denotes the rating that person $i$ assigns to item $j$. 
-Moreover, we assume that there is a ``true'' rating vector $\rtrue \in [-1,1]^m$.
-Rather than observing $\Aavg$ and $\rtrue$, we observe noisy, scaled-up 
-versions $\Aobs$ and $\robs$:
+Before stating our assumptions formally, we give a concrete example that our 
+assumptions are meant to capture. 
+We suppose that there is an unobserved matrix $\Aavg \in [0,1]^{n \times m}$
+of ratings, such that $\Aavg_{ij}$ denotes the rating that person $i$ would 
+assign (in expectation) to item $j$. 
+We also let $\rtrue \in [0,1]^m$ denote the unobserved vector 
+specifying our own ratings. Rather than observing $\Aavg$ and $\rtrue$, 
+we observe noisy, scaled-up versions $\Aobs$ and $\robs$:
 \[ \Aobs_{ij} = \left\{ \begin{array}{ccl} \frac{n}{k}\Aavg_{ij} & : & \text{ with probability $\frac{k}{n}$} \\ 0 & : & \text{ else} \end{array} \right., \quad\quad 
-  \robs_j = \left\{ \begin{array}{ccl} \frac{n}{k'}\rtrue_j & : & \text{ with probability $\frac{k'}{n}$} \\ 0 & : & \text{ else} \end{array} \right.. \] %}}
+  \robs_j = \left\{ \begin{array}{ccl} \frac{n}{k_0}\rtrue_j & : & \text{ with probability $\frac{k_0}{n}$} \\ 0 & : & \text{ else} \end{array} \right.. \] %}}
 Note that the scaling ensures that $\bE[\Aobs] = \Aavg$ and $\bE[\robs] = \rtrue$. 
 
-We further assume that there is a set $\sC \subseteq [n]$ of good raters such 
-that $\Aavg_{ij} = \rtrue_j$ for all $i \in \sC$, $j \in [m]$. Our goal is to 
-recover the $\beta$-quantile of $\rtrue$; in other words, letting $Q_{\beta}$ 
-denote the set of $\beta m$ indices $j$ for which $\rtrue$ is largest, we 
-wish to recover a set $S$ of size $\beta m$ such that
-\[ \frac{1}{\beta m}\p{\sum_{j \in S} \rtrue_j - \sum_{j \in Q_{\beta}} \rtrue_j} \geq - \epsilon. \]
+For a vector $v \in \bR^m$, let $Q_{\beta}(v)$ denote the \emph{$\beta$-quantile} 
+of $v$ --- that is, the $\beta m$ coordinates $j$ for which $v_j$ is largest.
+We assume that there is a set $\good \subseteq [n]$ of good raters such 
+that $Q_{\beta}(\Aavg_{i}) = Q_{\beta}(\rtrue)$ for all $i \in \good$, and our 
+goal is to recover $\beta$-quantile of $\rtrue$. More precisely, we wish to 
+recover a set $T$ of size $\beta m$ such that
+\[ \frac{1}{\beta m}\p{\sum_{j \in T} \rtrue_j - \sum_{j \in Q_{\beta}(\rtrue)} \rtrue_j} \geq - \epsilon. \]
 
 \paragraph{General Setting}
 The example above is limited in a few ways; first, it makes a very specific 
 assumption about the randomness in $\Aobs$ and $\robs$. Second, it implicitly 
-assumes that the adversarial actions are chosen independently of which items 
+assumes that the adversaries' actions are chosen independently of which items 
 they are assigned to rate, which is implausible. Finally, it assumes that 
-$\bE[\Aobs_i] = \rtrue$ for all $i \in \sC$, which among other things rules out 
-having noisy raters with different levels of noise for each rater. We will end 
-up relaxing to the assumption that each good rater shares the same 
-$\beta$-quantile $Q_{\beta}$; one can likely relax this still further but that 
-is beyond the scope of this paper.\footnote{For instance, we believe that 
-a sufficient condition is that the union of the $\beta$-quantiles of the good 
-users has size at most $\beta m \cdot \p{1 + 1/\sqrt{|\sC|}}$.}
+$\bE[\Aobs_i] = \rtrue$ for all $i \in \good$, which among other things rules out 
+having noisy raters with different levels of noise for each rater.
+
 
 For a matrix $X$, 
 we will let $X_{\good}$ denote the rows of $X$ indexed by $\good$, 
-and $X_{\bad}$ the remaining rows. We also assume that $\good$ is a constant 
+and $X_{\bad}$ the remaining rows. We assume that $\good$ is a constant 
 fraction of $[n]$: $|\good| \geq \goodfrac n$ for some $\goodfrac$.
+The important properties of $\Aobs$ are summarized below. In the following, 
+$\Aavg$ is a matrix that is often the expected value of $\Aobs$, while 
+$\fac$ is a constant that will turn out to be proportional to the number 
+of observed ratings in each row.
+
 
 % assumptions:
 % set of good users C
@@ -53,43 +48,68 @@ fraction of $[n]$: $|\good| \geq \goodfrac n$ for some $\goodfrac$.
 % ``actual ratings'' \A_{\sC}
 %   - \|A_{\sC} - \A_{\sC}\|_op \leq n / sqrt(fac)
 %   - \Au_{\bad}
-The important properties of $\Aobs$ are summarized below:
-\begin{assumption}
-\label{ass:A}
-For some $\fac > 0$, the matrix $\Aobs$ satisfies the following properties:
-\begin{enumerate}
-\item There exists a matrix $\Aavg \in [-\infty,1]^{n \times m}$ such that 
-      $\|\Aobs - \Aavg\|_{\op} \leq \frac{m}{\sqrt{\fac}}\max\p{1, \sqrt{\frac{\alpha n}{m}}}$.
-\item There exists a set $\good \subseteq [n]$ of size at least $\goodfrac n$ 
-      such that for each $i \in \good$, the $\beta$-quantile of $\Aavg_i$ is 
-      $Q_{\beta}$, and furthermore
-      \[ \frac{1}{\beta m} \sum_{j \in Q_{\beta}} \Aavg_{ij} \geq \frac{1}{2}. \]
-\end{enumerate}
+First, we assume that the $\beta$-quantile of $\Aobs$ is correct 
+``in expectation'':
+\begin{assumption}[Shared Quantiles]
+\label{ass:quantile}
+There exists a matrix $\Aavg_{\good} \in [0,1]^{\good \times m}$ such that 
+$Q_{\beta}(\Aavg_i) = Q_{\beta}(\rtrue)$. Moreover, 
+$\|\Aobs_{\good} - \Aavg_{\good}\|_{\op} \leq \frac{m}{\sqrt{\fac}}\max\p{1, \sqrt{n/m}}$.
 \end{assumption}
-(The constant $\frac{1}{2}$ can be replaced with any positive constant.)
-\begin{assumption}
-\label{ass:r}
-The observed rating vector $\rtrue$ satisfies \todo{include condition}
-\end{assumption}
-The condition $\|\Aobs - \Aavg\|_{\op} \leq \frac{m}{\sqrt{\fac}}$ is what 
-we would typically get out of matrix concentration bounds (see e.g. \citet{todo}), 
-where each row of $\Aobs$ consists of subsampling $k = \Theta(\fac)$ entries 
-of $\Aavg$ at random. However, because the adversary's strategy can depend 
-on which entries we choose, some care is needed. The key observation that limits 
-the influence of the adversary is that (at least according to Assumption~\ref{ass:A}), $\Aavg_{\bad}$ need not correspond to any sort of expected value, 
-and the only constraint it need satisfy is that 
-$\max_{i \in \bad, j \in [m]} \Aavg_{ij} \leq 1$. As a result, the worst 
-the adversary can do is make $\Aobs_{ij}$ is as large as possible, i.e. 
-$\Aobs_{ij} = \frac{m}{k}\bI[(i,j) \in \Obs]$ for all $i \in \bad$.
+In most settings, standard matrix concentration bounds will imply that 
+$\fac$ is proportional to the number of entries of $\Aobs$ that are observed 
+in each row. It seems possible to relax Assumption~\ref{ass:quantile} to only 
+require approximate match of the $\beta$-quantiles, but that is beyond the 
+scope of this paper.\footnote{For instance, we believe that 
+a sufficient condition is that the union of the $\beta$-quantiles of the good 
+users has size at most $\beta m \cdot \p{1 + 1/\sqrt{|\good|}}$.}
 
-This general setting captures the running example for $k = \Theta(\fac)$:
+Next, we assume that our rating is a Lipschitz function of the average 
+honest rating:
+\begin{assumption}[Lipschitz ratings]
+\label{ass:lipschitz}
+There exists a constant $L$ such that 
+\[ \rtrue_j - \rtrue_{j'} \leq \frac{L}{|\good|}\sum_{i \in \good} \Aavg_{ij} - \Aavg_{ij'} \]
+for all $j \in Q_{\beta}(r^*), j' \not\in Q_{\beta}(r^*)$.
+\end{assumption}
+Assumption~\ref{ass:lipschitz} is important because it implies that 
+near-optimal solutions with respesct to the $\Aavg_i$ are also near-optimal 
+with respect to $\rtrue$.
+To avoid excessive notation, we will assume that $L = \oo\p{1}$ throughout 
+the paper (say, $L \leq 3$). To recover the dependence on $L$, simply replace 
+all instances of the error $\error$ in the results below with $\error/L$.
+
+Our final assumption bounds the impact of the adversaries:
+\begin{assumption}[Bounded Adversaries]
+\label{ass:adversary}
+There exists a matrix $\Aavg_{\bad} \in [-\infty,1]^{\bad \times m}$ such that 
+$\|\Aobs_{\bad} - \Aavg_{\bad}\|_{\op} \leq \frac{m}{\sqrt{\fac}}\max\p{1, \sqrt{n/m}}$.
+\end{assumption}
+
+As before, the condition 
+$\|\Aobs_{\bad} - \Aavg_{\bad}\|_{\op} \leq \frac{m}{\sqrt{\fac}}$ is what 
+we would typically get out of matrix concentration bounds.
+However, some care is needed because the adversary's strategy can depend on 
+the randomness in $\Aobs$, and it is therefore not obvious that such concentration 
+bounds should apply. What saves us is that $\Aavg_{\bad}$ need not correspond to 
+any sort of expected value, and the only constraint it need satisfy is that 
+$\max_{i \in \bad, j \in [m]} \Aavg_{ij} \leq 1$. 
+As a result, the worst the adversary can do is make $\Aobs_{ij}$ is as 
+large as possible; for instance, in the example from the beginning of 
+the section, $\Aobs_{ij} = \frac{m}{k}\bI[(i,j) \in \Obs]$ for all $i \in \bad$.
+Since $\Aobs$ now only depends on the structure of $\Obs$, standard concentration 
+bounds once again hold.
+
+Assumptions~\ref{ass:quantile}, \ref{ass:lipschitz}, and \ref{ass:adversary} 
+all hold for the running example when $k = \Theta(\fac)$:
 \begin{proposition}
 Suppose that $\Aobs_{ij} = \frac{m}{k}E_{ij}\Anom_{ij}$, 
 where the $E_{ij}$ i.i.d. $\operatorname{Bernoulli}(\frac{k}{m})$, and 
 $\Anom_{ij}$ is the rating that person $i$ assigns to item $j$. Further 
-assume that $\bE[\Anom_{i}] = \Aavg_i$, for $\Aavg_i$ satisfying 
-Assumption~\ref{ass:A}, and that the $\Anom_{ij}$ are jointly independent 
-for $i \in \good$, $j \in [m]$. (The $\Anom_{ij}$ for $i \in \bad$ can be 
+assume that for each $i \in \good$, $\bE[\Anom_{i}] = \Aavg_i$, 
+for $\Aavg_i$ satisfying Assumptions~\ref{ass:quantile} and \ref{ass:lipschitz},
+ and that the $\Anom_{ij}$ are jointly independent for 
+$i \in \good$, $j \in [m]$. (The $\Anom_{ij}$ for $i \in \bad$ can be 
 arbitrarily dependent on each other, as well as on $E$ and on 
 $\Anom_{\good}$.)
 
@@ -105,7 +125,13 @@ $\Anom_{\good}$.)
 %randomness in the procedure, and the ratings of the other dishonest users.
 
 Then, assuming that $k \geq \fac + \sqrt{\fac \log(1/\delta)}$, 
-Assumption~\ref{ass:A} holds with probability $1-\delta$, where $\Aavg_i$ is 
+Assumption~\ref{ass:norm} holds with probability $1-\delta$, where $\Aavg_i$ is 
 as defined above for $i \in \good$, and 
 $\Aavg_{ij} = 1 + \frac{m}{k}E_{ij}(\Anom_{ij} - 1)$ for $i \in \bad$.
 \end{proposition}
+
+
+\begin{assumption}
+\label{ass:r}
+The observed rating vector $\rtrue$ satisfies \todo{include condition}
+\end{assumption}
