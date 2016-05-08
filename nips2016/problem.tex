@@ -9,8 +9,11 @@ assign (in expectation) to item $j$.
 We also let $\rtrue \in [0,1]^m$ denote the unobserved vector 
 specifying our own ratings. Rather than observing $\Aavg$ and $\rtrue$, 
 we observe noisy, scaled-up versions $\Aobs$ and $\robs$:
-\[ \Aobs_{ij} = \left\{ \begin{array}{ccl} \frac{n}{k}\Aavg_{ij} & : & \text{ with probability $\frac{k}{n}$} \\ 0 & : & \text{ else} \end{array} \right., \quad\quad 
-  \robs_j = \left\{ \begin{array}{ccl} \frac{n}{k_0}\rtrue_j & : & \text{ with probability $\frac{k_0}{n}$} \\ 0 & : & \text{ else} \end{array} \right.. \] %}}
+\begin{equation}
+\label{eq:sampling}
+\Aobs_{ij} = \left\{ \begin{array}{ccl} \frac{n}{k}\Aavg_{ij} & : & \text{ with probability $\frac{k}{n}$} \\ 0 & : & \text{ else} \end{array} \right., \quad\quad 
+  \robs_j = \left\{ \begin{array}{ccl} \frac{n}{k_0}\rtrue_j & : & \text{ with probability $\frac{k_0}{n}$} \\ 0 & : & \text{ else} \end{array} \right..
+\end{equation} %}}
 Note that the scaling ensures that $\bE[\Aobs] = \Aavg$ and $\bE[\robs] = \rtrue$. 
 
 For a vector $v \in \bR^m$, let $Q_{\beta}(v)$ denote the \emph{$\beta$-quantile} 
@@ -21,25 +24,36 @@ goal is to recover $\beta$-quantile of $\rtrue$. More precisely, we wish to
 recover a set $T$ of size $\beta m$ such that
 \[ \frac{1}{\beta m}\p{\sum_{j \in T} \rtrue_j - \sum_{j \in Q_{\beta}(\rtrue)} \rtrue_j} \geq - \epsilon. \]
 
-\paragraph{General Setting}
+\paragraph{Notation.}
+For a matrix $X$, we will let $X_{\good}$ denote the rows of 
+$X$ indexed by $\good$, and $X_{\bad}$ the remaining rows. 
+We will let $\|X\|_{\op}$ denote the operator norm of $X$ and 
+$\|X\|_*$ denote the nuclear norm (sum of singular values) of $X$.
+We assume that $\good$ is a constant fraction of $[n]$ and let 
+$\goodfrac$ denote this fraction: i.e., $|\good| \geq \goodfrac n$.
+
+\paragraph{General Setting.}
 The example above is limited in a few ways; first, it makes a very specific 
 assumption about the randomness in $\Aobs$ and $\robs$. Second, it implicitly 
 assumes that the adversaries' actions are chosen independently of which items 
-they are assigned to rate, which is implausible. Finally, it assumes that 
+they are assigned to rate, which is implausible. Third, it assumes that 
 $\bE[\Aobs_i] = \rtrue$ for all $i \in \good$, which among other things rules out 
 having noisy raters with different levels of noise for each rater.
+Finally, it assumes that our own ratings $\rtrue$ are perfect, whereas in reality 
+we would like to tolerate some level of error on our own part as well.
+Below, we will first lay out assumptions on $\Aobs$, and then on $\robs$, 
+under which our results will hold.
 
+\paragraph{Assumptions on $\Aobs$.}
+We assume that $\Aobs$ is ``close'' to a matrix 
+$\Aavg \in [-\infty,1]^{n \times m}$ in the sense that 
+$\|\Aobs - \Aavg\|_{\op} \leq \frac{m}{\sqrt{\fac}}\max\p{1, \sqrt{n/m}}$. 
+For instance, this holds with high probability if $\Aobs$ is generated as in 
+\eqref{eq:sampling}, for $k = \Omega(\fac)$. Some care is needed because the 
+adversary is allowed to adapt to the random sampling, but we will see in 
+Proposition~\ref{prop:sampling-reduction} below that this can be dealt with.
 
-For a matrix $X$, 
-we will let $X_{\good}$ denote the rows of $X$ indexed by $\good$, 
-and $X_{\bad}$ the remaining rows. We assume that $\good$ is a constant 
-fraction of $[n]$: $|\good| \geq \goodfrac n$ for some $\goodfrac$.
-The important properties of $\Aobs$ are summarized below. In the following, 
-$\Aavg$ is a matrix that is often the expected value of $\Aobs$, while 
-$\fac$ is a constant that will turn out to be proportional to the number 
-of observed ratings in each row.
-
-
+The important properties of $\Aavg$ are summarized below.
 % assumptions:
 % set of good users C
 % ``expected ratings'' A_{\sC}
@@ -52,13 +66,13 @@ First, we assume that the $\beta$-quantile of $\Aobs$ is correct
 ``in expectation'':
 \begin{assumption}[Shared Quantiles]
 \label{ass:quantile}
-There exists a matrix $\Aavg_{\good} \in [0,1]^{\good \times m}$ such that 
-$Q_{\beta}(\Aavg_i) = Q_{\beta}(\rtrue)$. Moreover, 
-$\|\Aobs_{\good} - \Aavg_{\good}\|_{\op} \leq \frac{m}{\sqrt{\fac}}\max\p{1, \sqrt{n/m}}$.
+For each $i \in \good$, the row vector $\Aavg_i$ lies in $[0,1]^m$ and satisfies 
+$Q_{\beta}(\Aavg_i) = Q_{\beta}(\rtrue)$.
 \end{assumption}
-In most settings, standard matrix concentration bounds will imply that 
-$\fac$ is proportional to the number of entries of $\Aobs$ that are observed 
-in each row. It seems possible to relax Assumption~\ref{ass:quantile} to only 
+%In most settings, standard matrix concentration bounds will imply that 
+%$\fac$ is proportional to the number of entries of $\Aobs$ that are observed 
+%in each row. 
+It seems possible to relax Assumption~\ref{ass:quantile} to only 
 require approximate match of the $\beta$-quantiles, but that is beyond the 
 scope of this paper.\footnote{For instance, we believe that 
 a sufficient condition is that the union of the $\beta$-quantiles of the good 
@@ -73,36 +87,17 @@ There exists a constant $L$ such that
 for all $j \in Q_{\beta}(r^*), j' \not\in Q_{\beta}(r^*)$.
 \end{assumption}
 Assumption~\ref{ass:lipschitz} is important because it implies that 
-near-optimal solutions with respesct to the $\Aavg_i$ are also near-optimal 
+near-optimal solutions with respect to the $\Aavg_i$ are also near-optimal 
 with respect to $\rtrue$.
 To avoid excessive notation, we will assume that $L = \oo\p{1}$ throughout 
 the paper (say, $L \leq 3$). To recover the dependence on $L$, simply replace 
 all instances of the error $\error$ in the results below with $\error/L$.
 
-Our final assumption bounds the impact of the adversaries:
-\begin{assumption}[Bounded Adversaries]
-\label{ass:adversary}
-There exists a matrix $\Aavg_{\bad} \in [-\infty,1]^{\bad \times m}$ such that 
-$\|\Aobs_{\bad} - \Aavg_{\bad}\|_{\op} \leq \frac{m}{\sqrt{\fac}}\max\p{1, \sqrt{n/m}}$.
-\end{assumption}
-
-As before, the condition 
-$\|\Aobs_{\bad} - \Aavg_{\bad}\|_{\op} \leq \frac{m}{\sqrt{\fac}}$ is what 
-we would typically get out of matrix concentration bounds.
-However, some care is needed because the adversary's strategy can depend on 
-the randomness in $\Aobs$, and it is therefore not obvious that such concentration 
-bounds should apply. What saves us is that $\Aavg_{\bad}$ need not correspond to 
-any sort of expected value, and the only constraint it need satisfy is that 
-$\max_{i \in \bad, j \in [m]} \Aavg_{ij} \leq 1$. 
-As a result, the worst the adversary can do is make $\Aobs_{ij}$ is as 
-large as possible; for instance, in the example from the beginning of 
-the section, $\Aobs_{ij} = \frac{m}{k}\bI[(i,j) \in \Obs]$ for all $i \in \bad$.
-Since $\Aobs$ now only depends on the structure of $\Obs$, standard concentration 
-bounds once again hold.
-
-Assumptions~\ref{ass:quantile}, \ref{ass:lipschitz}, and \ref{ass:adversary} 
-all hold for the running example when $k = \Theta(\fac)$:
+We now return to a generalization of our example from the beginning of the 
+section, and show that the bound on $\|\Aobs - \Aavg\|_{\op}$ holds for an 
+appropriately chosen $\Aavg$.
 \begin{proposition}
+\label{prop:sampling-reduction}
 Suppose that $\Aobs_{ij} = \frac{m}{k}E_{ij}\Anom_{ij}$, 
 where the $E_{ij}$ i.i.d. $\operatorname{Bernoulli}(\frac{k}{m})$, and 
 $\Anom_{ij}$ is the rating that person $i$ assigns to item $j$. Further 
@@ -113,25 +108,71 @@ $i \in \good$, $j \in [m]$. (The $\Anom_{ij}$ for $i \in \bad$ can be
 arbitrarily dependent on each other, as well as on $E$ and on 
 $\Anom_{\good}$.)
 
-%
-%Suppose that the following scheme is carried out: 
-%for each $i,j \in [n] \times [m]$, with probability $\frac{k}{m}$ person 
-%$i$ is asked to supply a rating for item $j$ that lies in $[-1,1]$. 
-%Then $\Aobs_{ij}$ is set to be the rating scaled by $\frac{m}{k}$, or else 
-%$0$ if we did not ask for a rating. When choosing a response, the 
-%users reply with rating whose expectation is $\Aavg_{ij}$, where 
-%$\Aavg_i$ satisfies Assumption~\ref{ass:A}. The dishonest users reply 
-%with an output that may depend on the ratings of the honest users, the 
-%randomness in the procedure, and the ratings of the other dishonest users.
-
 Then, assuming that $k \geq \fac + \sqrt{\fac \log(1/\delta)}$, 
-Assumption~\ref{ass:norm} holds with probability $1-\delta$, where $\Aavg_i$ is 
+$\|\Aobs - \Aavg\|_{\op} \leq \frac{n}{\sqrt{\fac}}\max\p{1, \sqrt{n/m}}$
+with probability $1-\delta$, where $\Aavg_i$ is 
 as defined above for $i \in \good$, and 
-$\Aavg_{ij} = 1 + \frac{m}{k}E_{ij}(\Anom_{ij} - 1)$ for $i \in \bad$.
+$\Aavg_{ij} = 1 - \frac{m}{k}E_{ij}(1 - \Anom_{ij})$ for $i \in \bad$.
 \end{proposition}
+Note how $\Aavg_i$ is defined for $i \in \bad$; since there are no constraints 
+on $\Aavg_{\bad}$ except that its entries be bounded above by $1$, we have a 
+great deal of freedom to match $\Aobs_{\bad}$. In particular, $\Aavg_{\bad}$ 
+as defined above cancels out the adversaries' action, setting 
+$(\Aobs - \Aavg)_{ij}$ to $\frac{m}{k}E_{ij} - 1$, which is entirely independent 
+of the adversaries and satisfies known matrix concentration bounds.
+This is one of two key constructions in our analysis that allows us to bound 
+the influence of the adversaries. The other is Proposition~\ref{prop:subgradient}, 
+which will be explained in more detail in Section~\ref{sec:approach}.
 
-
+\paragraph{Assumptions on $\robs$.}
+The conditions that $\robs$ needs to satisfy are substantialy simpler, and 
+are given in the condition below:
 \begin{assumption}
 \label{ass:r}
-The observed rating vector $\rtrue$ satisfies \todo{include condition}
+The observed rating vector $\robs$ satisfies \todo{include condition}
 \end{assumption}
+\todo{include elaboration}
+
+\paragraph{Main result.}
+With Assumptions~\ref{ass:quantile}, \ref{ass:lipschitz}, and \ref{ass:r} 
+in place, we can now state our main results. Our algorithm and also our results 
+can be broken up into two parts: first, we approximately recover the 
+$\beta$-quantiles for each of the raters, in the form of a matrix 
+$\M \in [0,1]^{n \times m}$ such that $\M_i$ is close to the uniform distribution 
+over $Q_{\beta}(\Aavg_i)$ for each $i \in \good$. Second, given such a matrix, 
+we recover a set $T$ that is close to the $\beta$-quantile of $\rtrue$. 
+We state these results formally below:
+\begin{theorem}
+\label{thm:main-M}
+Suppose that 
+$\|\Aobs - \Aavg\|_{\op} \leq \frac{m}{\sqrt{\fac}}\max\p{1, \sqrt{n/m}}$ for a 
+matrix $\Aavg \in [-\infty,1]^{n \times m}$ satisfying 
+Assumption~\ref{ass:quantile}. Then, for 
+$\fac = \Omega\p{\frac{1}{\alpha^3\beta\epsilon^4}\max\p{1,\frac{m}{n}}}$, we can 
+recover a matrix $\M \in [0,1]^{n \times m}$ satisfying the following 
+properties:
+\begin{align}
+\label{eq:l1} &\|\M_i\|_1 \leq 1 \text{ \ for each $i \in \good$.} \\
+\label{eq:linf} &\|\M_i\|_{\infty} \leq \frac{1}{\beta m}\|\M_i\|_1 \text{ \ for each $i \in \good$.} \\
+\label{eq:close} &\frac{1}{|\good|}\sum_{i \in \good}\Big(\frac{1}{\beta m}\sum_{j \in Q_{\beta}(\Aavg_i)} \Aavg_{ij} - \sum_{j \in [m]} \M_{ij}\Aavg_{ij}\Big) \leq \error.
+\end{align}
+\end{theorem}
+Note that properties \eqref{eq:l1} and \eqref{eq:linf} guarantee that $\M_i$ is a 
+(sub-)probability distribution that is spread out over at least $\beta m$ 
+elements, while property \eqref{eq:close} implies that the $\M_i$ are close to 
+the uniform distribution over $Q_{\beta}(\Aavg_i)$ on average.
+
+We next state our result for recovering $\rtrue$ from $\M$.
+\begin{theorem}
+\label{thm:main-r}
+Suppose that $\M \in [0,1]^{n \times m}$ satisfies properties 
+(\ref{eq:l1}-\ref{eq:close}) above, for an $\Aavg$ satisfying 
+Assumption~\ref{ass:lipschitz}, and that $\robs$ satisfies Assumption~\ref{ass:r} 
+relative to $\rtrue$. Then, for 
+$\fac_0 = \Omega\p{\frac{\log(1/\alpha\failprob)}{\alpha\beta\error^2}}$, 
+it is possible to recover a set $T$ satisfying
+\[ \frac{1}{\beta m}\sum_{j \in Q_{\beta}(\rtrue)} \rtrue_j \leq \frac{1}{\beta m} \sum_{j \in T} \rtrue_j + 4\error. \]
+\end{theorem}
+Thus, we first recover $\M$ from $\Aobs$ using Theorem~\ref{thm:main-M}, and 
+then recover $\rtrue$ from $\M$ using Theorem~\ref{thm:main-r}. We will see 
+in more detail how to do so in Section~\ref{sec:approach}.
