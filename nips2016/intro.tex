@@ -25,33 +25,40 @@ amount of work!
 
 We can model this problem more precisely (as well as more generally) as follows: 
 we assume that there are $m$ items and $n$ raters. We define a matrix 
-$M \in \bR^{n \times m}$ where $M_{ij}$ denotes the rating that rater $i$ assigns 
-to item $j$; in the setting above, the raters are graduate students and the items 
-are papers. If rater $i$ does not rate item $j$, then $M_{ij} = 0$; otherwise, 
-$M_{ij}$ takes values in $[-1,1]$. We let the vector $v^* \in \bR^n$ denote the 
-ratings that we ourselves would have assigned.
+$\Anom \in \{0,1\}^{n \times m}$ where $\Anom_{ij}$ denotes the rating that 
+rater $i$ assigns to item $j$ ($1$ if good and $0$ if bad); in the setting above, 
+the raters are graduate students and the items are papers. 
+The value $\Anom_{ij}$ is observed only if rater $i$ rates item $j$. 
+Similarly, we let the vector $\rtrue \in \{0,1\}^n$ denote 
+our own ratings of items, which we assume are accurate; as before, 
+$\rtrue_{j}$ is observed only if we rate item $j$.
+
 We make the following assumptions:
 \begin{enumerate}
-\item There is a set $\sC$ of honest raters of size at least $\goodraters n$, 
-      such that $M_i$ agrees with $v^*$ in the sense that $\bE[M_i] = c_i v^*$ 
-      for some scalar $c_i$.
-\item For the dishonest raters, $M_{ij}$ can be chosen adversarially, with full 
-      knowledge of which ratings everyone was assigned and how the honest users 
-      behaved, and in collusion with all of the other dishonest raters.
+\item There is a set $\good$ of honest raters of size at least $\goodfrac n$, 
+      such that $\Anom_i$ agrees stochastically with $\rtrue$ in the sense that 
+      $\bP[\Anom_{ij} = \rtrue_j] \geq \frac{2}{3}$ for all $i \in \sC$ and 
+      $j \in [m]$, and furthermore the $\Anom_{ij}$ are independent.
+\item For the dishonest raters, $\Anom_{ij}$ can be chosen adversarially, 
+      with full knowledge of which ratings everyone was assigned and how the 
+      honest users behaved, and in collusion with all of the other 
+      dishonest raters.
 \end{enumerate}
-Our goal is to obtain a set $T \subseteq [m]$ of size $\gooditems m$, such that 
-$\frac{1}{\gooditems m} \sum_{j \in T} v_j^*$ is within $\error$ of the best 
-possible set $T$. In other words, we would like to approximate the 
-$\beta$-quartile of good items. We let $Q_{\beta}$ denote this $\beta$-quartile 
-(i.e., the set of $\beta m$ items with the highest ratings by us). 
-Our main result shows that we can do this with minimal work per rater:
+Assuming that there are at least $\beta m$ good items, our goal is to obtain 
+a set $T \subseteq [m]$ of size $\beta m$, such that 
+$\frac{1}{\beta m} \sum_{j \in T} \rtrue_j \geq 1-\epsilon$.
+The reults of this paper imply that we can do this with minimal work per rater:
 \begin{theorem}
 \label{thm:main-1}
-Suppose that each rater is assigned $d$ items to rate at random, and that we rate 
-$d_0$ items at random. Then, with probability $1-\delta$, we can recover a 
-set $T$ of size $\gooditems m$, such that
-\[ \frac{1}{\gooditems m} \p{ \sum_{j \in T} v_j^* - \sum_{j \in Q_{\beta}} v_j^*} \leq \oo\p{\frac{1}{\alpha d^{1/4}} + \frac{\sqrt{\log(1/\delta)}}{\alpha d^{1/2}} + \frac{\sqrt{\log(1/\alpha\delta)}}{\alpha d_0^{1/2}}}. \]
+Suppose that each rater is assigned $k$ items to rate at random, and that we rate 
+$k_0$ items at random. Then, assuming that $k \geq \Omega\p{\frac{1}{\alpha^3\beta\epsilon^4} + \frac{\log(1/\delta)}{\alpha\beta\epsilon^2}}$, and 
+$k_0 \geq \Omega\p{\frac{\log(1/\alpha\delta)}{\alpha\beta\epsilon^2}}$, 
+with probability $1-\delta$ we can recover a set $T$ of size $\gooditems m$, 
+such that $\frac{1}{\gooditems m} \sum_{j \in T} \rtrue_j \geq 1-\epsilon$.
 \end{theorem}
+The main computational step in the recovery algorithm involves solving a 
+nuclear-norm constrained optimization problem (where all of the remaining 
+constraints are linear inequalities).
 
 Beyond the professorial scenario above, our setting encompasses many increasingly 
 important applied problems, which we describe below.
