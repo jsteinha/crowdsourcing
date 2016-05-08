@@ -58,51 +58,47 @@ such that $\frac{1}{\gooditems m} \sum_{j \in T} \rtrue_j \geq 1-\epsilon$.
 \end{theorem}
 The main computational step in the recovery algorithm involves solving a 
 nuclear-norm constrained optimization problem (where all of the remaining 
-constraints are linear inequalities).
+constraints are linear inequalities). \todo{talk about runtime?}
 
-Beyond the professorial scenario above, our setting encompasses many increasingly 
-important applied problems, which we describe below.
+Beyond the professorial scenario above, the above setup
+models the challenge of crowdsourcing the creation of a large 
+dataset. While several mechanisms have been proposed for ensuring high-quality 
+data in crowdsourcing applications, most assume that there are ``gold labels'' 
+that can be used to assess worker performance during the course of 
+data collection; moreover, most mechanisms make assumptions about the behavior 
+of workers (e.g. that workers that behaved well before will continue to 
+behave well, or that they act to maximize a certain payoff function).
+In this work we are motivated by cases where there is not necessarily a single 
+correct answer --- for instance, tasks such as ``draw an interesting picture'' 
+or ``translate this sentence'', where different workers could generate different 
+equally good answers. In this case, the only way to evaluate quality is 
+via evaluation by other workers or by the manager of the experiment. 
+Moreover, since workers will often try to game the system (in order to 
+get paid), we would like to model non-cooperative workers as adversarial. 
+More generally, our setup can be appropriate in any quality 
+control setting where the workers responsible for assessing reliability 
+may themselves be unreliable. \todo{should we talk about twitter?}
 
-\paragraph{Crowdsourcing}
+While we have stated a very concrete setup for simplicity, our results 
+hold in a substantially more general setting that we call \textbf{quantile 
+estimation}. The ratings are now allowed to lie in $[0,1]$, and 
+our goal is to recover the \emph{$\beta$-quantile} $Q_{\beta}$ of 
+$\rtrue$, defined as the $\beta m$ indices $j$ for which $\rtrue_j$ is largest. 
+In order to do this, we need to make $3$ assumptions, which are relaxations of 
+the assumptions above: (1) the $\beta$-quantile of each of the honest raters 
+matches the $\beta$-quantile of $\rtrue$; (2) the ratings in $\rtrue$ are a 
+Lipschitz function of the average rating 
+$\frac{1}{|\good|}\sum_{i \in \good} \Anom_i$; and (3) the ratings assigned by 
+the honest raters are sufficiently independent for typical matrix 
+concentration bounds to hold. We formalize these assumptions in 
+Section~\ref{sec:assumptions}. \todo{talk about stochastic block model}
 
-\paragraph{Community Detection}
-
-\paragraph{Collaborative Filtering}
-We can generalize Theorem~\ref{thm:main-1} to include the setting 
-where the ratings of the good users comprise an arbitrary rank-$r$ matrix (note 
-that our previous assumptions implied that $M_{\sC}$ had rank $1$).
-
-%This setup also models the challenge of crowdsourcing the creation of a large 
-%dataset. While several mechanisms have been proposed for ensuring high-quality 
-%data in crowdsourcing applications, most assume that there are ``gold labels'' 
-%that can be used to assess worker performance during the course of 
-%data collection; moreover, most mechanisms make assumptions about the behavior 
-%of workers (e.g. that workers that behaved well before will continue to 
-%behave well, or that they act to maximize a certain payoff function).
-%In this work we are motivated by cases where there is not necessarily a single 
-%correct answer --- for instance, tasks such as ``draw an interesting picture'' 
-%or ``translate this sentence'', where different workers could generate different 
-%equally good answers. In this case, the only way to evaluate quality is 
-%via evaluation by other workers or by the manager of the experiment. 
-%Moreover, since workers will often try to game the system (in order to 
-%get paid), we would like to model non-cooperative workers as adversarial. 
-%To formalize both of these desiderata, we adopt the following model:
-%\begin{itemize}
-%\item There is a manager who controls the experiment, and 
-%      $N$ workers.
-%\item The goal is to generate data $X \in \sX$ that satisfies 
-%      a binary criterion $f : \sX \to \{0,1\}$ (e.g. $f$ could answer
-%      ``Is $X$ an interesting picture?'' or ``Is $X$ a correct translation?'').
-%      The manager knows $f$.
-%\item Each worker $i$ can generate a datum $X_i$, as well as evaluate 
-%      data with a function $f_i : \sX \to \{0,1\}$.
-%\item There are $\goodraters N$ \emph{cooperative} workers, such that 
-%      $f_i = f$, $f(X_i) = 1$, and the worker 
-%      wants to be helpful (they will cooperate with the protocol 
-%      specified by the manager).
-%\item The rest of the workers could be adversarial; they could generate 
-%      good data or bad data, and could output correct or incorrect evaluations. 
-%      The adversaries could have knowledge of who they are.
-%\end{itemize}
-
-\todo{describe rest of paper}
+The rest of the paper is organized as follows. In Section~\ref{sec:assumptions}, 
+we state our formal assumptions and main results, and show some concrete 
+settings in which they apply. In Section~\ref{sec:approach}, we outline a proof 
+of our main results and present a concrete algorithm for $\beta$-quantile 
+estimation, deferring the more technical proofs until later. 
+In Section~\ref{sec:subgradient-proof}, we provide the proof of 
+Proposition~\ref{prop:subgradient}, which is the key result bounding the effect 
+that the adversaries can have on the solution quality. We end in 
+Section~\ref{sec:discussion} with a discussion.

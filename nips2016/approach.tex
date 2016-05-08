@@ -147,27 +147,6 @@ by a factor of $1+\sqrt{2}$.
 
 \todo{talk about greedy algorithm}
 
-\section{Proof of Proposition~\ref{prop:objective-bound}}
-By H\"{o}lder's inequality, we have 
-\begin{align}
-|\langle \A-\Aa, M \rangle| &\leq \|\A-\Aa\|_{\op}\|M\|_* \\
- &= \|\A_{\sC}-\Aavg_{\sC}\|_{\op}\|M\|_* \\
- &\leq \frac{m}{\sqrt{\fac}}\max\p{1, \sqrt{\frac{\alpha n}{m}}} \cdot \frac{2}{\epsilon\alpha}\sqrt{\frac{\alpha n}{\beta m}} \\
- &= \frac{2\sqrt{mn}}{\epsilon\sqrt{\alpha\beta\fac}}\max\p{\sqrt{\frac{\alpha n}{m}}, 1}. %\frac{\alpha n}{m}}.
-\end{align}
-Setting $\fac = \frac{16}{\alpha^2\beta\epsilon^4}\max\p{\frac{m}{\alpha n}, 1}$, 
-we thus have
-\begin{align}
-|\langle \A-\Aa, M \rangle| &\leq \frac{1}{2}\epsilon \alpha n.
-\end{align}
-We then see that
-\begin{align}
-\langle \Aa, \M \rangle  &\geq \langle \A, \M \rangle - \frac{1}{2}\epsilon \alpha n \\
- &\geq \langle \A, \Mm \rangle - \frac{1}{2} \epsilon \alpha n \text{ (since $\M$ is optimal for $\A$)} \\
- &\geq \langle \Aa, \Mm \rangle - \epsilon \alpha n,
-\end{align}
-which completes the proof.
-
 %%% TODO --- this is good intuition, should include it somewhere
 %%% At a high level, our strategy is the following --- since $\Mm$ is already optimized 
 %%% on the rows outside of $\sC$, we should (``morally'', though not in actuality) have 
@@ -181,81 +160,4 @@ which completes the proof.
 %%% $\sC$ and $\neg \sC$ are coupled by the joint constraint $\|M\|_* \leq \frac{2}{\epsilon\alpha}$. We 
 %%% will decouple the rows by taking the subgradient of the Lagrangian at $\Mm$, which yields an upper bound 
 %%% for our optimization problem. By doing this we obtain:
-
-\section{Proof of Proposition~\ref{prop:subgradient}}
-Let $\sP_0$ be the superset of $\sP$ where we have removed the 
-nuclear norm constraint. By Lagrangian duality we 
-know that there is some $\mu$ such that maximizing 
-$\langle \Aa, M \rangle$ over $\sP \cap \{M_{\sC} = R_{\sC}\}$ 
-is equivalent to maximizing $f_\mu(M) \eqdef \langle \Aa, M \rangle + \mu\p{\frac{2}{\epsilon\alpha}\sqrt{\frac{\alpha n}{\beta m}} - \|M\|_*}$ over 
-$\sP_0 \cap \{M_{\sC} = R_{\sC}\}$. 
-
-We start by bounding $\mu$. We claim that $\mu \leq \epsilon \sqrt{\alpha\beta nm}$. 
-To show this, first note that for any $M \in \sP_0$, we have 
-\begin{align}
-\langle \Aa, M \rangle &\leq \langle \Aavg, M \rangle + \langle \Aa - \Aavg, M \rangle \\
- &\leq n + \|\Aa - \Aavg\|_{\op}\|M\|_* \\
- &\leq n + \frac{m}{\sqrt{\fac}}\|M\|_* \\
- &\leq n + \frac{\epsilon\sqrt{\alpha\beta nm}}{2}\|M\|_*,
-\end{align}
-where in the last step we used the assumption $\fac = \Omega\p{\frac{1}{\alpha\beta\epsilon^2}\frac{m}{n}}$.
-
-Now, suppose that we take $\mu_0 = \epsilon \sqrt{\alpha\beta nm}$ and optimize $\langle \Aa, M \rangle - \mu_0\|M\|_*$ over 
-$\sP_0 \cap \{M_{\sC} = R_{\sC}\}$. Since $\langle \Aa, M \rangle - \mu_0\|M\|_* \leq n - \frac{\epsilon \sqrt{\alpha\beta nm}}{2}\|M\|_*$, 
-any $M$ with $\|M\|_* > \frac{2}{\epsilon\alpha}\sqrt{\frac{\alpha n}{\beta m}}$ cannot possibly be optimal, since the solution $M = 0$ would 
-be better. Hence, $\mu_0$ is a large enough Lagrange multiplier to ensure that $M \in \sP$, and so 
-$\mu \leq \mu_0 = \epsilon \sqrt{\alpha\beta nm}$, as claimed.
-
-We next characterize the subgradient of $f_{\mu}$ at $M = \Mm$.
-Define the projection matrix $P$ as
-\[ P_{i,i'} = \left\{ \begin{array}{ccl} \frac{1}{|\sC|} & : & i, i' \in \sC \\ \delta_{i,i'} & : \text{else} \end{array} \right.. \]
-Thus $PM = M$ if and only if all rows in $\sC$ are equal to each other.
-In particular, $PM = M$ whenever $M_{\sC} = R_{\sC}$. Now, since $\Mm$ is the maximum 
-of $f_{\mu}(M)$ over all $M \in \sP_0 \cap \{M_{\sC} = R_{\sC}\}$, there must be some 
-$B \in \partial f(\Mm)$ such that $\langle B, M - \Mm \rangle \leq 0$ for all $M \in \sP_0 \cap \{M_{\sC} = R_{\sC}\}$.
-\begin{lemma}
-\label{lem:subgradient}
-Suppose that $B \in \partial f(\Mm)$ satisfies $\langle B, M - \Mm \rangle \leq 0$ for all $M \in \sP_0 \cap \{M_{\sC} = R_{\sC}\}$. 
-Then, $PB$ satisfies the same property, and lies in $\partial f(\Mm)$ as well.
-\end{lemma}
-We can further note (by differentiating $f_{\mu}$) that 
-$B = \Aa - \mu Z_0$, where $\|Z_0\|_{\op} \leq 1$. Hence 
-$PB = P\Aa - \mu PZ_0 = \Aa - \mu PZ_0$. Let $r(M)$ denote the 
-matrix where $M_{\sC}$ is replaced with $R_{\sC}$ (so $r(M) \in \sP_0 \cap \{R_{\sC} = M_{\sC}\}$ 
-whenever $M \in \sP_0$). The rest of the proof is basically algebra:
-\begin{align}
-\langle \Aa, M - \Mm \rangle &\stackrel{(i)}{\leq} f_{\mu}(M) - f_{\mu}(\Mm) \\
- &\stackrel{(ii)}{\leq} \langle \Aa - \mu PZ_0, M - \Mm \rangle \\
- &= \langle \Aa - \mu PZ_0, M - r(M) \rangle + \langle \Aa - \mu PZ_0, r(M) - \Mm \rangle \\
- &\stackrel{(iii)}{\leq} \langle \Aa - \mu PZ_0, M - r(M) \rangle \\
- &= \langle \Aa_{\sC} - \mu (PZ_0)_{\sC}, M_{\sC} - r(M)_{\sC} \rangle \\
- &= \langle \Aa_{\sC} - \mu (PZ_0)_{\sC}, M_{\sC} - \Mm_{\sC} \rangle,
-\end{align}
-where (i) is by complementary slackness (either $\mu = 0$ or $\|\Mm\|_* = \frac{2}{\alpha\epsilon}$); 
-(ii) is concavity of $f_{\mu}$, and the fact that $\Aa - \mu PZ_0$ is a subgradient; and 
-(iii) is the property from Lemma~\ref{lem:subgradient} ($\langle \Aa - \mu PZ_0, r(M) - \Mm \rangle \leq 0$ since 
-$r(M) \in \sP_0$).
-
-To finish, we will take $Z = \mu (PZ_0)_{\sC}$. We note that
-$\|Z\|_{\op} = \|\mu (PZ)_{\sC}\|_{\op} \leq \mu \|PZ\|_{\op} \leq \mu \|Z\|_{\op} \leq \mu$.
-Moreover, $Z$ has rank $1$ and so $\|Z\|_F = \|Z\|_{\op} \leq \mu \leq \epsilon\sqrt{\alpha\beta nm}$, as was to be shown.
-
-\subsection{Proof of Lemma~\ref{lem:subgradient}}
-First, since $PM = M$ for all $M \in \sP_0 \cap \{M_{\sC} = R_{\sC}\}$, and $PM^* = M^*$, 
-it is clear that $\langle PB, M-M^* \rangle = \langle B, P(M-M^*) \rangle = \langle B, M-M^* \rangle \leq 0$, 
-so we need only show that $PB$ is still a subgradient of $f_{\mu}$. Indeed, we have (for any $M$)
-\begin{align}
-\langle PB, M-M^* \rangle &= \langle B, PM - M^* \rangle \\
- &\stackrel{(i)}{\geq} f_{\mu}(PM) - f_{\mu}(M^*) \\
- &= \langle A^*, PM \rangle - \mu \|PM\|_* - f_{\mu}(M^*) \\
- &= \langle A^*, M \rangle - \mu \|PM\|_* - f_{\mu}(M^*) \\
- &\stackrel{(ii)}{\geq} \langle A^*, M \rangle - \mu \|M\|_* - f_{\mu}(M^*) \\
- &= f_{\mu}(M) - f_{\mu}(M^*),
-\end{align}
-where (i) is because $B \in \partial f_{\mu}(M^*)$, and (ii) is because projecting 
-decreases the nuclear norm. Since the inequality $\langle PB, M-M^* \rangle \geq f_{\mu}(M) - f_{\mu}(M^*)$ 
-is the defining property of $\partial f_{\mu}(M^*)$, the proof is complete.
-
-%\bibliographystyle{plainnat}
-%\bibliography{references}
 
