@@ -163,7 +163,16 @@ by a factor of $1+\sqrt{2}$.
 \subsection{Recovering $Q_{\beta}(\rtrue)$}
 \label{sec:approach-r}
 
-\todo{talk about greedy algorithm}
+The algorithm for recovering $Q_{\beta}(\rtrue)$ from $\M$ and $\robs$ 
+is simple, and involves two steps:
+\begin{enumerate}
+\item Greedily choose the $\goodfrac n$ rows of $\M$ (call then $\goodobs$) 
+      for which $\sum_{j \in [m]} \M_{ij}\robs_j$ is largest.
+\item Let $\rdist \eqdef \frac{1}{\goodfrac n} \sum_{i \in \goodobs} \M_i$, 
+      and choose $T$ to be the $\beta m$ coordinates for which $\rdist_j$ is 
+      largest.
+\end{enumerate}
+\todo{provide result and analysis}
 
 %%% TODO --- this is good intuition, should include it somewhere
 %%% At a high level, our strategy is the following --- since $\Mm$ is already optimized 
