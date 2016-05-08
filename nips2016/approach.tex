@@ -1,6 +1,14 @@
 \section{Approach}
 \label{sec:approach}
 
+As mentioned in Section~\ref{sec:assumptions}, our approach can be split into 
+two parts: recovering a matrix $\M$ that approximates the $\beta$-quantiles of 
+the raters, and using $\M$ to recover the $\beta$-quantile of $\rtrue$. We 
+describe these respective components in Sections~\ref{sec:approach-M} and 
+\ref{sec:approach-r} below.
+
+\subsection{Recovering $\M$}
+\label{sec:approach-M}
 Given an $\Aobs$ with $\|\Aobs - \Aavg\|_{\op} \leq \facbound$, for an 
 $\Aavg$ satisfying Assumption~\ref{ass:quantile}, we solve the following 
 nuclear-norm optimization problem:
@@ -8,10 +16,10 @@ nuclear-norm optimization problem:
 \begin{align}
 \label{eq:optimization-noisy}
 \text{maximize } &\langle \A, M \rangle, \\
-\notag \text{ subject to } &M_{ij} \geq 0 \,\,\, \forall i,j, \\
-\notag  &\sum_j M_{ij} \leq 1 \,\,\, \forall i, \\
-\notag  &\max_j M_{ij} \leq \frac{1}{\beta m}\sum_j M_{ij} \,\,\, \forall i, \\
-\notag  &\|M\|_* \leq \frac{2}{\alpha\epsilon}\sqrt{\frac{\alpha n}{\beta m}},
+\notag \text{ subject to } &M_{ij} \geq 0 \,\,\, \forall i,j, 
+  &&\hskip-0.4in\sum_j M_{ij} \leq 1 \,\,\, \forall i, \\
+\notag  &\max_j M_{ij} \leq \frac{1}{\beta m}\sum_j M_{ij} \,\,\, \forall i, 
+  &&\hskip-0.4in\|M\|_* \leq \frac{2}{\alpha\epsilon}\sqrt{\frac{\alpha n}{\beta m}}, \phantom{xxxxxxx}
 \end{align}
 where $\|\cdot\|_*$ denotes the nuclear norm. In the sequel, 
 we use $\sP$ to denote the constraint set in (\ref{eq:optimization-noisy}).
@@ -42,31 +50,40 @@ and analyzing the de-noised program (which is usually straightforward) requires
 some care to ensure that the adversary cannot compromise the solution.
 
 To make our approach more precise, let $\Aa$ be the matrix that is equal to 
-$\Aavg_{\sC}$ for the rows in $\sC$, 
-and equal to $\Aobs$ for the rows outside of $\sC$. Also let 
-$R_{ij} = \frac{1}{\beta m}\bI[i \in \sC, j \in Q_{\beta}]$. 
-Ideally, we would like to have $M_{\sC} = R_{\sC}$, i.e. $M$ matches $R$ on 
-all the rows of $\sC$. In light of this, 
+$\Aavg_{\good}$ for the rows in $\good$, 
+and equal to $\Aobs_{\bad}$ for the rows in $\bad$. Also let 
+$R_{ij} = \frac{1}{\beta m}\bI[i \in \good, j \in Q_{\beta}]$. 
+Ideally, we would like to have $M_{\good} = R_{\good}$, i.e. $M$ matches $R$ on 
+all the rows of $\good$. In light of this, 
 we will let $\Mm$ be the solution to the following ``corrected'' program, which 
-we don't have access to (since it involves knowledge of $\Aavg$ and $\sC$), 
+we don't have access to (since it involves knowledge of $\Aavg$ and $\good$), 
 but which will be useful for analysis purposes:
+%\begin{align}
+%\label{eq:optimization-noiseless}
+%\text{maximize } &\langle \Aa, M \rangle, \\
+%\notag \text{ subject to } &M_{\good} = R_{\good}, \\
+%\notag  &M_{ij} \geq 0 \,\,\, \forall i,j, \\
+%\notag  &\sum_j M_{ij} \leq 1 \,\,\, \forall i, \\
+%\notag  &\max_j M_{ij} \leq \frac{1}{\beta m}\sum_j M_{ij} \,\,\, \forall i, \\
+%\notag  &\|M\|_* \leq \frac{2}{\alpha\epsilon}\sqrt{\frac{\alpha n}{\beta m}}.
+%\end{align}
 \begin{align}
 \label{eq:optimization-noiseless}
 \text{maximize } &\langle \Aa, M \rangle, \\
-\notag \text{ subject to } &M_{\sC} = R_{\sC}, \\
-\notag  &M_{ij} \geq 0 \,\,\, \forall i,j, \\
-\notag  &\sum_j M_{ij} \leq 1 \,\,\, \forall i, \\
-\notag  &\max_j M_{ij} \leq \frac{1}{\beta m}\sum_j M_{ij} \,\,\, \forall i, \\
-\notag  &\|M\|_* \leq \frac{2}{\alpha\epsilon}\sqrt{\frac{\alpha n}{\beta m}}.
+\notag \text{ subject to } &M_{\good} = R_{\good}, \\
+\notag  &M_{ij} \geq 0 \,\,\, \forall i,j, 
+  &&\hskip-0.4in\sum_j M_{ij} \leq 1 \,\,\, \forall i, \\
+\notag  &\max_j M_{ij} \leq \frac{1}{\beta m}\sum_j M_{ij} \,\,\, \forall i, 
+  &&\hskip-0.4in\|M\|_* \leq \frac{2}{\alpha\epsilon}\sqrt{\frac{\alpha n}{\beta m}}, \phantom{xxxxxxx}
 \end{align}
 
 Our goal is to show that $\M$ is ``close'' to $M^*$ and hence gives information 
-about $\sC$ and $Q_{\beta}$. 
+about $\good$ and $Q_{\beta}$. 
 We formalize this in the following theorem:
 \begin{theorem}
 \label{thm:main}
-Let $\fac = \Omega\p{\frac{1}{\alpha^2\beta\epsilon^4}\max\p{\frac{m}{\alpha n},1}}$. Then, it is the case that 
-\[ \frac{1}{|\good|} \sum_{i \in \good} \p{\frac{1}{\beta m} \sum_{j \in Q_{\beta}} \Aavg_{ij} - \sum_{j \in [m]} \M_{ij} \Aavg_{ij}} \leq \epsilon. \]
+Let $\fac = \Omega\p{\frac{1}{\alpha^3\beta\epsilon^4}\max\p{\frac{m}{n},1}}$. Then, it is the case that 
+\[ \frac{1}{|\good|} \sum_{i \in \good} \p{\frac{1}{\beta m} \sum_{j \in Q_{\beta}(\Aavg_i)} \Aavg_{ij} - \sum_{j \in [m]} \M_{ij} \Aavg_{ij}} \leq \epsilon. \]
 %$\|\M_i - \pi^*\|_1 \leq \epsilon$, 
 %where $\pi^*_j = \frac{1}{|\sD|}$ if $j \in \sD$, and $0$ otherwise.
 \end{theorem}
@@ -83,7 +100,7 @@ $\langle \Aobs, M \rangle$ and $\langle \Aa, M \rangle$ are close together for
 all $M \in \sP$.
 \begin{proposition}
 \label{prop:objective-bound}
-Let $\fac = \Omega\p{\frac{1}{\alpha^2\beta\epsilon^4}\max\p{\frac{m}{\alpha n},1}}$. For $\M$ and $\Mm$ as defined above, we have
+Let $\fac = \Omega\p{\frac{1}{\alpha^3\beta\epsilon^4}\max\p{\frac{m}{n},1}}$. For $\M$ and $\Mm$ as defined above, we have
 \begin{equation}
 \label{eq:objective-bound}
 \langle \Aa, \M \rangle \geq \langle \Aa, \Mm \rangle - \epsilon \alpha n.
@@ -94,7 +111,7 @@ Next, we need to show that the nuclear norm constraint does
 not create too much bias in the de-noised program 
 \eqref{eq:optimization-noiseless}. Note that this is the \emph{only} constraint 
 that affects more than one row in \eqref{eq:optimization-noiseless}, and without 
-it it would be apparent that every $M^*_i$, for $i \in \sC$, would be equal to the 
+it it would be apparent that every $M^*_i$, for $i \in \good$, would be equal to the 
 $\beta$-quantile $Q_{\beta}$. Our goal is to show that the nuclear norm 
 constraint doesn't create too much dependence between the rows, which we can 
 formalize by bounding the Lagrangian of \eqref{eq:optimization-noiseless}. 
@@ -105,61 +122,60 @@ Doing so leads to:
 Let $\fac = \Omega\p{\frac{1}{\alpha\beta\epsilon^2}\frac{m}{n}}$. Then there exists a matrix $Z$ with 
 $\rank(Z) = 1$, $\|Z\|_F \leq \epsilon \sqrt{\alpha\beta mn}$ such that
 \begin{align}
-\langle \Aa_{\sC} - Z_{\sC}, \Mm_{\sC} - M_{\sC} \rangle &\leq \langle \Aa, \Mm - M \rangle \text{ for all $M \in \sP$}.
+\langle \Aa_{\good} - Z_{\good}, \Mm_{\good} - M_{\good} \rangle &\leq \langle \Aa, \Mm - M \rangle \text{ for all $M \in \sP$}.
 \end{align}
 \end{proposition}
 Essentially, Proposition~\ref{prop:subgradient} shows that any change in 
 $\langle \Aa, M \rangle$ caused by changing $M_{\bad}$ can be upper-bounded 
-by a small term $\langle Z_{\sC}, \Mm_{\sC} - M_{\sC} \rangle$ that depends only 
+by a small term $\langle Z_{\good}, \Mm_{\good} - M_{\good} \rangle$ that depends only 
 on $M_{\good}$, thereby bounding the effect that the adversaries can have 
-on $M_{\sC}$. 
+on $M_{\good}$. Proposition~\ref{prop:subgradient} is therefore the key 
+technical tool powering our results, and we devote 
+Section~\ref{sec:subgradient-proof} to its proof. (Proposition~\ref{prop:objective-bound} is proved in Appendix~\ref{sec:objective-bound-proof}.)
 
 In the remainder of this section, we will prove Theorem~\ref{thm:main} from Propositions~\ref{prop:objective-bound} 
-and \ref{prop:subgradient}. The propositions themselves will be proved in later sections.
-
+and \ref{prop:subgradient}.
 \begin{proof}[Proof of Theorem~\ref{thm:main}]
 We start by plugging in $\M$ for $M$ in Proposition~\ref{prop:subgradient}. This yields
 \begin{align}
-\langle \Aa_{\sC} + Z_{\sC}, \Mm_{\sC} - \M_{\sC} \rangle &\leq \langle \Aa, \Mm - \M \rangle \\
- &\leq \epsilon \alpha n
+\langle \Aa_{\good} + Z_{\good}, \Mm_{\good} - \M_{\good} \rangle &\leq \langle \Aa, \Mm - \M \rangle 
+ \leq \epsilon \alpha n
 \end{align}
 by Proposition~\ref{prop:objective-bound}.
 On the other hand, we have 
 \begin{align}
-|\langle Z_{\sC}, \Mm_{\sC} - \M_{\sC} \rangle| &\leq \|Z_{\sC}\|_F\|\Mm_{\sC} - \M_{\sC}\|_F \\
- &\leq \epsilon\sqrt{\alpha\beta nm} \sqrt{\sum_{i \in \sC} \|\Mm_i - \M_i\|_2^2} \\
- &\leq \epsilon\sqrt{\alpha\beta nm} \sqrt{\sum_{i \in \sC} \|\Mm_i - \M_i\|_{\infty}\|\Mm_i - \M_i\|_1} \\
- &=    \epsilon\sqrt{\alpha\beta nm} \sqrt{\frac{\|\Mm_{\sC}-\M_{\sC}\|_1}{\beta m}} \\
- &\leq \epsilon\sqrt{\alpha\beta nm} \sqrt{2\alpha n/\beta m} \\
- &= \sqrt{2}\epsilon\alpha n.
+|\langle Z_{\good}, \Mm_{\good} - \M_{\good} \rangle| &\leq \|Z_{\good}\|_F\|\Mm_{\good} - \M_{\good}\|_F \\
+ &\leq \epsilon\sqrt{\alpha\beta nm} \sqrt{\|\Mm_{\good} - \M_{\good}\|_{1}\|\Mm_{\good} - \M_{\good}\|_{\infty}} \\
+ &\leq \epsilon\sqrt{\alpha\beta nm} \sqrt{2\alpha n/\beta m} = \sqrt{2}\epsilon\alpha n.
 \end{align}
 Putting these together, we obtain
 \begin{align}
-\langle \Aa_{\sC}, \Mm_{\sC} - \M_{\sC} \rangle &\leq (1+\sqrt{2})\epsilon \alpha n.
+\langle \Aa_{\good}, \Mm_{\good} - \M_{\good} \rangle &\leq (1+\sqrt{2})\epsilon \alpha n.
 \end{align}
-Expanding $\langle \Aa_{\sC}, \Mm_{\sC} - \M_{\sC} \rangle$ as 
-$\sum_{i \in \sC}\p{\sum_{j \in [m]} (R_{ij} - \M_{ij})\Aavg_{ij}}$,
+Expanding $\langle \Aa_{\good}, \Mm_{\good} - \M_{\good} \rangle$ as 
+$\sum_{i \in \good}\p{\sum_{j \in [m]} (R_{ij} - \M_{ij})\Aavg_{ij}}$,
 we obtain 
-\[ \frac{1}{|\sC|}\sum_{i \in \sC}\p{\frac{1}{\beta m}\sum_{j \in Q_{\beta}} \Aavg_{ij} - \sum_{j \in [m]} \M_{ij}\Aavg_{ij}} \leq (1+\sqrt{2})\epsilon. \]
+\[ \frac{1}{|\good|}\sum_{i \in \good}\Big(\frac{1}{\beta m}\sum_{j \in Q_{\beta}} \Aavg_{ij} - \sum_{j \in [m]} \M_{ij}\Aavg_{ij}\Big) \leq (1+\sqrt{2})\epsilon. \]
 The desired result then follows after scaling down $\epsilon$ 
 by a factor of $1+\sqrt{2}$.
 \end{proof}
 
-\section{Recovering $\rtrue$}
+\subsection{Recovering $Q_{\beta}(\rtrue)$}
+\label{sec:approach-r}
 
 \todo{talk about greedy algorithm}
 
 %%% TODO --- this is good intuition, should include it somewhere
 %%% At a high level, our strategy is the following --- since $\Mm$ is already optimized 
-%%% on the rows outside of $\sC$, we should (``morally'', though not in actuality) have 
-%%% $\langle \Aa_{\neg \sC}, \Mm_{\neg \sC} \rangle \geq \langle \Aa_{\neg \sC}, \M_{\neg \sC} \rangle$. 
+%%% on the rows outside of $\good$, we should (``morally'', though not in actuality) have 
+%%% $\langle \Aa_{\neg \good}, \Mm_{\neg \good} \rangle \geq \langle \Aa_{\neg \good}, \M_{\neg \good} \rangle$. 
 %%% 
-%%% Looking back at the rows inside $\sC$, we must therefore have 
-%%% $\langle \Aa_{\sC}, \M_{\sC} \rangle \geq \langle \Aa_{\sC}, \Mm_{\sC} \rangle - \epsilon \alpha n$, 
+%%% Looking back at the rows inside $\good$, we must therefore have 
+%%% $\langle \Aa_{\good}, \M_{\good} \rangle \geq \langle \Aa_{\good}, \Mm_{\good} \rangle - \epsilon \alpha n$, 
 %%% which is exactly the statement \eqref{eq:M-bound} with $(1+\sqrt{2})\epsilon$ replaced by $\epsilon$.
 %%% 
-%%% The problem with the above argument is that, even though $\Mm$ is optimized on $\neg \sC$, the rows in 
-%%% $\sC$ and $\neg \sC$ are coupled by the joint constraint $\|M\|_* \leq \frac{2}{\epsilon\alpha}$. We 
+%%% The problem with the above argument is that, even though $\Mm$ is optimized on $\neg \good$, the rows in 
+%%% $\good$ and $\neg \good$ are coupled by the joint constraint $\|M\|_* \leq \frac{2}{\epsilon\alpha}$. We 
 %%% will decouple the rows by taking the subgradient of the Lagrangian at $\Mm$, which yields an upper bound 
 %%% for our optimization problem. By doing this we obtain:
 
