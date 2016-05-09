@@ -167,12 +167,62 @@ The algorithm for recovering $Q_{\beta}(\rtrue)$ from $\M$ and $\robs$
 is simple, and involves two steps:
 \begin{enumerate}
 \item Greedily choose the $\goodfrac n$ rows of $\M$ (call then $\goodobs$) 
-      for which $\sum_{j \in [m]} \M_{ij}\robs_j$ is largest.
-\item Let $\rdist \eqdef \frac{1}{\goodfrac n} \sum_{i \in \goodobs} \M_i$, 
-      and choose $T$ to be the $\beta m$ coordinates for which $\rdist_j$ is 
-      largest.
+      for which $\sum_{j \in [m]} \M_{ij}\robs_j$ is largest;
+      let $\rdist \eqdef \frac{1}{\goodfrac n} \sum_{i \in \goodobs} \M_i$, and 
+      $\sigma_j \eqdef \sum_{j'=1}^j \rdist_{j'}$.
+\item Sample $u \sim \Uniform([0,1])$, and include in $T$ all $j$ for which 
+      $\sigma_{j-1} \leq \frac{l + u}{\beta m} \leq \sigma_j$ 
+      for some integer $l$. Resample $u$ until the resulting $T$ satisfies 
+      \begin{equation}
+      \label{eq:accept}
+      \frac{1}{\beta m} \sum_{j \in T} \robs_j \leq \sum_{j \in [m]} \rdist_j \robs_j + 3\error.
+      \end{equation}
 \end{enumerate}
-\todo{provide result and analysis}
+The validity of this procedure hinges on two results. First, we establish 
+a concentration bound showing that $\sum_j \M_{ij}\robs_j$ is close to 
+$\sum_j \M_{ij}\rtrue_j$, and hence the $\goodfrac n$ best rows of $\M$ 
+according to $\robs$ also look good according to $\robs$:
+\begin{proposition}
+\label{prop:robs-rtrue}
+Suppose that $\robs$ satisfies Assumption~\ref{ass:r} with 
+$\fac_0 = \Omega\p{\frac{\log(1/\failprob\alpha)}{\alpha\beta\epsilon^2}}$. 
+Then, with probability $1-\delta$, we have
+\begin{equation}
+\label{eq:robs-rtrue}
+\frac{1}{\goodfrac n} \sum_{i \in \goodobs} \Big(\sum_{j \in [m]} \M_{ij}\rtrue_j\Big) \geq \frac{1}{|\good|} \sum_{i \in \good} \Big(\sum_{j \in [m]} \M_{ij}\rtrue_j\Big) - \epsilon.
+\end{equation}
+\end{proposition}
+The idea is to establish a uniform bound showing that 
+$\sum_{i \in S} \sum_{j \in [m]} \M_{ij}(\robs_j - \rtrue_j)$ is small for any 
+set of $\goodfrac n$ rows $S$, and hence that greedily taking the $\goodfrac n$ 
+best rows according to $\robs$ is almost as good as taking the $\goodfrac n$ 
+best rows according to $\rtrue$. A na\"{i}ve union bound over all rows would 
+yield $\log(n/\failprob)$ instead of $\log(1/\alpha\failprob)$ in the numerator 
+for $\fac_0$; our proof includes a refined analysis that improves upon the union 
+bound by leveraging the fact that we are averaging over a large number 
+($\goodfrac n$) of rows and hence extreme events are less likely.
+
+Proposition~\ref{prop:robs-rtrue} together with Theorem~\ref{thm:main-M} 
+implies that $\sum_j \rdist_j \rtrue_j \geq \frac{1}{\beta m} \sum_{j \in Q_{\beta}(r^*)} \rtrue_j - 2\epsilon$. In a sense, we could stop here and be satisfied --- 
+the distribution $\rdist$ is a good approximation to the uniform distribution 
+over $Q_{\beta}(r^*)$, which is sufficient for many purposes. However, for 
+completeness we would like to produce an actual set $T$ that approximates 
+$Q_{\beta}(r^*)$. Proposition~\ref{prop:rounding} asserts that step $2$ above 
+accomplishes this:
+
+\begin{proposition}
+\label{prop:rounding}
+Suppose that the probability distribution $\rdist$ satisfies 
+$\|\rdist\|_{\infty} \leq \frac{1}{\beta m}$. Then, for $T$ sampled 
+as in step $2$ above, we have $|T| = \beta m$ and $\bE[\frac{1}{\beta m}\sum_{j \in T} \robs_j] = \sum_{j \in [m]} \rdist_j \robs_j$.
+\end{proposition}
+In particular, Proposition~\ref{prop:rounding} implies that, by 
+Markov's inequality, \eqref{eq:accept} holds with probability at least 
+$\frac{1}{3}$ for a given sample, and thus with probability 
+$1-\delta$ we will accept within $3\log(1/\delta)$ steps.
+
+\todo{this is a bit sloppy, clean this up}
+\todo{unified theorem, with proof}
 
 %%% TODO --- this is good intuition, should include it somewhere
 %%% At a high level, our strategy is the following --- since $\Mm$ is already optimized 
