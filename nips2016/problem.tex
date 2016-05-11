@@ -18,7 +18,8 @@ Note that the scaling ensures that $\bE[\Aobs] = \Aavg$ and $\bE[\robs] = \rtrue
 
 For a vector $v \in \bR^m$, let $Q_{\beta}(v)$ denote the \emph{$\beta$-quantile} 
 of $v$ --- that is, the $\beta m$ coordinates $j$ for which $v_j$ is largest.
-We assume that there is a set $\good \subseteq [n]$ of good raters such 
+We assume that there is a set $\good \subseteq [n]$ of good raters of size 
+at least $\alpha n$ such 
 that $Q_{\beta}(\Aavg_{i}) = Q_{\beta}(\rtrue)$ for all $i \in \good$, and our 
 goal is to recover $\beta$-quantile of $\rtrue$. More precisely, we wish to 
 recover a set $T$ of size $\beta m$ such that
@@ -29,8 +30,8 @@ For a matrix $X$, we will let $X_{\good}$ denote the rows of
 $X$ indexed by $\good$, and $X_{\bad}$ the remaining rows. 
 We will let $\|X\|_{\op}$ denote the operator norm of $X$ and 
 $\|X\|_*$ denote the nuclear norm (sum of singular values) of $X$.
-We assume that $\good$ is a constant fraction of $[n]$ and let 
-$\goodfrac$ denote this fraction: i.e., $|\good| \geq \goodfrac n$.
+%We assume that $\good$ is a constant fraction of $[n]$ and let 
+%$\goodfrac$ denote this fraction: i.e., $|\good| \geq \goodfrac n$.
 
 \paragraph{General Setting.}
 The example above is limited in a few ways; first, it makes a very specific 
@@ -62,8 +63,7 @@ The important properties of $\Aavg$ are summarized below.
 % ``actual ratings'' \A_{\sC}
 %   - \|A_{\sC} - \A_{\sC}\|_op \leq n / sqrt(fac)
 %   - \Au_{\bad}
-First, we assume that the $\beta$-quantile of $\Aobs$ is correct 
-``in expectation'':
+First, we assume that the $\beta$-quantile of $\Aavg$ is correct:
 \begin{assumption}[Shared Quantiles]
 \label{ass:quantile}
 For each $i \in \good$, the row vector $\Aavg_i$ lies in $[0,1]^m$ and satisfies 
@@ -73,7 +73,7 @@ $Q_{\beta}(\Aavg_i) = Q_{\beta}(\rtrue)$.
 %$\fac$ is proportional to the number of entries of $\Aobs$ that are observed 
 %in each row. 
 It seems possible to relax Assumption~\ref{ass:quantile} to only 
-require approximate match of the $\beta$-quantiles, but that is beyond the 
+require approximate agreement of the $\beta$-quantiles, but that is beyond the 
 scope of this paper.\footnote{For instance, we believe that 
 a sufficient condition is that the union of the $\beta$-quantiles of the good 
 users has size at most $\beta m \cdot \p{1 + 1/\sqrt{|\good|}}$.}
@@ -99,7 +99,7 @@ appropriately chosen $\Aavg$.
 \begin{proposition}
 \label{prop:sampling-reduction}
 Suppose that $\Aobs_{ij} = \frac{m}{k}E_{ij}\Anom_{ij}$, 
-where the $E_{ij}$ i.i.d. $\operatorname{Bernoulli}(\frac{k}{m})$, and 
+where the $E_{ij}$ are i.i.d.~$\operatorname{Bernoulli}(\frac{k}{m})$, and 
 $\Anom_{ij}$ is the rating that person $i$ assigns to item $j$. Further 
 assume that for each $i \in \good$, $\bE[\Anom_{i}] = \Aavg_i$, 
 for $\Aavg_i$ satisfying Assumptions~\ref{ass:quantile} and \ref{ass:lipschitz},

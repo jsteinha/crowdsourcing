@@ -4,8 +4,8 @@
 Consider the following hypothetical scenario: it is the night before the 
 NIPS deadline, and you are a professor with an army of $n$ graduate students, 
 each of whom has written a paper.  Some fraction, $\goodraters$, of these 
-students are ``highly competent''---namely, they both produce good papers, as 
-well as accurately review papers (i.e. determine whether a given paper is good 
+students are ``highly competent''---namely, they both produce good papers and 
+accurately review papers (i.e. determine whether a given paper is good 
 or not).  The remaining $1-\goodraters$ fraction of your graduate students 
 behave arbitrarily---some of them might still produce great papers, and some 
 might still give accurate reviews.  Of course, as the professor, you are also 
@@ -42,13 +42,14 @@ We make the following assumptions:
       $j \in [m]$, and furthermore the $\Anom_{ij}$ are independent.
 \item For the dishonest raters, $\Anom_{ij}$ can be chosen adversarially, 
       with full knowledge of which ratings everyone was assigned and how the 
-      honest users behaved, and in collusion with all of the other 
+      honest raters behaved, and in collusion with all of the other 
       dishonest raters.
 \end{enumerate}
 Assuming that there are at least $\beta m$ good items, our goal is to obtain 
 a set $T \subseteq [m]$ of size $\beta m$, such that 
 $\frac{1}{\beta m} \sum_{j \in T} \rtrue_j \geq 1-\epsilon$.
-The reults of this paper imply that we can do this with minimal work per rater:
+The reults of this paper imply that we can do this with minimal work per rater, 
+as long as the number of raters is comparable to the number of items:
 \begin{theorem}
 \label{thm:main-1}
 Suppose that each rater is assigned $k$ items to rate at random, and that we rate 
@@ -61,24 +62,94 @@ The main computational step in the recovery algorithm involves solving a
 nuclear-norm constrained optimization problem (where all of the remaining 
 constraints are linear inequalities). \todo{talk about runtime?}
 
+% Overview of Related Work
+% Budget-Optimal Task Allocation for Reliable Crowdsourcing Systems
+%  {karger2014budget}
+%  uses belief propagation to model worker reliability, assign workers to tasks
+% Approval Voting and Incentives in Crowdsourcing
+%  {shah2015approval}
+% Double or nothing: Multiplicative incentive mechanisms for crowdsourcing
+%  {shah2015double}
+%  same as above
+% Regularized Minimax Conditional Entropy for Crowdsourcing
+%  {zhou2015regularized}
+%  models worker reliability and task difficulty
+% Truth Serums for Massively Crowdsourced Evaluation Tasks
+%  {kamble2015truth}
+% Eliciting Informative Feedback: The Peer-Prediction Method
+%  -- in some sense, defined our problem setting
+%  -- very central paper
+%  {miller2005eliciting}
+%  other related papers: {shnayder2016strong}, {dasgupta2013crowdsourced}
+
+% Evidence for our mechanism being important
+% {harmon2004amazon} --- manipulation of book reviews
+% {mayzlin2006promotional,white1999chatting} --- manipulation of online bulletin boards
+% MOOCs 
+%   Chris Piech, Jonathan Huang, Zhenghao Chen, Chuong Do, Andrew Ng, and
+%   Daphne Koller. Tuned models of peer assessment in MOOCs. arXiv preprint
+%   arXiv:1307.2579, 2013.
+% Crowdsourcing
+%   Vikas C Raykar, Shipeng Yu, Linda H Zhao, Gerardo Hermosillo Valadez, 
+%   Charles Florin, Luca Bogoni, and Linda Moy. Learning from crowds. 
+%   The Journal of Machine Learning Research, 11:1297–1322, 2010.
+% Yelp
+%   Michael Luca. Reviews, reputation, and revenue: The case of yelp. com. Com
+%   (September 16, 2011). Harvard Business School NOM Unit Working Paper, 
+%   (12-016), 2011.
+% {dellarocas2006strategic} --- general survey
+% The Influence Limiter: Provably Manipulation-Resistant Recommender Systems
+%  seems very similar to ours, but they assume online feedback of ground truth
+%  {resnick2007influence}
+
 Beyond the professorial scenario above, the above setup
 models the challenge of crowdsourcing the creation of a large 
-dataset. While several mechanisms have been proposed for ensuring high-quality 
-data in crowdsourcing applications, most assume that there are ``gold labels'' 
-that can be used to assess worker performance during the course of 
-data collection; moreover, most mechanisms make assumptions about the behavior 
-of workers (e.g. that workers that behaved well before will continue to 
-behave well, or that they act to maximize a certain payoff function).
+dataset, as well as the more general problem of \emph{peer prediction} 
+\citep{miller2005eliciting}, in which we wish to obtain truthful information 
+from a population of raters by exploiting inter-rater agreement. 
+While several mechanisms have been proposed for these tasks, 
+they typically assume that there are ``gold labels'' that can be used 
+to assess rater performance \citep{resnick2007influence}, that raters are 
+rational agents maximizing a payoff function \citep{dasgupta2013crowdsourced,
+kamble2015truth,shnayder2016strong}, that the workers follow a simple 
+statistical model \citep{karger2014budget,zhang2014crowdsourcing,
+zhou2015regularized}, or some combination of the above \citep{shah2015double,
+shah2015approval}. 
+
 In this work we are motivated by cases where there is not necessarily a single 
 correct answer --- for instance, tasks such as ``draw an interesting picture'' 
 or ``translate this sentence'', where different workers could generate different 
 equally good answers. In this case, the only way to evaluate quality is 
 via evaluation by other workers or by the manager of the experiment. 
 Moreover, since workers will often try to game the system (in order to 
-get paid), we would like to model non-cooperative workers as adversarial. 
-More generally, our setup can be appropriate in any quality 
-control setting where the workers responsible for assessing reliability 
-may themselves be unreliable. \todo{should we talk about twitter?}
+get paid), we would like to be robust to adversarial behavior among 
+non-cooperative workers, including collusion.
+
+Beyond crowdsourcing, the problem of ensuring rating quality in the presence 
+of adversaries has appeared in a variety of applications:
+\begin{enumerate}
+\item \textbf{Massive open online courses (MOOCs):} in massive open online 
+      courses, instructors often rely on peer-grading to achieve scalability 
+      \citep{piech2013tuned}. In this setting, there are clear incentives for 
+      students to collude in order to obtain inflated grades, so robustness to 
+      adversarial behavior is important.
+\item \textbf{Amazon book reviews:} \citet{harmon2004amazon} reports that 
+      many authors and filmmakers engage in dishonest tactics to inflate 
+      their reviews on amazon.com.
+\item \textbf{Online bulletin boards:} \citet{white1999chatting} reports that 
+      record companies pose as regular users on music forums to promote their 
+      artists.
+%\item \textbf{Twitter \& Facebook:} --- this might not be that compelling; 
+%   look at "Trafficking Fraudulent Accounts: 
+%            The Role of the Underground Market in Twitter Spam and Abuse" 
+% yelp?
+\item \textbf{Wikipedia:} \citet{priedhorsky2007creating} find that roughly 
+      $5\%$ of revisions on 
+      wikipedia are damaged in some way (e.g. by vandalism). Because wikipedia 
+      is primarily moderated by the crowd, building resilient ratings mechanisms 
+      is important for maintaining article quality.
+\end{enumerate}
+
 
 While we have stated a very concrete setup for simplicity, our results 
 hold in a substantially more general setting that we call \textbf{quantile 
