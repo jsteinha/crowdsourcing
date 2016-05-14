@@ -14,3 +14,6 @@ sfig:
 
 run:
 	evince main.pdf
+
+push:
+	scp main.pdf jsteinhardt@jamie.stanford.edu:~/www/nips2016crowdsourcing.pdf

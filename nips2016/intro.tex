@@ -1,6 +1,83 @@
 \section{Introduction}
 \label{sec:intro}
 
+% References:
+% An Analysis of Assessor Behavior in Crowdsourced Preference Judgments
+% Dongqing Zhu and Ben Carterette {zhu2010analysis}
+
+% NEW INTRO
+How can we reliably obtain information from humans, given that the humans 
+themselves are unreliable, and might even have incentives to mislead us?
+This question is important, for instance, if we wish to curate a large 
+dataset via crowdsourcing --- many of the workers in the crowd do not produce 
+high-quality data, but they are incentivized to fool us into thinking that 
+it is high-quality in order to get paid. This raises the question: given a 
+core of reliable workers, where the rest of the workers are unreliable and 
+potentially adversarial, can we obtain almost all of the data from the 
+reliable workers while allowing in almost none of the data from the 
+unreliable workers?
+
+In this work, we answer this question in the affirmative, under surprisingly 
+weak assumptions that improve substantially upon previous results. 
+In particular:
+\begin{itemize}
+\item We do not assume that there is a ``ground truth'' upon which to judge 
+      worker performance (except for a small number of our own post hoc judgments).
+\item We do not assume that the majority of workers are reliable.
+\item We do not assume that the unreliable workers conform to any statistical 
+      model; they could behave fully adversarially, in collusion with each other 
+      and with full knowledge of how the reliable workers behave.
+\item We do not assume that worker judgments match our own, but only that they are 
+      ``approximately monotonic'' in our judgments, in a sense that will be 
+      formalized later.
+\end{itemize}
+For concreteness, let us consider a simple formalization of the crowdsourcing 
+setting in which to describe our algorithm and results (our actual results hold 
+in a more general setting). We assume that there are $N$ workers, at least 
+$\alpha N$ of whom are reliable in the following sense: (i) $90\%$ of the data 
+that they produce is correct, and (2) when they judge whether someone else's data 
+is correct, they are right with probability at least $60\%$ and make independent 
+errors. Each worker is assigned to judge a randomly selected output from each 
+of $k$ other workers (also chosen at random). In addition, we ourselves judge 
+an output from each of $k'$ workers. The results of this paper imply the 
+following:
+
+\begin{theorem}
+\label{thm:intro}
+In the scenario above, suppose that $k \geq \Omega(1/\alpha^4\epsilon^4)$
+and that $k' >= \Omega(\log(1/\alpha)/\alpha\epsilon^2)$. Then, with probability 
+at least $90\%$, we will select $\alpha N$ workers, whose data is correct on 
+average with probability at least $0.9-\epsilon$.
+\end{theorem}
+In other words, compared to the situation where we know exactly who is reliable, 
+we obtain the same amount of data, and its average quality is worse by at most 
+$\epsilon$. Amazingly, the amount of work that each worker (and we ourselves) has 
+to do does not grow with $N$; it depends only on the fraction $\alpha$ of 
+reliable workers and the the desired accuracy $\epsilon$.
+
+Our results in fact hold in a more general setting where we have $N$ raters and 
+$M$ items, and a fraction $\alpha N$ of the raters are reliable; our goal is to 
+recover the \emph{$\beta$-quantile} of the items --- that is, the $\beta M$ items 
+that have the highest rating compared to our own judgment. In the setting above, 
+the raters are the workers and the items are the data they produce. Our goal 
+corresponded to recovering the $\alpha$-quantile, i.e. the data produced by the 
+$\alpha N$ reliable workers.
+
+Another scenario that our setting applies to is peer assessment in MOOCs (massive 
+online open courses). Here a single class could have thousands of students, 
+and to achieve scalability instructors often ask students to grade each others' 
+papers \citep{kulkarni2015peer,piech2013tuned}. 
+Some student graders will simply not have mastered the material themselves, 
+and some enterprising but dishonest students are likely to collude, and 
+so building grading systems that are robust to large errors as well as 
+collusion is crucial. 
+Our results apply to this setting as well, and imply that we can estimate the 
+$\beta$-quantile after asking each student to grade 
+$\Omega(1/\beta\alpha^3\epsilon^4)$ other student papers at random, and 
+grading $\Omega(\log(1/\alpha)/\beta\epsilon^2)$ papers ourselves.
+Estimating, say, the $0.1$-quantile is 
+sensible if we wish to assign A's to the top $10\%$ of the class. 
+
 Consider the following hypothetical scenario: it is the night before the 
 NIPS deadline, and you are a professor with an army of $n$ graduate students, 
 each of whom has written a paper.  Some fraction, $\goodraters$, of these 
