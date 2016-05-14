@@ -1,0 +1,56 @@
+\section{Algorithm}
+\label{sec:algorithm}
+
+
+We now describe our recovery algorithm. To fix notation, we assume that 
+there are $n$ raters and $m$ items, and that we observe a matrix 
+$\A \in [0,1]^{n \times m}$: $\A_{ij} = 0$ if rater $i$ does not rate item 
+$j$, and otherwise $\A_{ij}$ is the assigned rating; in the settings we 
+care about $\A$ is very sparse --- it will only have a constant number of 
+non-zero entries in each row. Remember that our goal is to recover the 
+$\beta m$ items according to our own rating (while only actually rating a 
+constant number of items).
+
+Our algorithm is based on the following intuition: the reliable raters must 
+(approximately) agree with each other, and so if we can somehow cluster the 
+rows of $\A$, then the reliable raters should form a single very large cluster 
+(of size $\alpha n$). There can only be $\frac{1}{\alpha}$ such clusters, and 
+so we can manually check the accuracy of each large cluster (for instance, 
+by randomly selecting some ratings and comparing them to our own rating) and 
+then choose the best one.
+Our algorithm differs from this outline due to various 
+optimizations, but adheres in spirit to the fundamental idea. 
+
+\input recover-M
+
+One major challenge in using the clustering intuition is the sparsity of 
+$\A$: any two rows of $\A$ will almost certainly have no ratings in common, 
+and so we must somehow exploit the global structure of $\A$ to discover 
+clusters, rather than using pairwise comparisons of rows.
+The key is to view our problem as a form of \emph{noisy matrix completion} --- 
+we imagine a matrix $\Aavg$ in which all of the ratings have been filled in 
+and all noise from individual ratings has been removed. We can then define a 
+matrix $\Mavg$ that indicates the top $\beta m$ items in each row of $\Aavg$: 
+$\Mavg_{ij} = 1$ if item $j$ has one of the top $\beta m$ ratings from rater $i$, 
+and $\Mavg_{ij} = 0$ otherwise. If we could recover $\Mavg$, we would be very 
+close to obtaining the clustering we wanted.
+
+The key observation that allows us to recover $\Mavg$ given only the noisy, 
+incomplete $\A$ is that \emph{$\Mavg$ has low-rank structure}: since all 
+of the reliable raters agree with each other, their rows in $\Mavg$ are all 
+identical, and so there is a submatrix of $\Mavg$ with $\alpha n$ rows that has 
+rank $1$. This inspires the low-rank matrix completion algorithm for recovering 
+$\M$ given in Algorithm~\ref{alg:recover-M}. Each row of $M$ is constrained 
+to have sum at most $\beta m$, and $M$ as a whole is constrained to have 
+nuclear norm $\|M\|_*$ at most $\frac{2}{\alpha \epsilon}\sqrt{\alpha\beta nm}$. 
+Recall that the \emph{nuclear norm} is the sum of the singular values of 
+$M$; in the same way that the $\ell^1$-norm is a convex surrogate for the 
+$\ell^0$-norm, the nuclear norm acts as a convex surrogate for the rank of $M$ 
+(i.e., number of non-zero singular values). The optimization problem 
+\eqref{eq:optimization-noisy} therefore chooses a set of $\beta m$ items in each 
+row to maximize the corresponding values in $\A$, while constraining the item 
+sets to have low rank (where low rank is relaxed to low nuclear norm to obtain 
+a convex problem). 
+This low-rank constraint acts as a strong regularizer that quenches the noise 
+in $\A$.
+
