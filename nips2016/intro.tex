@@ -59,9 +59,9 @@ Our results in fact hold in a more general setting where we have $N$ raters and
 $M$ items, and a fraction $\alpha N$ of the raters are reliable; our goal is to 
 recover the \emph{$\beta$-quantile} of the items --- that is, the $\beta M$ items 
 that have the highest rating compared to our own judgment. In the setting above, 
-the raters are the workers and the items are the data they produce. Our goal 
-corresponded to recovering the $\alpha$-quantile, i.e. the data produced by the 
-$\alpha N$ reliable workers.
+the raters are the workers and the items are the data they produce. Our original 
+goal corresponded to recovering the $\alpha$-quantile, i.e. the data 
+produced by the $\alpha N$ reliable workers.
 
 Another scenario that our setting applies to is peer assessment in MOOCs (massive 
 online open courses). Here a single class could have thousands of students, 
@@ -77,67 +77,6 @@ $\Omega(1/\beta\alpha^3\epsilon^4)$ other student papers at random, and
 grading $\Omega(\log(1/\alpha)/\beta\epsilon^2)$ papers ourselves.
 Estimating, say, the $0.1$-quantile is 
 sensible if we wish to assign A's to the top $10\%$ of the class. 
-
-Consider the following hypothetical scenario: it is the night before the 
-NIPS deadline, and you are a professor with an army of $n$ graduate students, 
-each of whom has written a paper.  Some fraction, $\goodraters$, of these 
-students are ``highly competent''---namely, they both produce good papers and 
-accurately review papers (i.e. determine whether a given paper is good 
-or not).  The remaining $1-\goodraters$ fraction of your graduate students 
-behave arbitrarily---some of them might still produce great papers, and some 
-might still give accurate reviews.  Of course, as the professor, you are also 
-capable of accurately reviewing papers.  You want to choose a large subset of 
-the students' papers to submit to NIPS, at least $\goodraters n$, and you want 
-to ensure that most of the submitted papers are good.  The question is how to 
-choose this subset while minimizing the amount of work you do (i.e. the number 
-of papers you review), as well as minimizing the number of papers you assign 
-each student to review. Unfortunately, you yourself have forgotten which students 
-in your lab are competent, so part of the task is to determine this.
-%
-Perhaps surprisingly, we show that even with an arbitrarily large number of 
-students, $n$, and even if the non-competent students are all colluding to 
-get their papers submitted, you can successfully accomplish this task while 
-performing only a constant amount of work yourself (dependent on the fraction 
-of ``highly competent'' students), and having each student only do a constant 
-amount of work!
-
-We can model this problem more precisely (as well as more generally) as follows: 
-we assume that there are $m$ items and $n$ raters. We define a matrix 
-$\Anom \in \{0,1\}^{n \times m}$ where $\Anom_{ij}$ denotes the rating that 
-rater $i$ assigns to item $j$ ($1$ if good and $0$ if bad); in the setting above, 
-the raters are graduate students and the items are papers. 
-The value $\Anom_{ij}$ is observed only if rater $i$ rates item $j$. 
-Similarly, we let the vector $\rtrue \in \{0,1\}^n$ denote 
-our own ratings of items, which we assume are accurate; as before, 
-$\rtrue_{j}$ is observed only if we rate item $j$.
-
-We make the following assumptions:
-\begin{enumerate}
-\item There is a set $\good$ of honest raters of size at least $\goodfrac n$, 
-      such that $\Anom_i$ agrees stochastically with $\rtrue$ in the sense that 
-      $\bP[\Anom_{ij} = \rtrue_j] \geq \frac{2}{3}$ for all $i \in \sC$ and 
-      $j \in [m]$, and furthermore the $\Anom_{ij}$ are independent.
-\item For the dishonest raters, $\Anom_{ij}$ can be chosen adversarially, 
-      with full knowledge of which ratings everyone was assigned and how the 
-      honest raters behaved, and in collusion with all of the other 
-      dishonest raters.
-\end{enumerate}
-Assuming that there are at least $\beta m$ good items, our goal is to obtain 
-a set $T \subseteq [m]$ of size $\beta m$, such that 
-$\frac{1}{\beta m} \sum_{j \in T} \rtrue_j \geq 1-\epsilon$.
-The reults of this paper imply that we can do this with minimal work per rater, 
-as long as the number of raters is comparable to the number of items:
-\begin{theorem}
-\label{thm:main-1}
-Suppose that each rater is assigned $k$ items to rate at random, and that we rate 
-$k_0$ items at random. Then, assuming that $k \geq \Omega\p{\frac{1}{\alpha^3\beta\epsilon^4} + \frac{\log(1/\delta)}{\alpha\beta\epsilon^2}}$, and 
-$k_0 \geq \Omega\p{\frac{\log(1/\alpha\delta)}{\alpha\beta\epsilon^2}}$, 
-with probability $1-\delta$ we can recover a set $T$ of size $\gooditems m$, 
-such that $\frac{1}{\gooditems m} \sum_{j \in T} \rtrue_j \geq 1-\epsilon$.
-\end{theorem}
-The main computational step in the recovery algorithm involves solving a 
-nuclear-norm constrained optimization problem (where all of the remaining 
-constraints are linear inequalities). \todo{talk about runtime?}
 
 % Overview of Related Work
 % Budget-Optimal Task Allocation for Reliable Crowdsourcing Systems
@@ -179,75 +118,89 @@ constraints are linear inequalities). \todo{talk about runtime?}
 %  seems very similar to ours, but they assume online feedback of ground truth
 %  {resnick2007influence}
 
-Beyond the professorial scenario above, the above setup
-models the challenge of crowdsourcing the creation of a large 
-dataset, as well as the more general problem of \emph{peer prediction} 
+Our paper is organized as follows: in Section~\ref{sec:algorithm}, we 
+present our algorithm and explain the intuition behind it, as well as why 
+some similar algorithms would be less robust to adversaries. In 
+Section~\ref{sec:approach}, we present our formal assumptions and explain 
+the key ingredients in our proof, with technical details deferred to the 
+appendix. % TODO other sections?
+
+\paragraph{Related work.}
+Our setting is closely related to the problem of \emph{peer prediction} 
 \citep{miller2005eliciting}, in which we wish to obtain truthful information 
 from a population of raters by exploiting inter-rater agreement. 
 While several mechanisms have been proposed for these tasks, 
-they typically assume that there are ``gold labels'' that can be used 
-to assess rater performance \citep{resnick2007influence}, that raters are 
+they typically assume that rater accuracy is observable online
+\citep{resnick2007influence}, that raters are 
 rational agents maximizing a payoff function \citep{dasgupta2013crowdsourced,
 kamble2015truth,shnayder2016strong}, that the workers follow a simple 
 statistical model \citep{karger2014budget,zhang2014crowdsourcing,
 zhou2015regularized}, or some combination of the above \citep{shah2015double,
 shah2015approval}. 
 
-In this work we are motivated by cases where there is not necessarily a single 
-correct answer --- for instance, tasks such as ``draw an interesting picture'' 
-or ``translate this sentence'', where different workers could generate different 
-equally good answers. In this case, the only way to evaluate quality is 
-via evaluation by other workers or by the manager of the experiment. 
-Moreover, since workers will often try to game the system (in order to 
-get paid), we would like to be robust to adversarial behavior among 
-non-cooperative workers, including collusion.
+In crowdsourcing, it is common to use ``gold sets'' -- questions where the 
+ground truth is known -- to assess worker performance. 
+However, there are tasks for which gold sets do not make sense
+--- for instance, ``draw an interesting picture'' or ``translate this sentence'', 
+where there are different equally good answers. In this case, the only way to 
+evaluate quality is via evaluation by other workers or by the manager of 
+the experiment. Even for more straightforward tasks, \citet{vuurens2011spam} 
+suggest that workers may be able to identify gold set questions in some 
+instances. Beyond crowdsourcing, there are settings where human judgment is 
+necessary and where there are documented attempts to game the system --- 
+\citet{harmon2004amazon} reports that many authors and filmmakers 
+engage in dishonest tactics to inflate their reviews on amazon.com, while 
+\citet{priedhorsky2007creating} find that roughly $5\%$ of revisions on 
+wikipedia are damaged in some way (e.g. by vandalism). In such settings where 
+content is primarily moderated by the crowd, building resilient ratings 
+mechanisms is important for maintaining quality.
 
-Beyond crowdsourcing, the problem of ensuring rating quality in the presence 
-of adversaries has appeared in a variety of applications:
-\begin{enumerate}
-\item \textbf{Massive open online courses (MOOCs):} in massive open online 
-      courses, instructors often rely on peer-grading to achieve scalability 
-      \citep{piech2013tuned}. In this setting, there are clear incentives for 
-      students to collude in order to obtain inflated grades, so robustness to 
-      adversarial behavior is important.
-\item \textbf{Amazon book reviews:} \citet{harmon2004amazon} reports that 
-      many authors and filmmakers engage in dishonest tactics to inflate 
-      their reviews on amazon.com.
-\item \textbf{Online bulletin boards:} \citet{white1999chatting} reports that 
-      record companies pose as regular users on music forums to promote their 
-      artists.
-%\item \textbf{Twitter \& Facebook:} --- this might not be that compelling; 
-%   look at "Trafficking Fraudulent Accounts: 
-%            The Role of the Underground Market in Twitter Spam and Abuse" 
-% yelp?
-\item \textbf{Wikipedia:} \citet{priedhorsky2007creating} find that roughly 
-      $5\%$ of revisions on 
-      wikipedia are damaged in some way (e.g. by vandalism). Because wikipedia 
-      is primarily moderated by the crowd, building resilient ratings mechanisms 
-      is important for maintaining article quality.
-\end{enumerate}
+% TODO: who to cite?
+% Improved Graph Clustering {chen2014improved}
+% A Proof Of The Block Model Threshold Conjecture
+% Community detection thresholds and the weak ramanujan property.
+%  Community detection in sparse networks via Grothendieck's inequality
+Our technical tools draw on semidefinite programming methods for matrix 
+completion, which have been used to study graph clustering as well 
+as the stochastic block model \citep{holland1983stochastic,condon2001algorithms}. 
+Our setting corresponds to the sparse case where all nodes have constant degree, 
+which has recently seen great interest \citep{decelle2011asymptotic,
+mossel2012stochastic,mossel2013proof,mossel2013belief,
+massoulie2014community,guedon2014community,mossel2015consistency,
+chin2015stochastic,abbe2015community,makarychev2015learning}. 
+\citet{makarychev2015learning} in particular provide an algorithm that is 
+robust to adversarial perturbations, but only if the perturbation has 
+size $o(N)$; see also \citet{cai2015robust} for robusness results when 
+the node degree is logarithmic.
+% NOTE: decelle2011asymptotic make a conjecture that implies 
+% 1/alpha^2epsilon^2 is tight even in a very simple case
 
 
-While we have stated a very concrete setup for simplicity, our results 
-hold in a substantially more general setting that we call \textbf{quantile 
-estimation}. The ratings are now allowed to lie in $[0,1]$, and 
-our goal is to recover the \emph{$\beta$-quantile} $Q_{\beta}$ of 
-$\rtrue$, defined as the $\beta m$ indices $j$ for which $\rtrue_j$ is largest. 
-In order to do this, we need to make $3$ assumptions, which are relaxations of 
-the assumptions above: (1) the $\beta$-quantile of each of the honest raters 
-matches the $\beta$-quantile of $\rtrue$; (2) the ratings in $\rtrue$ are a 
-Lipschitz function of the average rating 
-$\frac{1}{|\good|}\sum_{i \in \good} \Anom_i$; and (3) the ratings assigned by 
-the honest raters are sufficiently independent for typical matrix 
-concentration bounds to hold. We formalize these assumptions in 
-Section~\ref{sec:assumptions}. \todo{talk about stochastic block model}
+Several authors have considered semirandom settings for graph clustering, which 
+allow for some types of adversarial behavior \citep{feige2000finding,
+feige2001heuristics,coja2004coloring,krivelevich2006semirandom,
+coja2007solving,makarychev2012approximation,chen2014improved,guedon2014community,
+moitra2015robust,agarwal2015multisection}. 
+In our setting, these semirandom models would need to assume that the adversaries 
+assign lower ratings in expectation to all of the good items than all of 
+the reliable raters do, which is implausible. 
+In removing this assumption, we face a key technical challenge: while previous 
+analyses consider errors relative to a ground truth clustering 
+\citep[e.g.][]{chen2014improved}, in our setting 
+the ground truth only exists for rows of the matrix corresponding to reliable 
+raters, while the remaining rows could behave arbitrarily even in the limit 
+where all ratings are observed. This necessitates a more careful analysis, 
+which has the advantage of clarifying which properties of previous clustering 
+models were necessary and which were superfluous.
 
-The rest of the paper is organized as follows. In Section~\ref{sec:assumptions}, 
-we state our formal assumptions and main results, and show some concrete 
-settings in which they apply. In Section~\ref{sec:approach}, we outline a proof 
-of our main results and present a concrete algorithm for $\beta$-quantile 
-estimation, deferring the more technical proofs until later. 
-In Section~\ref{sec:subgradient-proof}, we provide the proof of 
-Proposition~\ref{prop:subgradient}, which is the key result bounding the effect 
-that the adversaries can have on the solution quality. We end in 
-Section~\ref{sec:discussion} with a discussion.
+The work most closely related to ours is that of \citet{christiano2014provably,
+christiano2016robust}, who studies online collaborative prediction in 
+the presence of adversaries; roughly, when raters interact with an item 
+they predict its quality and afterwards observe the actual quality; the 
+goal is to minimize the number of incorrect 
+predictions among the honest raters. This differs from our setting in that 
+(i) the raters are trying to learn the item qualities as part of the task, 
+and (ii) there is no requirement to induce a final global estimate of the 
+high-quality items, which is necessary for estimating quantiles.
+It seems possible however that there are theoretical ties between this 
+setting and ours, which would be interesting to explore.
