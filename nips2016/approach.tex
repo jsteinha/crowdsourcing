@@ -248,6 +248,12 @@ Expanding $\langle \Aa_{\good}, \Mm_{\good} - \M_{\good} \rangle$ as
 $\frac{k}{n}\sum_{i \in \good}\p{\sum_{j \in [m]} (R_{ij} - \M_{ij})\Aavg_{ij}}$,
 we obtain 
 \[ \frac{1}{|\good|}\frac{1}{\beta m}\sum_{i \in \good}\Big(\sum_{j \in T^*} \Aavg_{ij} - \sum_{j \in [m]} \M_{ij}\Aavg_{ij}\Big) \leq (1+\sqrt{2})\epsilon. \]
+Finally, by the $(L,\epsilon_0)$-Lipschitz condition, we have (see \ref{sec:lipschitz-justification} for details)
+\begin{align}
+\frac{1}{|\good|}\frac{1}{\beta m}\sum_{i \in \good}\Big(\sum_{j \in T^*} \ravg_j - \sum_{j \in [m]} \M_{ij}\ravg_j\Big) 
+&\leq L \cdot \frac{1}{|\good|}\frac{1}{\beta m}\sum_{i \in \good}\Big(\sum_{j \in T^*} \Aavg_{ij} - \sum_{j \in [m]} \M_{ij}\Aavg_{ij}\Big) + \epsilon_0 \\
+&\leq L \cdot (1+\sqrt{2})\epsilon + \epsilon_0.
+\end{align}
 The desired result then follows after scaling down $\epsilon$ 
 by a factor of $1+\sqrt{2}$.
 
