@@ -1,0 +1,32 @@
+\begin{tikzpicture}
+\coordinate (O) at (0,0);
+\coordinate (x-ax) at (5,0);
+\coordinate (y-ax) at (0,4);
+\coordinate (R-below) at (3.5,-0.3);
+\coordinate (R-above) at (3.5,4.2);
+\coordinate (M-star) at (3.5, 2.9);
+\coordinate (B) at (3.1, 3.8);
+\coordinate (Bz) at (3.62, 3.5);
+\coordinate (Px) at (2,0);
+\coordinate (Py) at (5,3.1);
+\def\r{0.18855534709193245};
+\coordinate (P-ex) at (3.5+\r*3.5-\r*2,2.9+\r*2.9);
+\fill [opacity=0.3,blue]
+  (Px) -- (M-star) -- (Py) -- (x-ax) -- cycle;
+\draw (Px) edge[thick,blue!80!black] node[midway, above, sloped,black] {\scriptsize $\|M\|_*\!\leq\!\rho$} (M-star);
+\draw (M-star) edge[thick,blue!80!black] (Py);
+\draw (M-star) edge[densely dotted,blue!80!black] (P-ex);
+\draw (B) edge[densely dotted] (P-ex);
+\draw (O) edge[thick,->] (x-ax);
+\draw (O) edge[thick,->] (y-ax);
+\draw (R-below) edge[dashed] (R-above);
+\node[below=-0.15em of R-below] {\scriptsize $M_{\good} = R_{\good}$};
+\node[right=0.0em of x-ax] {$M_{\good}$};
+\node[above=0.0em of y-ax] {$M_{\bad}$};
+\fill (M-star) circle(1.5pt);
+\node[below right=-0.1em and -0.1em of M-star] {\scriptsize $M^*$};
+\draw (M-star) edge[->] (B);
+\draw (M-star) edge[->] (Bz);
+\node[above left=-0.19em and -0.27em of B] {\scriptsize $B$};
+\node[above right=-0.19em and -0.47em of Bz] {\scriptsize $B\!-\!Z$};
+\end{tikzpicture}

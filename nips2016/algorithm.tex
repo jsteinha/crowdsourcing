@@ -6,10 +6,11 @@ We now describe our recovery algorithm. To fix notation, we assume that
 there are $n$ raters and $m$ items, and that we observe a matrix 
 $\A \in [0,1]^{n \times m}$, obtained by asking each rater to rate $k$ 
 items chosen at random: $\A_{ij} = 0$ if rater $i$ does not rate item 
-$j$, and otherwise $\A_{ij}$ is the assigned rating. In the settings we 
+$j$, and otherwise $\A_{ij}$ is the assigned rating, which takes values 
+in $[0,1]$. In the settings we 
 care about $\A$ is very sparse --- it will only have a constant number of 
 non-zero entries in each row. Remember that our goal is to recover the 
-$\beta m$ items according to our own rating (while only actually rating a 
+$\beta m$ best items according to our own rating (while only actually rating a 
 constant number of items).
 
 Our algorithm is based on the following intuition: the reliable raters must 
@@ -39,7 +40,7 @@ close to obtaining the clustering we wanted.
 The key observation that allows us to recover $\Mavg$ given only the noisy, 
 incomplete $\A$ is that \emph{$\Mavg$ has low-rank structure}: since all 
 of the reliable raters agree with each other, their rows in $\Mavg$ are all 
-identical, and so there is a submatrix of $\Mavg$ with $\alpha n$ rows that has 
+identical, and so there is an $(\alpha n) \times m$ submatrix of $\Mavg$ with 
 rank $1$. This inspires the low-rank matrix completion algorithm for recovering 
 $\M$ given in Algorithm~\ref{alg:recover-M}. Each row of $M$ is constrained 
 to have sum at most $\beta m$, and $M$ as a whole is constrained to have 
@@ -69,7 +70,7 @@ $T_0$ be the average of these $\M_i$. The only catch is that $T_0$ lies in
 $[0,1]^m$ rather than $\{0,1\}^m$, so it is not necessarily the indicator 
 function of a set. To remedy this, we use a randomized rounding algorithm to 
 obtain a set $T$ whose quality matches $T_0$ in expectation. This algorithm 
-is described in detail in Section~\ref{sec:round}.
+is described in detail in Section~\ref{sec:rounding}.
 
 In summary, given a noisy rating matrix $\Aobs$, we will first run 
 Algorithm~\ref{alg:recover-M} to recover a $\beta$-quantile matrix $\M$ for 

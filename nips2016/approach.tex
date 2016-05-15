@@ -131,9 +131,9 @@ but which will be useful for analysis purposes:
 \notag \text{ subject to } &M_{\good} = R_{\good}, \\
 \notag  &0 \leq M_{ij} \leq 1 \,\,\, \forall i,j,  \\
 %  &&\hskip-0.4in\sum_j M_{ij} \leq 1 \,\,\, \forall i, \\
-\notag  &\sum_j M_{ij} \leq \beta m \,\,\, \forall i, 
+\notag  &\sum_j M_{ij} \leq \beta m \,\,\, \forall i, \\
 %  &&\hskip-0.4in\|M\|_* \leq \frac{2}{\alpha\epsilon}\sqrt{\frac{\alpha n}{\beta m}}, \phantom{xxxxxxx}
-  &\|M\|_* \leq \frac{2}{\alpha\epsilon}\sqrt{\alpha\beta nm} \phantom{xxxxxxx}
+\notag  &\|M\|_* \leq \frac{2}{\alpha\epsilon}\sqrt{\alpha\beta nm} \phantom{xxxxxxx}
 \end{align}
 Our goal is to show that $\M$ is ``close'' to $\Mm$. 
 Following an idea of \citet{guedon2014community}, we have the following result:
@@ -167,18 +167,31 @@ result?}
 
 \paragraph{Part 2: bounding the influence of adversaries.} 
 Next, we need to show that the nuclear norm constraint does 
-not create too much bias in the de-noised program 
-\eqref{eq:optimization-noiseless}. Note that this is the \emph{only} constraint 
-that affects more than one row in \eqref{eq:optimization-noiseless}, and without 
-it it would be apparent that every $M^*_i$, for $i \in \good$, would be equal to the 
-$\beta$-quantile $Q_{\beta}$. Our goal is to show that the nuclear norm 
-constraint doesn't create too much dependence between the rows, which we can 
-formalize by bounding the Lagrangian of \eqref{eq:optimization-noiseless}. 
-Doing so leads to:
+not give the adversaries too much influence over the de-noised program 
+\eqref{eq:optimization-noiseless}; this is the most novel aspect 
+of our argument.
 
+Suppose that the constraint on $\|M\|_*$ were not present in 
+\eqref{eq:optimization-noiseless}. Then the adversaries would have 
+no influence on $\Mm_{\good}$, because all the remaining constraints 
+in \eqref{eq:optimization-noiseless} are separable across rows. 
+How can we quantify the effect of this nuclear norm constraint?
+We exploit Lagrangian duality, which allows us to replace constraints 
+with appropriate modifications to the objective function.
+
+\input lagrangian-figure
+
+In this instance, 
+Lagrangian duality guarantees that \eqref{eq:optimization-noiseless} has the 
+same solution as a modified problem where the constraint on $\|M\|_*$ is removed, 
+and the objective is modified to $\langle B - Z, M \rangle$, for an appropriately 
+chosen $Z$. In particular, $Z$ lies in the subgradient of 
+$\mu \|M\|_*$ for some $\mu > 0$.
+If we analyze $Z$ in detail, we obtain the following result:
 \begin{proposition}
 \label{prop:subgradient}
-Let $\fac = \Omega\p{\frac{1}{\alpha\beta\epsilon^2}\frac{m}{n}}$. Then there exists a matrix $Z$ with 
+Suppose that $k = \Omega\p{\frac{1}{\alpha\beta\epsilon^2}\frac{m}{n}}$. 
+Then there exists a matrix $Z$ with 
 $\rank(Z) = 1$, $\|Z\|_F \leq \epsilon \sqrt{\alpha\beta mn}$ such that
 \begin{align}
 \langle \Aa_{\good} - Z_{\good}, \Mm_{\good} - M_{\good} \rangle &\leq \langle \Aa, \Mm - M \rangle \text{ for all $M \in \sP$}.
@@ -221,6 +234,7 @@ by a factor of $1+\sqrt{2}$.
 
 \subsection{Recovering $T$ (Algorithm~\ref{alg:recover-T})}
 \label{sec:approach-T}
+\label{sec:rounding}
 
 The algorithm for recovering $Q_{\beta}(\rtrue)$ from $\M$ and $\robs$ 
 is simple, and involves two steps:
