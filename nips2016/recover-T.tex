@@ -13,7 +13,7 @@
 \State $T_0 \gets \frac{1}{|\sC|} \sum_{i \in \sC} \M_i$. \Comment{$T_0 \in [0,1]^m$}
 \While{{\bfseries true}}
 \State $T \gets \textsc{RandomizedRound}(T_0)$ \Comment{$T \in \{0,1\}^m$}
-\If{$\sum_{j} (T_j - (T_0)_j)\robs_j \geq -\epsilon$}
+\If{$\sum_{j} (T_j - (T_0)_j)\robs_j \geq -\frac{\epsilon}{3}\beta k$}
 \State Output $T$
 \EndIf
 \EndWhile
