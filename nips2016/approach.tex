@@ -308,7 +308,7 @@ be defined as $T_0 \eqdef \frac{1}{|\goodapprox|} \sum_{i \in \goodapprox} \M_i$
 We will use randomized rounding to obtain a vector $T \in \{0,1\}^m$ such that 
 $\bE[T_0] = T$; $T$ is then the indicator function of our desired set.
 Our rounding procedure is given in Algorithm~\ref{alg:round}; the following 
-lemma asserts its correctness:
+lemma, proved in \ref{sec:rounding-proof}, asserts its correctness:
 \begin{lemma}
 \label{lem:rounding}
 The output $T$ of Algorithm~\ref{alg:round} satisfies $\bE[T] = T_0$, 
@@ -329,4 +329,5 @@ small for all of the rounds, implying that the accepted set $T$ satisfies
 \sum_{j \in T} \ravg_j &\geq \frac{m}{k}\sum_{j \in T} \robs_j - \frac{\epsilon}{3}\beta m \\
  &\geq \frac{m}{k}\sum_{j \in [m]} (T_0)_j \robs_j - \frac{2\epsilon}{3}\beta m \geq \sum_{j \in T^*} \ravg_j - (\epsilon_1+\epsilon),
 \end{align}
-as was to be shown.
+which is what we wanted to show in Proposition~\ref{prop:recover-T}. We refer 
+the reader to Section~\ref{sec:recover-T-proof} for a more detailed proof.
