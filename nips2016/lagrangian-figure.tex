@@ -1,6 +1,6 @@
 \begin{figure}
 \begin{tikzpicture}[scale=5/6, every node/.style={scale=5/6}]
-\def\s{6}
+\def\s{6.7}
 \def\x{0*\s};
 \def\y{0*\s};
 \def\X{1*\s};
@@ -13,6 +13,7 @@
 \def\By{\Msy+0.12*\s};
 \def\plx{0.7*\s};
 \def\ply{\x};
+\def\ex{\X-0.14*\s}
 \coordinate (O) at (\x,\y);
 \coordinate (Cx) at (\X,\y);
 \coordinate (Cy) at (\x,\Y);
@@ -26,10 +27,16 @@
 \def\Bpx{{\Bx-(\By-\Msy)/(\Msx-\pux)*(\puy-\Msy)}};
 \def\Bpy{\Msy};
 \coordinate (Bp) at (\Bpx,\Bpy);
+\draw[opacity=0,name path=l--c] (M-star) -- (p-l);
+\draw[opacity=0,name path=l--b] (p-u) -- (M-star);
+\draw[opacity=0,name path=l--a] (\ex,\X) -- (\ex,\x);
+\path [name intersections={of=l--a and l--b,by=e1}];
+\path [name intersections={of=l--a and l--c,by=e2}];
 \fill [opacity=0.3,gray] (O) -- (Cy) -- (C) -- (Cx) -- cycle;
 \fill [opacity=0.3,blue]
   (O) -- (Cy) -- (p-u) -- (M-star) -- (p-l) -- cycle;
-\draw (p-u) edge[thick,blue!70!black] node[midway,below,sloped] {$\|M\|_* \leq \rho$} (M-star);
+\draw (p-u) edge[thick,blue!70!black] node[pos=0.4,below,sloped] {$\|M\|_* \leq \rho$} (M-star);
+\fill [opacity=0.3,red] (e1) -- (M-star) -- (e2) -- cycle;
 \draw (M-star) edge[thick,blue!70!black] (p-l);
 \draw (O) edge[thick,->] (x-ax);
 \draw (O) edge[thick,->] (y-ax);
@@ -46,6 +53,7 @@
 \node[right=-0.1em of x-ax] {$M_{\good}$};
 \node[above=-0.1em of y-ax] {$M_{\bad}$};
 \node[below left=-0.3em and -0.1em of M-star] {$M^*$};
+\draw (\ex,\X+0.08*\s) edge[dashed,red!70!black] node[pos=0.43,above,rotate=90,scale=0.68,red!50!black] {$\langle B_{\sC}\!-\!Z_{\sC}, M^*\!-\!M \rangle \leq \epsilon$} (\ex,\x-0.09*\s);
 
 \end{tikzpicture}
 \caption{Illustration of our Lagrangian duality argument, and of the role 
