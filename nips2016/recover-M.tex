@@ -2,10 +2,10 @@
 \caption{Algorithm for recovering $\beta$-quantile matrix $\M$ from 
 noisy ratings $\A$.}
 \label{alg:recover-M}
-\begin{algorithmic}
-\STATE Parameters: reliable fraction $\alpha$, quantile $\beta$
-\STATE Input: matrix $\A$ of noisy ratings
-\STATE Let $\M$ be the solution of the optimization problem \eqref{eq:optimization-noisy}:
+\begin{algorithmic}[1]
+\State Parameters: reliable fraction $\alpha$, quantile $\beta$, tolerance $\epsilon$
+\State Input: matrix $\A$ of noisy ratings
+\State Let $\M$ be the solution of the optimization problem \eqref{eq:optimization-noisy}:
   \begin{align}
   \label{eq:optimization-noisy}
   \text{maximize } &\langle \A, M \rangle, \\
@@ -17,6 +17,6 @@ noisy ratings $\A$.}
   \notag                    &\|M\|_* \leq \frac{2}{\alpha\epsilon}\sqrt{\alpha\beta nm}, \phantom{xxxxxxx}
   \end{align}
   where $\|\cdot\|_*$ denotes nuclear norm.
-\STATE Output $\M$.
+\State Output $\M$.
 \end{algorithmic}
 \end{algorithm}

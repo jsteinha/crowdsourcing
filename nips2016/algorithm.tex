@@ -54,3 +54,25 @@ a convex problem).
 This low-rank constraint acts as a strong regularizer that quenches the noise 
 in $\A$.
 
+\input recover-T
+
+Once we have recovered $\M$ using Algorithm~\ref{alg:recover-M}, it remains to 
+recover a specific set $T$ that approximates the $\beta$-quantile according to 
+our ratings. Algorithm~\ref{alg:recover-T} provides a simple recipe for doing so: 
+first, rate $k'$ items at random, obtaining a vector $\robs$ similar to to 
+$\Aobs$: $\robs_j = 0$ if we did not rate item $j$, and otherwise $\robs_j$ is 
+the (possibly noisy) rating that we assign to item $j$. Second, pick the 
+$\alpha n$ rows whose item sets score highest according to our rating: that is, 
+the indices $i$ for which $\sum_j \M_{ij}\robs_j$ is highest. Finally, let 
+$T_0$ be the average of these $\M_i$. The only catch is that $T_0$ lies in 
+$[0,1]^m$ rather than $\{0,1\}^m$, so it is not necessarily the indicator 
+function of a set. To remedy this, we use a randomized rounding algorithm to 
+obtain a set $T$ whose quality matches $T_0$ in expectation. This algorithm 
+is described in detail in Section~\ref{sec:round}.
+
+In summary, given a noisy rating matrix $\Aobs$, we will first run 
+Algorithm~\ref{alg:recover-M} to recover a $\beta$-quantile matrix $\M$ for 
+each rater, and then run Algorithm~\ref{alg:recover-T} to recover our 
+personal $\beta$-quantile from $\M$.
+
+\paragraph{Remarks.} 

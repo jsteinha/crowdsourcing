@@ -27,7 +27,7 @@
 \usepackage{ifthen}
 \usepackage[utf8]{inputenc}
 \usepackage{color}
-\usepackage{algorithm,algorithmic}
+\usepackage{algorithm,algorithmicx,algcompatible,algpseudocode}
 
 \input std-macros
 \input macros
@@ -92,7 +92,9 @@
 }
 
 \begin{document}
+\algrenewcomment[1]{\hfill $\triangleright$ #1}
 % \nipsfinalcopy is no longer used
+\renewcommand{\paragraph}[1]{\textbf{#1}}
 
 \maketitle
 
