@@ -300,6 +300,15 @@ best rows according to $\rtrue$. Our analysis follows that of
 inequalities for the cumulant function. \todo{Greg can you fill in this 
 citation?}
 
+Once we have recovered a set $\goodapprox$ of good rows, we need to turn this 
+into an actual set $T \subset [m]$. To this end, first let $T_0 \in [0,1]^m$ 
+be defined as $T_0 \eqdef \frac{1}{|\goodapprox|} \sum_{i \in \goodapprox} \M_i$. 
+We will use randomized rounding to obtain a vector $T \in \{0,1\}^m$ such that 
+$\bE[T_0] = T$; $T$ is then the indicator function of our desired set.
+Our rounding procedure is given in Algorithm~\ref{alg:round}:
+
+\input round
+
 Proposition~\ref{prop:robs-rtrue} together with Theorem~\ref{thm:main-M} 
 implies that $\sum_j \rdist_j \rtrue_j \geq \frac{1}{\beta m} \sum_{j \in Q_{\beta}(r^*)} \rtrue_j - 2\epsilon$. In a sense, we could stop here and be satisfied --- 
 the distribution $\rdist$ is a good approximation to the uniform distribution 
@@ -321,18 +330,3 @@ $1-\delta$ we will accept within $3\log(1/\delta)$ steps.
 
 \todo{this is a bit sloppy, clean this up}
 \todo{unified theorem, with proof}
-
-%%% TODO --- this is good intuition, should include it somewhere
-%%% At a high level, our strategy is the following --- since $\Mm$ is already optimized 
-%%% on the rows outside of $\good$, we should (``morally'', though not in actuality) have 
-%%% $\langle \Aa_{\neg \good}, \Mm_{\neg \good} \rangle \geq \langle \Aa_{\neg \good}, \M_{\neg \good} \rangle$. 
-%%% 
-%%% Looking back at the rows inside $\good$, we must therefore have 
-%%% $\langle \Aa_{\good}, \M_{\good} \rangle \geq \langle \Aa_{\good}, \Mm_{\good} \rangle - \epsilon \alpha n$, 
-%%% which is exactly the statement \eqref{eq:M-bound} with $(1+\sqrt{2})\epsilon$ replaced by $\epsilon$.
-%%% 
-%%% The problem with the above argument is that, even though $\Mm$ is optimized on $\neg \good$, the rows in 
-%%% $\good$ and $\neg \good$ are coupled by the joint constraint $\|M\|_* \leq \frac{2}{\epsilon\alpha}$. We 
-%%% will decouple the rows by taking the subgradient of the Lagrangian at $\Mm$, which yields an upper bound 
-%%% for our optimization problem. By doing this we obtain:
-

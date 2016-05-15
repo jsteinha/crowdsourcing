@@ -1,0 +1,17 @@
+\begin{algorithm}[h!]
+\caption{Randomized rounding algorithm.}
+\label{alg:round}
+\begin{algorithmic}[1]
+\Procedure{RandomizedRound}{$T_0,\epsilon$}
+\Comment{$T_0 \in [0,1]^m$ satisfies $\|T_0\|_1 \leq \beta m$}
+\State Let $s_j \gets \sum_{j'=1}^j (T_0)_{j'}$ for $j = 0,\ldots,m$ \Comment{vector of partial sums}
+\State Sample $u \sim \Uniform([0,1])$.
+\State $T \gets \{\}$
+\For{$k = 0$ {\bfseries to} $\beta m - 1$}
+\State Find $j$ such that $u+k \in [s_{j-1},s_j)$.
+\State $T \gets T \cup \{j\}$
+\EndFor
+\State \Return $T$
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
