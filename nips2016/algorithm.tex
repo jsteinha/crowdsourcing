@@ -4,8 +4,9 @@
 
 We now describe our recovery algorithm. To fix notation, we assume that 
 there are $n$ raters and $m$ items, and that we observe a matrix 
-$\A \in [0,1]^{n \times m}$: $\A_{ij} = 0$ if rater $i$ does not rate item 
-$j$, and otherwise $\A_{ij}$ is the assigned rating; in the settings we 
+$\A \in [0,1]^{n \times m}$, obtained by asking each rater to rate $k$ 
+items chosen at random: $\A_{ij} = 0$ if rater $i$ does not rate item 
+$j$, and otherwise $\A_{ij}$ is the assigned rating. In the settings we 
 care about $\A$ is very sparse --- it will only have a constant number of 
 non-zero entries in each row. Remember that our goal is to recover the 
 $\beta m$ items according to our own rating (while only actually rating a 
@@ -93,7 +94,7 @@ item indices permuted by a random permutation of $\{1,\ldots,m\}$. In this case,
 there is no way to distinguish the honest from the dishonest raters except by 
 breaking the symmetry with our own ratings.
 
-Finally, we observe that the constraint $\sum_j M_{ij} \leq \beta m$ is 
+Finally, the constraint $\sum_j M_{ij} \leq \beta m$ is 
 not typical in the literature. For instance, \citep{chen2014improved} 
 instead normalize $\A$ to lie in $[-1,1]^{m \times m}$ but place no 
 constraint on the sum of each row in $M$ (instead of recovering 
@@ -104,4 +105,5 @@ rates the remaining items as low as possible. If the actual set of
 high-quality items has density much smaller than $50\%$, then the 
 spammer might have undue influence relative to honest raters that 
 only give high ratings to e.g. $10\%$ of the items. Normalizing $M$ to 
-have the same total sum in each row prevents this.
+have the same total sum in each row prevents this (see 
+Appendix~\ref{sec:normalization} for a more formal version of this argument).

@@ -1,5 +1,78 @@
-\section{Approach}
+\section{Assumptions and Approach}
+\label{sec:assumptions}
 \label{sec:approach}
+
+We now state our assumptions more formally, state the general form 
+of our results, and outline the key ingredients of the proof.
+Recall that we obtain a matrix $\A \in [0,1]^{n \times m}$ by asking each 
+rater $i \in [n]$ to rate $k$ items chosen at random from $[m]$.
+Let $\sC \subset [n]$ be the set of reliable raters, where $|\sC| \geq \alpha n$.
+Our main assumption is that the reliable raters make independent errors. We also 
+need a way of measuring agreement between our ratings and those of the reliable 
+raters; the amount of agreement will show up in our final error bounds --- if 
+there is no agreement then the error will be high. We formalize both the 
+independence assumption and the notion of agreement below.
+
+\begin{assumption}[Independence]
+\label{ass:independent}
+The values $\A_{i,j}$ for $i \in \sC$, $j \in [m]$, are 
+jointly independent.
+In addition, the values $\robs_j$ are jointly independent 
+of each other as well as of $\A$ (including $\A_i$ for $i \not \in \sC$).
+\end{assumption}
+Note that Assumption~\ref{ass:independent} allows the unreliable ratings to 
+depend on the reliable ratings, allows arbitrary collusion among the unreliable 
+raters, and even allows the unreliable raters to know the pattern of random 
+assignments of the ratings. The only restriction on the unreliable raters is 
+that they may not depend on \emph{our} randomness (i.e., the randomness in 
+$\robs$). This can be ensured, for instance, if we wait to generate our 
+personal randomness until after everyone else has submitted their ratings 
+(assuming the adversaries don't gain access to our pseudorandom seed). We are 
+also implicitly assuming that the adversaries cannot influence the set of 
+items in a way that causes us or the reliable raters to accidentally rate a bad 
+item highly or vice versa.
+
+We next need a way of formalizing the idea that the reliable raters should 
+agree with us. To this end, we let 
+$\Aavg_{i,j} \eqdef \bE[\A_{i,j}]$ and $\ravg_j \eqdef \bE[\robs_j]$. We 
+would like $\Aavg$ to be approximately increasing with $\ravg$:
+\begin{definition}[Lipschitz raters]
+\label{def:lipschitz}
+We say that the reliable raters are \emph{$(L,\epsilon)$-Lipschitz} if their 
+average ratings satisfy
+\begin{equation}
+\label{eq:lipschitz}
+\ravg_j - \ravg_{j'} \leq \max\p{0, L \cdot (\Aavg_{i,j} - \Aavg_{i,j'}) + \epsilon}
+\end{equation}
+for all $i \in \sC$ and all $j,j' \in [m]$.
+\end{definition}
+The $(L,\epsilon)$-Lipschitz property says that if we think that one item is 
+substantially better than another item, then the reliable raters should think 
+so as well. To give an example, suppose that all of our own ratings are binary 
+($\ravg_j \in [0,1]$) and that each rating $\Aobs_{i,j}$ matches $\ravg_j$ 
+with probability $\frac{3}{5}$. Then 
+$\Aavg_{i,j} = \frac{2}{5} + \frac{1}{5}\ravg_j$, 
+and hence the ratings are $(5,0)$-Lipschitz. 
+In general, the Lipschitz property is fairly mild --- if the reliable ratings 
+are not $(L,\epsilon)$-Lipschitz, then it is not clear that they should 
+even be called reliable!
+
+With Assumption~\ref{ass:independent} and Definition~\ref{def:lipschitz} 
+in place, we are ready to state our main result. 
+
+\begin{theorem}
+\label{thm:main}
+Suppose that Assumption~\ref{ass:independent} holds, and that each rater is 
+assigned to rate $k$ items at random, that we rate $k'$ items at random, 
+where $k \geq \Omega\p{\frac{1}{\beta\alpha^3\epsilon^4}}$ and 
+$k' \geq \Omega\p{\frac{\log(1/\alpha)}{\beta\epsilon^2}}$.
+Then, if the reliable raters are $(L,\epsilon_0)$-Lipschitz, running 
+Algorithms~\ref{alg:recover-M} and \ref{alg:recover-T} recovers a set 
+$T$ satisfying 
+\[ \frac{1}{\beta m} \p{\sum_{j \in T^*} \ravg_j - \sum_{j \in T} \ravg_j} 
+\leq L \cdot \epsilon + \epsilon_0 \]
+with probability $1-\delta$, where $T^*$ is the $\beta$-quantile of $\ravg$.
+\end{theorem}
 
 As mentioned in Section~\ref{sec:assumptions}, our approach can be split into 
 two parts: recovering a matrix $\M$ that approximates the $\beta$-quantiles of 
