@@ -1,4 +1,5 @@
 \begin{figure}
+\begin{center}
 \begin{tikzpicture}[scale=5/6, every node/.style={scale=5/6}]
 \def\s{6.7}
 \def\x{0*\s};
@@ -52,14 +53,20 @@
 \node[right=-0.1em of Bp] {$B_{\good}\!-\!Z_{\good}$};
 \node[right=-0.1em of x-ax] {$M_{\good}$};
 \node[above=-0.1em of y-ax] {$M_{\bad}$};
-\node[below left=-0.3em and -0.1em of M-star] {$M^*$};
-\draw (\ex,\X+0.08*\s) edge[dashed,red!70!black] node[pos=0.43,above,rotate=90,scale=0.68,red!50!black] {$\langle B_{\sC}\!-\!Z_{\sC}, M^*\!-\!M \rangle \leq \epsilon$} (\ex,\x-0.09*\s);
-
+\node[below left=-0.3em and -0.1em of M-star,scale=0.9] {$M^*$};
+\draw (\ex,\X+0.08*\s) edge[dashed,red!70!black] node[pos=0.43,above,rotate=90,scale=0.68,red!50!black] {$\langle B_{\good}\!-\!Z_{\good}, M^*\!-\!M \rangle \leq \epsilon$} (\ex,\x-0.09*\s);
+\coordinate[below right=0.65em and 0.45em of e1] (Mt);
+\fill(Mt) circle(1.5pt);
+\node[above right=0em and 0em of Mt,scale=0.9] {$\M$};
 \end{tikzpicture}
+\end{center}
 \caption{Illustration of our Lagrangian duality argument, and of the role 
-of $Z$. We first optimize $\langle B, M \rangle$ over $\sP$ while constraining 
-$M_{\good} = R_{\good}$, thus obtaining $M^*$. We would like to bound how far 
-the optimum would move if we remove the constraint $M_{\sC} = R_{\sC}$; let 
-$M'$ be this new optimum. }
+of $Z$. The blue region represents the nuclear norm constraint and the gray 
+region the remaining constraints. Because the blue region slopes upwards, 
+a decrease in $M_{\good}$ can be offset by an increase in $M_{\bad}$ when 
+measuring $\langle B, M \rangle$. The vector $B-Z$ accounts for this offset, 
+and the red region represents the constraint 
+$\langle B_{\good}-Z_{\good}, M^*_{\good} - M_{\good} \rangle \leq \epsilon$, which is guaranteed to contain $\M$.
+}
 \label{fig:lagrangian}
 \end{figure}

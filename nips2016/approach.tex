@@ -6,7 +6,7 @@ We now state our assumptions more formally, state the general form
 of our results, and outline the key ingredients of the proof.
 Recall that we obtain a matrix $\A \in [0,1]^{n \times m}$ by asking each 
 rater $i \in [n]$ to rate $k$ items chosen at random from $[m]$.
-Let $\sC \subset [n]$ be the set of reliable raters, where $|\sC| \geq \alpha n$.
+Let $\good \subset [n]$ be the set of reliable raters, where $|\good| \geq \alpha n$.
 Our main assumption is that the reliable raters make independent errors. We also 
 need a way of measuring agreement between our ratings and those of the reliable 
 raters; the amount of agreement will show up in our final error bounds --- if 
@@ -15,10 +15,10 @@ independence assumption and the notion of agreement below.
 
 \begin{assumption}[Independence]
 \label{ass:independent}
-The values $\A_{i,j}$ for $i \in \sC$, $j \in [m]$, are 
+The values $\A_{i,j}$ for $i \in \good$, $j \in [m]$, are 
 jointly independent.
 In addition, the values $\robs_j$ are jointly independent 
-of each other as well as of $\A$ (including $\A_i$ for $i \not \in \sC$).
+of each other as well as of $\A$ (including $\A_i$ for $i \not \in \good$).
 \end{assumption}
 Note that Assumption~\ref{ass:independent} allows the unreliable ratings to 
 depend on the reliable ratings, allows arbitrary collusion among the unreliable 
@@ -44,7 +44,7 @@ average ratings satisfy
 \label{eq:lipschitz}
 \ravg_j - \ravg_{j'} \leq \max\p{0, L \cdot (\Aavg_{i,j} - \Aavg_{i,j'}) + \epsilon}
 \end{equation}
-for all $i \in \sC$ and all $j,j' \in [m]$.
+for all $i \in \good$ and all $j,j' \in [m]$.
 \end{definition}
 The $(L,\epsilon)$-Lipschitz property says that if we think that one item is 
 substantially better than another item, then the reliable raters should think 
@@ -94,7 +94,7 @@ approximates the $\beta$-quantile of $\ravg$ in the following sense:
 \label{prop:recover-M}
 Under the conditions of Theorem~\ref{thm:main}, Algorithm~\ref{alg:recover-M} 
 outputs a matrix $\M$ satisfying 
-\[ \frac{1}{|\sC|} \frac{1}{\beta m} \sum_{i \in \sC} \sum_{j \in [m]} \M_{i,j}\ravg_j \geq \p{\frac{1}{\beta m} \sum_{j \in T^*} \ravg_j} - \p{L \cdot \epsilon + \epsilon_0}, \]
+\[ \frac{1}{|\good|} \frac{1}{\beta m} \sum_{i \in \good} \sum_{j \in [m]} \M_{i,j}\ravg_j \geq \p{\frac{1}{\beta m} \sum_{j \in T^*} \ravg_j} - \p{L \cdot \epsilon + \epsilon_0}, \]
 where $T^*$ is the $\beta$-quantile of $\ravg$.
 \end{proposition}
 Proving Proposition~\ref{prop:recover-M} involves two major steps: first, 
@@ -104,7 +104,7 @@ the adversaries to influence the reliable rows of $\M$ too much.
 
 \paragraph{Part 1: noise-robustness.} Let $\Aa$ be the matrix satisfying 
 $\Aa_{\good} = \frac{k}{n}\Aavg_{\good}$, $\Aa_{\bad} = \Aobs_{\bad}$. Here we 
-let $A_{\good}$ denote the subset of rows of $A$ indexed by $\sC$, and 
+let $A_{\good}$ denote the subset of rows of $A$ indexed by $\good$, and 
 $A_{\bad}$ the remaining rows. The scaling $\frac{k}{n}$ is chosen so that 
 $\bE[\Aobs_{\good}] = \Aa_{\good}$.
 %where $\|\cdot\|_*$ denotes the nuclear norm. In the sequel, 
@@ -149,9 +149,10 @@ well as $\Mm$ under $B$:
 \end{equation}
 \end{lemma}
 Note that $\M$ is not necessarily feasible for \eqref{eq:optimization-noiseless}, 
-because of the constraint $M_{\sC} = R_{\sC}$; Lemma~\ref{lem:objective-bound} 
+because of the constraint $M_{\good} = R_{\good}$; Lemma~\ref{lem:objective-bound} 
 merely asserts that $\M$ approximates $\Mm$ in objective value. The proof of 
-Lemma~\ref{lem:objective-bound} primarily involves establishing a 
+Lemma~\ref{lem:objective-bound}, given in Section~\ref{sec:objective-bound-proof}, 
+primarily involves establishing a 
 \emph{uniform convergence result}; if we let $\sP$ denote the feasible set for 
 \eqref{eq:optimization-noisy}, then we wish to show that 
 $|\langle \A - B, M \rangle| \leq \frac{1}{2}\epsilon \alpha k$ for all 
@@ -187,28 +188,47 @@ same solution as a modified problem where the constraint on $\|M\|_*$ is removed
 and the objective is modified to $\langle B - Z, M \rangle$, for an appropriately 
 chosen $Z$. In particular, $Z$ lies in the subgradient of 
 $\mu \|M\|_*$ for some $\mu > 0$.
-If we analyze $Z$ in detail, we obtain the following result:
-\begin{proposition}
-\label{prop:subgradient}
+
+To gain some intuition, consider 
+Figure~\ref{fig:lagrangian}. In \eqref{eq:optimization-noiseless}, we optimize 
+$\langle B, M \rangle$ subject to $M_{\good} = R_{\good}$, as well as subject to 
+the nuclear norm and other constraints; this yields the optimal value $M^*$. 
+We know by Lemma~\ref{lem:objective-bound} that $\langle B, \M \rangle$ is almost 
+as large as $\langle B, M^* \rangle$, and would like to conclude that 
+$\M_{\good} \approx M^*_{\good}$. Since $B$ points to the right, we know that 
+decreasing $M_{\good}$ will decrease $\langle B, M \rangle$; the problem is that 
+we may then be able to increase $M_{\bad}$, which would increase 
+$\langle B, M \rangle$ again. The solution is to find a Lagrange 
+multiplier $Z$ that supports 
+the constraint on $\|M\|_*$, in the sense that optimizing 
+$\langle B-Z, M \rangle$ yields $M^*$ even without the nuclear norm constraint. 
+Then, $M_{\good}$ and $M_{\bad}$ become separable and we conclude that 
+$\langle B_{\good} - Z_{\good}, M_{\good} \rangle$ must be within $\epsilon$ of 
+$\langle B_{\good} - Z_{\good}, M^*_{\good} \rangle$, which implies that 
+$M_{\good} \approx M^*_{\good}$.
+
+If we formalize this intuition and analyze $Z$ in detail, we obtain the 
+following result:
+\begin{lemma}
+\label{lem:subgradient}
 Suppose that $k = \Omega\p{\frac{1}{\alpha\beta\epsilon^2}\frac{m}{n}}$. 
 Then there exists a matrix $Z$ with 
 $\rank(Z) = 1$, $\|Z\|_F \leq \epsilon \sqrt{\alpha\beta mn}$ such that
 \begin{align}
 \langle \Aa_{\good} - Z_{\good}, \Mm_{\good} - M_{\good} \rangle &\leq \langle \Aa, \Mm - M \rangle \text{ for all $M \in \sP$}.
 \end{align}
-\end{proposition}
-Essentially, Proposition~\ref{prop:subgradient} shows that any change in 
+\end{lemma}
+Essentially, Lemma~\ref{lem:subgradient} shows that any change in 
 $\langle \Aa, M \rangle$ caused by changing $M_{\bad}$ can be upper-bounded 
 by a small term $\langle Z_{\good}, \Mm_{\good} - M_{\good} \rangle$ that depends only 
 on $M_{\good}$, thereby bounding the effect that the adversaries can have 
-on $M_{\good}$. Proposition~\ref{prop:subgradient} is therefore the key 
-technical tool powering our results, and we devote 
-Section~\ref{sec:subgradient-proof} to its proof. (Proposition~\ref{prop:objective-bound} is proved in Appendix~\ref{sec:objective-bound-proof}.)
+on $M_{\good}$. Lemma~\ref{lem:subgradient} is therefore the key 
+technical tool powering our results, and is proved in 
+Section~\ref{sec:subgradient-proof}.
 
-In the remainder of this section, we will prove Theorem~\ref{thm:main} from Propositions~\ref{prop:objective-bound} 
-and \ref{prop:subgradient}.
-\begin{proof}[Proof of Theorem~\ref{thm:main}]
-We start by plugging in $\M$ for $M$ in Proposition~\ref{prop:subgradient}. This yields
+\paragraph{Proof of Theorem~\ref{thm:main}.}
+In the remainder of this section, we will prove Theorem~\ref{thm:main} from Lemma~\ref{lem:objective-bound} and \ref{lem:subgradient}.
+We start by plugging in $\M$ for $M$ in Lemma~\ref{lem:subgradient}. This yields
 \begin{align}
 \langle \Aa_{\good} + Z_{\good}, \Mm_{\good} - \M_{\good} \rangle &\leq \langle \Aa, \Mm - \M \rangle 
  \leq \epsilon \alpha n
@@ -230,7 +250,6 @@ we obtain
 \[ \frac{1}{|\good|}\sum_{i \in \good}\Big(\frac{1}{\beta m}\sum_{j \in Q_{\beta}} \Aavg_{ij} - \sum_{j \in [m]} \M_{ij}\Aavg_{ij}\Big) \leq (1+\sqrt{2})\epsilon. \]
 The desired result then follows after scaling down $\epsilon$ 
 by a factor of $1+\sqrt{2}$.
-\end{proof}
 
 \subsection{Recovering $T$ (Algorithm~\ref{alg:recover-T})}
 \label{sec:approach-T}
