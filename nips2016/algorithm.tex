@@ -75,4 +75,33 @@ Algorithm~\ref{alg:recover-M} to recover a $\beta$-quantile matrix $\M$ for
 each rater, and then run Algorithm~\ref{alg:recover-T} to recover our 
 personal $\beta$-quantile from $\M$.
 
-\paragraph{Remarks.} 
+\paragraph{Possible attacks by adversaries.} We note the necessity of a 
+few aspects of our algorithm by exhibiting attacks that would be possible 
+in our absence. First, the only attack vector by which adversaries can 
+influence $M_i$ for reliable raters $i$ is via the nuclear norm constraint 
+(the other constraints are separable across rows). This makes sense because 
+the nuclear norm is what causes us to pool global structure across 
+raters (and thus potentially pool bad information). The constraint on the 
+nuclear norm is weaker than is typical by a factor of $\frac{2}{\epsilon}$; 
+this looseness limits the influence of adversaries at the expense of more 
+work by the honest raters.
+
+Second, why is it necessary to include some of our own ratings? 
+If we did not, and $\alpha < \frac{1}{2}$, then an adversary could create a set of 
+dishonest raters that were identical to the reliable raters except with the 
+item indices permuted by a random permutation of $\{1,\ldots,m\}$. In this case, 
+there is no way to distinguish the honest from the dishonest raters except by 
+breaking the symmetry with our own ratings.
+
+Finally, we observe that the constraint $\sum_j M_{ij} \leq \beta m$ is 
+not typical in the literature. For instance, \citep{chen2014improved} 
+instead normalize $\A$ to lie in $[-1,1]^{m \times m}$ but place no 
+constraint on the sum of each row in $M$ (instead of recovering 
+the $\beta$-quantile, they recover the set of items with positive rating).
+Our row normalization constraint is necessary to prevent a type of attack 
+in which a spammer rates a random subset of items as high as possible and 
+rates the remaining items as low as possible. If the actual set of 
+high-quality items has density much smaller than $50\%$, then the 
+spammer might have undue influence relative to honest raters that 
+only give high ratings to e.g. $10\%$ of the items. Normalizing $M$ to 
+have the same total sum in each row prevents this.
