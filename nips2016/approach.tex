@@ -248,8 +248,9 @@ Expanding $\langle \Aa_{\good}, \Mm_{\good} - \M_{\good} \rangle$ as
 $\frac{k}{m}\sum_{i \in \good}\p{\sum_{j \in [m]} (R_{ij} - \M_{ij})\Aavg_{ij}}$,
 we obtain 
 \[ \frac{1}{|\good|}\frac{1}{\beta m}\sum_{i \in \good}\Big(\sum_{j \in T^*} \Aavg_{ij} - \sum_{j \in [m]} \M_{ij}\Aavg_{ij}\Big) \leq (1+\sqrt{2})\epsilon. \]
-Finally, by the $(L,\epsilon_0)$-Lipschitz condition, we have (see \ref{sec:lipschitz-justification} for details)
+Finally, by the $(L,\epsilon_0)$-Lipschitz condition, we have (see \ref{sec:lipschitz-details} for details)
 \begin{align}
+\label{eq:lipschitz-usage}
 \frac{1}{|\good|}\frac{1}{\beta m}\sum_{i \in \good}\Big(\sum_{j \in T^*} \ravg_j - \sum_{j \in [m]} \M_{ij}\ravg_j\Big) 
 &\leq L \cdot \frac{1}{|\good|}\frac{1}{\beta m}\sum_{i \in \good}\Big(\sum_{j \in T^*} \Aavg_{ij} - \sum_{j \in [m]} \M_{ij}\Aavg_{ij}\Big) + \epsilon_0 \\
 &\leq L \cdot (1+\sqrt{2})\epsilon + \epsilon_0.
@@ -291,6 +292,7 @@ Then, with probability $1-\delta$, we have
 \frac{1}{\goodfrac n} \sum_{i \in \goodobs} \Big(\sum_{j \in [m]} \M_{ij}\rtrue_j\Big) \geq \frac{1}{|\good|} \sum_{i \in \good} \Big(\sum_{j \in [m]} \M_{ij}\rtrue_j\Big) - \frac{\epsilon}{3}.
 \end{equation}
 \end{lemma}
+See Section~\ref{sec:concentration-proof} for a proof.
 The idea is to establish a uniform bound showing that 
 $\sum_{i \in S} \sum_{j \in [m]} \M_{ij}(\robs_j - \rtrue_j)$ is small for any 
 set of $\goodfrac n$ rows $S$, and hence that greedily taking the $\goodfrac n$ 

@@ -1,6 +1,6 @@
-\section{Bounding the Effect of Adversaries (Proposition~\ref{prop:subgradient})}
+\subsection{Bounding the Effect of Adversaries (Proof of Lemma~\ref{lem:subgradient})}
 \label{sec:subgradient-proof}
-In this section we prove Proposition~\ref{prop:subgradient}.
+In this section we prove Lemma~\ref{lem:subgradient}.
 Let $\sP_0$ be the superset of $\sP$ where we have removed the 
 nuclear norm constraint. By Lagrangian duality we 
 know that there is some $\mu$ such that maximizing 
@@ -58,3 +58,18 @@ To finish, we will take $Z = \mu (PZ_0)_{\sC}$. We note that
 $\|Z\|_{\op} = \|\mu (PZ)_{\sC}\|_{\op} \leq \mu \|PZ\|_{\op} \leq \mu \|Z\|_{\op} \leq \mu$.
 Moreover, $Z$ has rank $1$ and so $\|Z\|_F = \|Z\|_{\op} \leq \mu \leq \epsilon\sqrt{\alpha\beta nm}$, as was to be shown.
 
+\paragraph{Proof of Lemma~\ref{lem:subgradient-2}.}
+First, since $PM = M$ for all $M \in \sP_0 \cap \{M_{\sC} = R_{\sC}\}$, and $PM^* = M^*$, 
+it is clear that $\langle PB, M-M^* \rangle = \langle B, P(M-M^*) \rangle = \langle B, M-M^* \rangle \leq 0$, 
+so we need only show that $PB$ is still a subgradient of $f_{\mu}$. Indeed, we have (for any $M$)
+\begin{align}
+\langle PB, M-M^* \rangle &= \langle B, PM - M^* \rangle \\
+ &\stackrel{(i)}{\geq} f_{\mu}(PM) - f_{\mu}(M^*) \\
+ &= \langle A^*, PM \rangle - \mu \|PM\|_* - f_{\mu}(M^*) \\
+ &= \langle A^*, M \rangle - \mu \|PM\|_* - f_{\mu}(M^*) \\
+ &\stackrel{(ii)}{\geq} \langle A^*, M \rangle - \mu \|M\|_* - f_{\mu}(M^*) \\
+ &= f_{\mu}(M) - f_{\mu}(M^*),
+\end{align}
+where (i) is because $B \in \partial f_{\mu}(M^*)$, and (ii) is because projecting 
+decreases the nuclear norm. Since the inequality $\langle PB, M-M^* \rangle \geq f_{\mu}(M) - f_{\mu}(M^*)$ 
+is the defining property of $\partial f_{\mu}(M^*)$, the proof is complete.

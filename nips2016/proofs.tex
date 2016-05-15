@@ -1,47 +1,9 @@
 \section{Deferred Proofs}
 \label{sec:proofs}
 
-\subsection{Proof of Proposition~\ref{prop:objective-bound}}
-\label{sec:objective-bound-proof}
-
-By H\"{o}lder's inequality, we have 
-\begin{align}
-|\langle \A-\Aa, M \rangle| &\leq \|\A-\Aa\|_{\op}\|M\|_* \\
- &= \|\A_{\sC}-\Aavg_{\sC}\|_{\op}\|M\|_* \\
- &\leq \frac{m}{\sqrt{\fac}}\max\p{1, \sqrt{\frac{\alpha n}{m}}} \cdot \frac{2}{\epsilon\alpha}\sqrt{\frac{\alpha n}{\beta m}} \\
- &= \frac{2\sqrt{mn}}{\epsilon\sqrt{\alpha\beta\fac}}\max\p{\sqrt{\frac{\alpha n}{m}}, 1}. %\frac{\alpha n}{m}}.
-\end{align}
-Setting $\fac = \frac{16}{\alpha^2\beta\epsilon^4}\max\p{\frac{m}{\alpha n}, 1}$, 
-we thus have
-\begin{align}
-|\langle \A-\Aa, M \rangle| &\leq \frac{1}{2}\epsilon \alpha n.
-\end{align}
-We then see that
-\begin{align}
-\langle \Aa, \M \rangle  &\geq \langle \A, \M \rangle - \frac{1}{2}\epsilon \alpha n \\
- &\geq \langle \A, \Mm \rangle - \frac{1}{2} \epsilon \alpha n \text{ (since $\M$ is optimal for $\A$)} \\
- &\geq \langle \Aa, \Mm \rangle - \epsilon \alpha n,
-\end{align}
-which completes the proof.
-
-
-\subsection{Proof of Lemma~\ref{lem:subgradient}}
-\label{sec:subgradient-proof-2}
-First, since $PM = M$ for all $M \in \sP_0 \cap \{M_{\sC} = R_{\sC}\}$, and $PM^* = M^*$, 
-it is clear that $\langle PB, M-M^* \rangle = \langle B, P(M-M^*) \rangle = \langle B, M-M^* \rangle \leq 0$, 
-so we need only show that $PB$ is still a subgradient of $f_{\mu}$. Indeed, we have (for any $M$)
-\begin{align}
-\langle PB, M-M^* \rangle &= \langle B, PM - M^* \rangle \\
- &\stackrel{(i)}{\geq} f_{\mu}(PM) - f_{\mu}(M^*) \\
- &= \langle A^*, PM \rangle - \mu \|PM\|_* - f_{\mu}(M^*) \\
- &= \langle A^*, M \rangle - \mu \|PM\|_* - f_{\mu}(M^*) \\
- &\stackrel{(ii)}{\geq} \langle A^*, M \rangle - \mu \|M\|_* - f_{\mu}(M^*) \\
- &= f_{\mu}(M) - f_{\mu}(M^*),
-\end{align}
-where (i) is because $B \in \partial f_{\mu}(M^*)$, and (ii) is because projecting 
-decreases the nuclear norm. Since the inequality $\langle PB, M-M^* \rangle \geq f_{\mu}(M) - f_{\mu}(M^*)$ 
-is the defining property of $\partial f_{\mu}(M^*)$, the proof is complete.
-
-%\bibliographystyle{plainnat}
-%\bibliography{references}
-
+\input objective-bound-proof
+\input subgradient-proof
+\input lipschitz-details
+\input concentration-proof
+\input rounding-proof
+\input recover-T-proof

@@ -1,0 +1,24 @@
+\subsection{Stability Under Noise (Proof of Lemma~\ref{lem:objective-bound})}
+\label{sec:objective-bound-proof}
+
+By H\"{o}lder's inequality, we have 
+\begin{align}
+|\langle \A-\Aa, M \rangle| &\leq \|\A-\Aa\|_{\op}\|M\|_* \\
+ &= \|\A_{\sC}-\Aavg_{\sC}\|_{\op}\|M\|_* \\
+ &\leq \frac{m}{\sqrt{\fac}}\max\p{1, \sqrt{\frac{\alpha n}{m}}} \cdot \frac{2}{\epsilon\alpha}\sqrt{\frac{\alpha n}{\beta m}} \\
+ &= \frac{2\sqrt{mn}}{\epsilon\sqrt{\alpha\beta\fac}}\max\p{\sqrt{\frac{\alpha n}{m}}, 1}. %\frac{\alpha n}{m}}.
+\end{align}
+Setting $\fac = \frac{16}{\alpha^2\beta\epsilon^4}\max\p{\frac{m}{\alpha n}, 1}$, 
+we thus have
+\begin{align}
+|\langle \A-\Aa, M \rangle| &\leq \frac{1}{2}\epsilon \alpha n.
+\end{align}
+We then see that
+\begin{align}
+\langle \Aa, \M \rangle  &\geq \langle \A, \M \rangle - \frac{1}{2}\epsilon \alpha n \\
+ &\geq \langle \A, \Mm \rangle - \frac{1}{2} \epsilon \alpha n \text{ (since $\M$ is optimal for $\A$)} \\
+ &\geq \langle \Aa, \Mm \rangle - \epsilon \alpha n,
+\end{align}
+which completes the proof.
+
+
