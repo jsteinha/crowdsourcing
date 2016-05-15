@@ -32,7 +32,7 @@ In particular, $PM = M$ whenever $M_{\sC} = R_{\sC}$. Now, since $\Mm$ is the ma
 of $f_{\mu}(M)$ over all $M \in \sP_0 \cap \{M_{\sC} = R_{\sC}\}$, there must be some 
 $B \in \partial f(\Mm)$ such that $\langle B, M - \Mm \rangle \leq 0$ for all $M \in \sP_0 \cap \{M_{\sC} = R_{\sC}\}$.
 \begin{lemma}
-\label{lem:subgradient}
+\label{lem:subgradient-2}
 Suppose that $B \in \partial f(\Mm)$ satisfies $\langle B, M - \Mm \rangle \leq 0$ for all $M \in \sP_0 \cap \{M_{\sC} = R_{\sC}\}$. 
 Then, $PB$ satisfies the same property, and lies in $\partial f(\Mm)$ as well.
 \end{lemma}
@@ -51,7 +51,7 @@ whenever $M \in \sP_0$). The rest of the proof is basically algebra:
 \end{align}
 where (i) is by complementary slackness (either $\mu = 0$ or $\|\Mm\|_* = \frac{2}{\alpha\epsilon}$); 
 (ii) is concavity of $f_{\mu}$, and the fact that $\Aa - \mu PZ_0$ is a subgradient; and 
-(iii) is the property from Lemma~\ref{lem:subgradient} ($\langle \Aa - \mu PZ_0, r(M) - \Mm \rangle \leq 0$ since 
+(iii) is the property from Lemma~\ref{lem:subgradient-2} ($\langle \Aa - \mu PZ_0, r(M) - \Mm \rangle \leq 0$ since 
 $r(M) \in \sP_0$).
 
 To finish, we will take $Z = \mu (PZ_0)_{\sC}$. We note that
