@@ -64,8 +64,8 @@ in place, we are ready to state our main result.
 \label{thm:main}
 Suppose that Assumption~\ref{ass:independent} holds, and that each rater is 
 assigned to rate $k$ items at random, that we rate $k'$ items at random, 
-where $k \geq \Omega\p{\frac{1}{\beta\alpha^3\epsilon^4}}$ and 
-$k' \geq \Omega\p{\frac{\log(1/\alpha)}{\beta\epsilon^2}}$.
+where $k \geq \Omega\p{\frac{1}{\beta\alpha^3\epsilon^4}\max\p{1, \frac{m}{n}}}$ 
+and $k' \geq \Omega\p{\frac{\log(1/\alpha)}{\beta\epsilon^2}}$.
 Then, if the reliable raters are $(L,\epsilon_0)$-Lipschitz, running 
 Algorithms~\ref{alg:recover-M} and \ref{alg:recover-T} recovers a set 
 $T$ satisfying 
@@ -86,50 +86,31 @@ it briefly in Section~\ref{sec:approach-T}).
 
 \subsection{Recovering $\M$ (Algorithm~\ref{alg:recover-M})}
 \label{sec:approach-M}
-Given an $\Aobs$ with $\|\Aobs - \Aavg\|_{\op} \leq \facbound$, for an 
-$\Aavg$ satisfying Assumption~\ref{ass:quantile}, we solve the following 
-nuclear-norm optimization problem:
 
-\begin{align}
-\label{eq:optimization-noisy}
-\text{maximize } &\langle \A, M \rangle, \\
-\notag \text{ subject to } &M_{ij} \geq 0 \,\,\, \forall i,j, 
-  &&\hskip-0.4in\sum_j M_{ij} \leq 1 \,\,\, \forall i, \\
-\notag  &\max_j M_{ij} \leq \frac{1}{\beta m}\sum_j M_{ij} \,\,\, \forall i, 
-  &&\hskip-0.4in\|M\|_* \leq \frac{2}{\alpha\epsilon}\sqrt{\frac{\alpha n}{\beta m}}, \phantom{xxxxxxx}
-\end{align}
-where $\|\cdot\|_*$ denotes the nuclear norm. In the sequel, 
-we use $\sP$ to denote the constraint set in (\ref{eq:optimization-noisy}).
+The goal of this section is to show that solving the optimization 
+problem \eqref{eq:optimization-noisy} recovers a matrix $\M$ that 
+approximates the $\beta$-quantile of $\ravg$ in the following sense:
+\begin{proposition}
+\label{prop:recover-M}
+Under the conditions of Theorem~\ref{thm:main}, Algorithm~\ref{alg:recover-M} 
+outputs a matrix $\M$ satisfying 
+\[ \frac{1}{|\sC|} \frac{1}{\beta m} \sum_{i \in \sC} \sum_{j \in [m]} \M_{i,j}\ravg_j \geq \p{\frac{1}{\beta m} \sum_{j \in T^*} \ravg_j} - \p{L \cdot \epsilon + \epsilon_0}, \]
+where $T^*$ is the $\beta$-quantile of $\ravg$.
+\end{proposition}
+Proving Proposition~\ref{prop:recover-M} involves two major steps: first, 
+showing that the nuclear norm constraint in \eqref{eq:optimization-noisy} 
+imparts noise-robustness, and second, that the constraint does not allow 
+the adversaries to influence the reliable rows of $\M$ too much.
 
-To gain some intuition, we will 
-discuss each of the terms in \eqref{eq:optimization-noisy}. The objective 
-$\langle \Aobs, M \rangle$ asks that $M$ match the noisy ratings 
-$\Aobs$, while the nuclear norm constraint acts as a regularizer which will 
-ensure that matching the noisy ratings $\Aobs$ implies that we also match the true 
-ratings $\Aavg$. The constraints $M_{ij} \geq 0$, $\|M_i\|_1 \leq 1$, 
-$\|M_i\|_{\infty} \leq \frac{1}{\beta m} \|M_i\|_1$ mean that each row of 
-$M$ is a probability distribution supported on at least $\beta m$ elements. 
+\paragraph{Part 1: noise-robustness.} Let $\Aa$ be the matrix satisfying 
+$\Aa_{\good} = \frac{k}{n}\Aavg_{\good}$, $\Aa_{\bad} = \Aobs_{\bad}$. Here we 
+let $A_{\good}$ denote the subset of rows of $A$ indexed by $\sC$, and 
+$A_{\bad}$ the remaining rows. The scaling $\frac{k}{n}$ is chosen so that 
+$\bE[\Aobs_{\good}] = \Aa_{\good}$.
+%where $\|\cdot\|_*$ denotes the nuclear norm. In the sequel, 
+%we use $\sP$ to denote the constraint set in (\ref{eq:optimization-noisy}).
 
-Constraining each row in $\ell^1$-norm is important in the adversarial setting, 
-and contrasts with e.g. \citet{todo}, who instead constrain each row in 
-$\ell^{\infty}$-norm. The $\ell^1$ constraint ensures that each row gets the 
-same amount of ``weight'', and prevents adversarial strategies based on assigning 
-very high ratings to a random $50\%$ of the items, which would otherwise 
-increase the amount of work necessary by polynomial factors in $\frac{1}{\beta}$.
-
-\paragraph{Analysis strategy.}
-At a high level our strategy follows that of several other authors 
-\citep{todo}, and proceeds by (1) comparing \eqref{eq:optimization-noisy} to a 
-de-noised version, and (2) showing that the de-noised program recovers the 
-information we want. However, the adversarial setting necessitates some 
-differences: we only de-noise the part of $\Aobs$ corresponding to $\good$, 
-and analyzing the de-noised program (which is usually straightforward) requires 
-some care to ensure that the adversary cannot compromise the solution.
-
-To make our approach more precise, let $\Aa$ be the matrix that is equal to 
-$\Aavg_{\good}$ for the rows in $\good$, 
-and equal to $\Aobs_{\bad}$ for the rows in $\bad$. Also let 
-$R_{ij} = \frac{1}{\beta m}\bI[i \in \good, j \in Q_{\beta}]$. 
+We also let $R_{ij} = \bI[i \in \good, j \in T^*]$.
 Ideally, we would like to have $M_{\good} = R_{\good}$, i.e. $M$ matches $R$ on 
 all the rows of $\good$. In light of this, 
 we will let $\Mm$ be the solution to the following ``corrected'' program, which 
@@ -148,42 +129,43 @@ but which will be useful for analysis purposes:
 \label{eq:optimization-noiseless}
 \text{maximize } &\langle \Aa, M \rangle, \\
 \notag \text{ subject to } &M_{\good} = R_{\good}, \\
-\notag  &M_{ij} \geq 0 \,\,\, \forall i,j, 
-  &&\hskip-0.4in\sum_j M_{ij} \leq 1 \,\,\, \forall i, \\
-\notag  &\max_j M_{ij} \leq \frac{1}{\beta m}\sum_j M_{ij} \,\,\, \forall i, 
-  &&\hskip-0.4in\|M\|_* \leq \frac{2}{\alpha\epsilon}\sqrt{\frac{\alpha n}{\beta m}}, \phantom{xxxxxxx}
+\notag  &0 \leq M_{ij} \leq 1 \,\,\, \forall i,j,  \\
+%  &&\hskip-0.4in\sum_j M_{ij} \leq 1 \,\,\, \forall i, \\
+\notag  &\sum_j M_{ij} \leq \beta m \,\,\, \forall i, 
+%  &&\hskip-0.4in\|M\|_* \leq \frac{2}{\alpha\epsilon}\sqrt{\frac{\alpha n}{\beta m}}, \phantom{xxxxxxx}
+  &\|M\|_* \leq \frac{2}{\alpha\epsilon}\sqrt{\alpha\beta nm} \phantom{xxxxxxx}
 \end{align}
-
-Our goal is to show that $\M$ is ``close'' to $M^*$ and hence gives information 
-about $\good$ and $Q_{\beta}$. 
-We formalize this in the following theorem:
-\begin{theorem}
-\label{thm:main}
-Let $\fac = \Omega\p{\frac{1}{\alpha^3\beta\epsilon^4}\max\p{\frac{m}{n},1}}$. Then, it is the case that 
-\[ \frac{1}{|\good|} \sum_{i \in \good} \p{\frac{1}{\beta m} \sum_{j \in Q_{\beta}(\Aavg_i)} \Aavg_{ij} - \sum_{j \in [m]} \M_{ij} \Aavg_{ij}} \leq \epsilon. \]
-%$\|\M_i - \pi^*\|_1 \leq \epsilon$, 
-%where $\pi^*_j = \frac{1}{|\sD|}$ if $j \in \sD$, and $0$ otherwise.
-\end{theorem}
-Theorem~\ref{thm:main} says that on average across the good rows, we recover 
-a probability distribution whose expected rating is within $\epsilon$ of 
-the rating of the $\beta$-quantile. 
-
-The two key components in proving Theorem~\ref{thm:main} are 
-given as Proposition~\ref{prop:objective-bound} and 
-Proposition~\ref{prop:subgradient} below. First, we show 
-(Proposition~\ref{prop:objective-bound}) that $\M$ is an approximate optimizer 
-of \ref{eq:optimization-noiseless}, which is true because 
-$\langle \Aobs, M \rangle$ and $\langle \Aa, M \rangle$ are close together for 
-all $M \in \sP$.
-\begin{proposition}
-\label{prop:objective-bound}
-Let $\fac = \Omega\p{\frac{1}{\alpha^3\beta\epsilon^4}\max\p{\frac{m}{n},1}}$. For $\M$ and $\Mm$ as defined above, we have
+Our goal is to show that $\M$ is ``close'' to $\Mm$. 
+Following an idea of \citet{guedon2014community}, we have the following result:
+\begin{lemma}
+\label{lem:objective-bound}
+Suppose that Assumption~\ref{ass:independent} holds and that 
+$k = \Omega\p{\frac{1}{\alpha^3\beta\epsilon^4}\max\p{\frac{m}{n},1}}$. 
+Then, the solution $\M$ to \eqref{eq:optimization-noisy} performs nearly as 
+well as $\Mm$ under $B$:
 \begin{equation}
 \label{eq:objective-bound}
-\langle \Aa, \M \rangle \geq \langle \Aa, \Mm \rangle - \epsilon \alpha n.
+\langle \Aa, \M \rangle \geq \langle \Aa, \Mm \rangle - \epsilon \alpha k.
 \end{equation}
-\end{proposition}
+\end{lemma}
+Note that $\M$ is not necessarily feasible for \eqref{eq:optimization-noiseless}, 
+because of the constraint $M_{\sC} = R_{\sC}$; Lemma~\ref{lem:objective-bound} 
+merely asserts that $\M$ approximates $\Mm$ in objective value. The proof of 
+Lemma~\ref{lem:objective-bound} primarily involves establishing a 
+\emph{uniform convergence result}; if we let $\sP$ denote the feasible set for 
+\eqref{eq:optimization-noisy}, then we wish to show that 
+$|\langle \A - B, M \rangle| \leq \frac{1}{2}\epsilon \alpha k$ for all 
+$M \in \sP$. This would imply that the objectives of 
+\eqref{eq:optimization-noisy} and \eqref{eq:optimization-noiseless} are 
+essentially identical, and so optimizing one also optimizes the other.
 
+Using the inequality $|\langle \A - B, M \rangle| \leq \|\A-B\|_{\op}\|M\|_*$, 
+where $\|\cdot\|_{\op}$ denotes operator norm, it suffices to establish a matrix 
+concentration inequality showing that $\|\A - B\|_{\op}$ is small. 
+\todo{Greg, can you fill this in with the relevant matrix concentration 
+result?}
+
+\paragraph{Part 2: bounding the influence of adversaries.} 
 Next, we need to show that the nuclear norm constraint does 
 not create too much bias in the de-noised program 
 \eqref{eq:optimization-noiseless}. Note that this is the \emph{only} constraint 
