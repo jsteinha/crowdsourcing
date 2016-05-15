@@ -74,13 +74,17 @@ $T$ satisfying
 with probability $1-\delta$, where $T^*$ is the $\beta$-quantile of $\ravg$.
 \end{theorem}
 
-As mentioned in Section~\ref{sec:assumptions}, our approach can be split into 
-two parts: recovering a matrix $\M$ that approximates the $\beta$-quantiles of 
-the raters, and using $\M$ to recover the $\beta$-quantile of $\rtrue$. We 
-describe these respective components in Sections~\ref{sec:approach-M} and 
-\ref{sec:approach-r} below.
+The proof of Theorem~\ref{thm:main} can be split into two parts: analyzing 
+Algorithm~\ref{alg:recover-M}, and analyzing Algorithm~\ref{alg:recover-T}. 
+At a high level, analyzing Algorithm~\ref{alg:recover-M} involves showing that 
+the nuclear norm constraint in \eqref{eq:optimization-noisy} imparts sufficient 
+noise robustness while not allowing the adversary too much influence over the 
+reliable rows of $\M$. Analyzing~\ref{alg:recover-T} is far more straightforward, 
+and requires only standard concentration inequalities and a standard randomized 
+rounding idea (though the latter is perhaps not well-known, so we will explain 
+it briefly in Section~\ref{sec:approach-T}).
 
-\subsection{Recovering $\M$}
+\subsection{Recovering $\M$ (Algorithm~\ref{alg:recover-M})}
 \label{sec:approach-M}
 Given an $\Aobs$ with $\|\Aobs - \Aavg\|_{\op} \leq \facbound$, for an 
 $\Aavg$ satisfying Assumption~\ref{ass:quantile}, we solve the following 
@@ -233,8 +237,8 @@ The desired result then follows after scaling down $\epsilon$
 by a factor of $1+\sqrt{2}$.
 \end{proof}
 
-\subsection{Recovering $Q_{\beta}(\rtrue)$}
-\label{sec:approach-r}
+\subsection{Recovering $T$ (Algorithm~\ref{alg:recover-T})}
+\label{sec:approach-T}
 
 The algorithm for recovering $Q_{\beta}(\rtrue)$ from $\M$ and $\robs$ 
 is simple, and involves two steps:
