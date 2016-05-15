@@ -103,9 +103,9 @@ imparts noise-robustness, and second, that the constraint does not allow
 the adversaries to influence the reliable rows of $\M$ too much.
 
 \paragraph{Part 1: noise-robustness.} Let $\Aa$ be the matrix satisfying 
-$\Aa_{\good} = \frac{k}{n}\Aavg_{\good}$, $\Aa_{\bad} = \Aobs_{\bad}$. Here we 
+$\Aa_{\good} = \frac{k}{m}\Aavg_{\good}$, $\Aa_{\bad} = \Aobs_{\bad}$. Here we 
 let $A_{\good}$ denote the subset of rows of $A$ indexed by $\good$, and 
-$A_{\bad}$ the remaining rows. The scaling $\frac{k}{n}$ is chosen so that 
+$A_{\bad}$ the remaining rows. The scaling $\frac{k}{m}$ is chosen so that 
 $\bE[\Aobs_{\good}] = \Aa_{\good}$.
 %where $\|\cdot\|_*$ denotes the nuclear norm. In the sequel, 
 %we use $\sP$ to denote the constraint set in (\ref{eq:optimization-noisy}).
@@ -145,7 +145,7 @@ Then, the solution $\M$ to \eqref{eq:optimization-noisy} performs nearly as
 well as $\Mm$ under $B$:
 \begin{equation}
 \label{eq:objective-bound}
-\langle \Aa, \M \rangle \geq \langle \Aa, \Mm \rangle - \epsilon \alpha\beta km.
+\langle \Aa, \M \rangle \geq \langle \Aa, \Mm \rangle - \epsilon \alpha\beta kn.
 \end{equation}
 \end{lemma}
 Note that $\M$ is not necessarily feasible for \eqref{eq:optimization-noiseless}, 
@@ -155,7 +155,7 @@ Lemma~\ref{lem:objective-bound}, given in Section~\ref{sec:objective-bound-proof
 primarily involves establishing a 
 \emph{uniform convergence result}; if we let $\sP$ denote the feasible set for 
 \eqref{eq:optimization-noisy}, then we wish to show that 
-$|\langle \A - B, M \rangle| \leq \frac{1}{2}\epsilon \alpha\beta km$ for all 
+$|\langle \A - B, M \rangle| \leq \frac{1}{2}\epsilon \alpha\beta kn$ for all 
 $M \in \sP$. This would imply that the objectives of 
 \eqref{eq:optimization-noisy} and \eqref{eq:optimization-noiseless} are 
 essentially identical, and so optimizing one also optimizes the other.
@@ -213,7 +213,7 @@ following result:
 \label{lem:subgradient}
 Suppose that $k = \Omega\p{\frac{1}{\alpha\beta\epsilon^2}\frac{m}{n}}$. 
 Then there exists a matrix $Z$ with 
-$\rank(Z) = 1$, $\|Z\|_F \leq \epsilon \sqrt{\alpha\beta km/n}$ such that
+$\rank(Z) = 1$, $\|Z\|_F \leq \epsilon \sqrt{\alpha\beta nk/m}$ such that
 \begin{align}
 \langle \Aa_{\good} - Z_{\good}, \Mm_{\good} - M_{\good} \rangle &\leq \langle \Aa, \Mm - M \rangle \text{ for all $M \in \sP$}.
 \end{align}
@@ -226,26 +226,26 @@ on $M_{\good}$. Lemma~\ref{lem:subgradient} is therefore the key
 technical tool powering our results, and is proved in 
 Section~\ref{sec:subgradient-proof}.
 
-\paragraph{Proof of Theorem~\ref{thm:main}.}
-In the remainder of this section, we will prove Theorem~\ref{thm:main} from 
-Lemmas~\ref{lem:objective-bound} and \ref{lem:subgradient}.
+\paragraph{Proof of Proposition~\ref{prop:recover-M}.}
+In the remainder of this section, we will prove Proposition~\ref{prop:recover-M} 
+from Lemmas~\ref{lem:objective-bound} and \ref{lem:subgradient}.
 We start by plugging in $\M$ for $M$ in Lemma~\ref{lem:subgradient}. This yields
 %\begin{align}
-$\langle \Aa_{\good} - Z_{\good}, \Mm_{\good} - \M_{\good} \rangle \leq \langle \Aa, \Mm - \M \rangle \leq \epsilon \alpha\beta km$
+$\langle \Aa_{\good} - Z_{\good}, \Mm_{\good} - \M_{\good} \rangle \leq \langle \Aa, \Mm - \M \rangle \leq \epsilon \alpha\beta kn$
 %\end{align}
 by Lemma~\ref{lem:objective-bound}.
 On the other hand, we have 
 \begin{align}
 |\langle Z_{\good}, \Mm_{\good} - \M_{\good} \rangle| &\leq \|Z_{\good}\|_F\|\Mm_{\good} - \M_{\good}\|_F \\
- &\leq \epsilon\sqrt{\alpha\beta mk/n} \sqrt{\|\Mm_{\good} - \M_{\good}\|_{1}\|\Mm_{\good} - \M_{\good}\|_{\infty}} \\
- &\leq \epsilon\sqrt{\alpha\beta mk/n} \sqrt{2\alpha\beta mn} = \sqrt{2}\epsilon\alpha\beta km.
+ &\leq \epsilon\sqrt{\alpha\beta nk/m} \sqrt{\|\Mm_{\good} - \M_{\good}\|_{1}\|\Mm_{\good} - \M_{\good}\|_{\infty}} \\
+ &\leq \epsilon\sqrt{\alpha\beta nk/m} \sqrt{2\alpha\beta mn} = \sqrt{2}\epsilon\alpha\beta kn.
 \end{align}
 Putting these together, we obtain
 %\begin{align}
-$\langle \Aa_{\good}, \Mm_{\good} - \M_{\good} \rangle \leq (1+\sqrt{2})\epsilon \alpha\beta km$.
+$\langle \Aa_{\good}, \Mm_{\good} - \M_{\good} \rangle \leq (1+\sqrt{2})\epsilon \alpha\beta kn$.
 %\end{align}
 Expanding $\langle \Aa_{\good}, \Mm_{\good} - \M_{\good} \rangle$ as 
-$\frac{k}{n}\sum_{i \in \good}\p{\sum_{j \in [m]} (R_{ij} - \M_{ij})\Aavg_{ij}}$,
+$\frac{k}{m}\sum_{i \in \good}\p{\sum_{j \in [m]} (R_{ij} - \M_{ij})\Aavg_{ij}}$,
 we obtain 
 \[ \frac{1}{|\good|}\frac{1}{\beta m}\sum_{i \in \good}\Big(\sum_{j \in T^*} \Aavg_{ij} - \sum_{j \in [m]} \M_{ij}\Aavg_{ij}\Big) \leq (1+\sqrt{2})\epsilon. \]
 Finally, by the $(L,\epsilon_0)$-Lipschitz condition, we have (see \ref{sec:lipschitz-justification} for details)
@@ -261,44 +261,44 @@ by a factor of $1+\sqrt{2}$.
 \label{sec:approach-T}
 \label{sec:rounding}
 
-The algorithm for recovering $Q_{\beta}(\rtrue)$ from $\M$ and $\robs$ 
-is simple, and involves two steps:
-\begin{enumerate}
-\item Greedily choose the $\goodfrac n$ rows of $\M$ (call then $\goodobs$) 
-      for which $\sum_{j \in [m]} \M_{ij}\robs_j$ is largest;
-      let $\rdist \eqdef \frac{1}{\goodfrac n} \sum_{i \in \goodobs} \M_i$, and 
-      $\sigma_j \eqdef \sum_{j'=1}^j \rdist_{j'}$.
-\item Sample $u \sim \Uniform([0,1])$, and include in $T$ all $j$ for which 
-      $\sigma_{j-1} \leq \frac{l + u}{\beta m} \leq \sigma_j$ 
-      for some integer $l$. Resample $u$ until the resulting $T$ satisfies 
-      \begin{equation}
-      \label{eq:accept}
-      \frac{1}{\beta m} \sum_{j \in T} \robs_j \leq \sum_{j \in [m]} \rdist_j \robs_j + 3\error.
-      \end{equation}
-\end{enumerate}
-The validity of this procedure hinges on two results. First, we establish 
-a concentration bound showing that $\sum_j \M_{ij}\robs_j$ is close to 
-$\sum_j \M_{ij}\rtrue_j$, and hence the $\goodfrac n$ best rows of $\M$ 
-according to $\robs$ also look good according to $\robs$:
+In this section we show that if $\M$ satisfies the conclusion of 
+Proposition~\ref{prop:recover-M}, then Algorithm~\ref{alg:recover-T} 
+recovers a set $T$ that approximates $T^*$ well. Formally, we show 
+the following:
 \begin{proposition}
-\label{prop:robs-rtrue}
-Suppose that $\robs$ satisfies Assumption~\ref{ass:r} with 
-$\fac_0 = \Omega\p{\frac{\log(1/\failprob\alpha)}{\alpha\beta\epsilon^2}}$. 
+\label{prop:recover-T}
+Suppose that the output $\M$ of Algorithm~\ref{alg:recover-M} satisfies 
+$\frac{1}{|\good|} \frac{1}{\beta m}\sum_{i \in \good}\sum_{j \in [m]} \M_{ij}\ravg_j \geq \p{\frac{1}{\beta m} \sum_{j \in T^*} \ravg_j} - \epsilon_1$. Then, 
+assuming $k_0 \geq \Omega\p{\frac{\log(1/\alpha)}{\beta\epsilon^2}}$, 
+Algorithm~\ref{alg:recover-T} outputs a set $T$ satisfying 
+\begin{equation}
+\label{eq:recover-T}
+\frac{1}{\beta m}\sum_{j \in T} \ravg_j \geq \p{\frac{1}{\beta m}\sum_{j \in T^*} \ravg_j} - (\epsilon_1 + \epsilon).
+\end{equation}
+\end{proposition}
+The validity of this procedure hinges on two results. First, we need to establish 
+a concentration bound showing that $\sum_j \M_{ij}\robs_j$ is close to 
+$\frac{k_0}{m}\sum_j \M_{ij}\rtrue_j$ for all $i \in \good$, which implies that 
+the $\goodfrac n$ best rows of $\M$ according to $\robs$ also look good 
+according to $\robs$. This is captured in the following lemma:
+\begin{lemma}
+\label{lem:robs-rtrue}
+Suppose that $\robs$ satisfies Assumption~\ref{ass:independent} and that 
+$k_0 \geq \Omega\p{\frac{\log(1/\failprob\alpha)}{\beta\epsilon^2}}$. 
 Then, with probability $1-\delta$, we have
 \begin{equation}
 \label{eq:robs-rtrue}
-\frac{1}{\goodfrac n} \sum_{i \in \goodobs} \Big(\sum_{j \in [m]} \M_{ij}\rtrue_j\Big) \geq \frac{1}{|\good|} \sum_{i \in \good} \Big(\sum_{j \in [m]} \M_{ij}\rtrue_j\Big) - \epsilon.
+\frac{1}{\goodfrac n} \sum_{i \in \goodobs} \Big(\sum_{j \in [m]} \M_{ij}\rtrue_j\Big) \geq \frac{1}{|\good|} \sum_{i \in \good} \Big(\sum_{j \in [m]} \M_{ij}\rtrue_j\Big) - \frac{\epsilon}{2}.
 \end{equation}
-\end{proposition}
+\end{lemma}
 The idea is to establish a uniform bound showing that 
 $\sum_{i \in S} \sum_{j \in [m]} \M_{ij}(\robs_j - \rtrue_j)$ is small for any 
 set of $\goodfrac n$ rows $S$, and hence that greedily taking the $\goodfrac n$ 
 best rows according to $\robs$ is almost as good as taking the $\goodfrac n$ 
-best rows according to $\rtrue$. A na\"{i}ve union bound over all rows would 
-yield $\log(n/\failprob)$ instead of $\log(1/\alpha\failprob)$ in the numerator 
-for $\fac_0$; our proof includes a refined analysis that improves upon the union 
-bound by leveraging the fact that we are averaging over a large number 
-($\goodfrac n$) of rows and hence extreme events are less likely.
+best rows according to $\rtrue$. Our analysis follows that of 
+\citet{todo}, improving over a na\"{i}ve union bound by exploiting power mean 
+inequalities for the cumulant function. \todo{Greg can you fill in this 
+citation?}
 
 Proposition~\ref{prop:robs-rtrue} together with Theorem~\ref{thm:main-M} 
 implies that $\sum_j \rdist_j \rtrue_j \geq \frac{1}{\beta m} \sum_{j \in Q_{\beta}(r^*)} \rtrue_j - 2\epsilon$. In a sense, we could stop here and be satisfied --- 
