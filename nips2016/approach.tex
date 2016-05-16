@@ -60,12 +60,14 @@ even be called reliable!
 With Assumption~\ref{ass:independent} and Definition~\ref{def:lipschitz} 
 in place, we are ready to state our main result. 
 
+\todo{include $\delta$ dependence for $k$ once we get the 
+right matrix concentration bound}
 \begin{theorem}
 \label{thm:main}
 Suppose that Assumption~\ref{ass:independent} holds, and that each rater is 
 assigned to rate $k$ items at random, that we rate $k'$ items at random, 
 where $k \geq \Omega\p{\frac{1}{\beta\alpha^3\epsilon^4}\max\p{1, \frac{m}{n}}}$ 
-and $k' \geq \Omega\p{\frac{\log(1/\alpha)}{\beta\epsilon^2}}$.
+and $k' \geq \Omega\p{\frac{\log(1/\alpha\beta\epsilon\delta)}{\beta\epsilon^2}}$.
 Then, if the reliable raters are $(L,\epsilon_0)$-Lipschitz, running 
 Algorithms~\ref{alg:recover-M} and \ref{alg:recover-T} recovers a set 
 $T$ satisfying 
@@ -268,13 +270,14 @@ recovers a set $T$ that approximates $T^*$ well. Formally, we show
 the following:
 \begin{proposition}
 \label{prop:recover-T}
-Suppose that the output $\M$ of Algorithm~\ref{alg:recover-M} satisfies 
-$\frac{1}{|\good|} \frac{1}{\beta m}\sum_{i \in \good}\sum_{j \in [m]} \M_{ij}\ravg_j \geq \p{\frac{1}{\beta m} \sum_{j \in T^*} \ravg_j} - \epsilon_1$. Then, 
-assuming $k_0 \geq \Omega\p{\frac{\log(1/\alpha)}{\beta\epsilon^2}}$, 
-Algorithm~\ref{alg:recover-T} outputs a set $T$ satisfying 
+%Suppose that the output $\M$ of Algorithm~\ref{alg:recover-M} satisfies 
+%$\frac{1}{|\good|} \frac{1}{\beta m}\sum_{i \in \good}\sum_{j \in [m]} \M_{ij}\ravg_j \geq \p{\frac{1}{\beta m} \sum_{j \in T^*} \ravg_j} - \epsilon_1$. 
+Suppose that Assumption~\ref{ass:independent} holds and that 
+$k_0 \geq \Omega\p{\frac{\log(1/\alpha\beta\epsilon\delta)}{\beta\epsilon^2}}$. 
+Then, Algorithm~\ref{alg:recover-T} outputs a set $T$ satisfying 
 \begin{equation}
 \label{eq:recover-T}
-\frac{1}{\beta m}\sum_{j \in T} \ravg_j \geq \p{\frac{1}{\beta m}\sum_{j \in T^*} \ravg_j} - (\epsilon_1 + \epsilon).
+\frac{1}{\beta m}\sum_{j \in T} \ravg_j \geq \p{\frac{1}{\beta m}\frac{1}{|\good|}\sum_{i \in \good} \sum_{j \in [m]} \M_{ij}\ravg_j} - \epsilon.
 \end{equation}
 \end{proposition}
 The validity of this procedure hinges on two results. First, we need to establish 
@@ -285,11 +288,11 @@ according to $\robs$. This is captured in the following lemma:
 \begin{lemma}
 \label{lem:robs-rtrue}
 Suppose that $\robs$ satisfies Assumption~\ref{ass:independent} and that 
-$k_0 \geq \Omega\p{\frac{\log(1/\failprob\alpha)}{\beta\epsilon^2}}$. 
+$k_0 \geq \Omega\p{\frac{\log(1/\alpha\failprob)}{\beta\epsilon^2}}$. 
 Then, with probability $1-\delta$, we have
 \begin{equation}
 \label{eq:robs-rtrue}
-\frac{1}{\goodfrac n} \sum_{i \in \goodapprox} \Big(\sum_{j \in [m]} \M_{ij}\rtrue_j\Big) \geq \frac{1}{|\good|} \sum_{i \in \good} \Big(\sum_{j \in [m]} \M_{ij}\rtrue_j\Big) - \frac{\epsilon}{3}\beta m.
+\frac{1}{\goodfrac n} \sum_{i \in \goodapprox} \Big(\sum_{j \in [m]} \M_{ij}\rtrue_j\Big) \geq \frac{1}{|\good|} \sum_{i \in \good} \Big(\sum_{j \in [m]} \M_{ij}\rtrue_j\Big) - \frac{\epsilon}{4}\beta m.
 \end{equation}
 \end{lemma}
 See Section~\ref{sec:concentration-proof} for a proof.
@@ -318,16 +321,16 @@ $\|T\|_0 \leq \beta m$.
 \input round
 
 Recall that in Algorithm~\ref{alg:recover-T}, we accept $T$ if 
-$\langle T, \robs \rangle \geq \langle T_0, \robs \rangle - \frac{1}{3}\epsilon\beta k$. Since $\langle T, \robs \rangle \in [0,k]$ almost surely, and 
+$\langle T, \robs' \rangle \geq \langle T_0, \robs' \rangle - \frac{1}{4}\epsilon\beta k_0$. Since $\langle T, \robs \rangle \in [0,k_0]$ almost surely, and 
 $\bE[\langle T, \robs \rangle] = \langle T_0, \robs \rangle$, Markov's inequality 
-implies that we accept with probability at least $\frac{\beta \epsilon}{3}$ on 
+implies that we accept with probability at least $\frac{\beta \epsilon}{4}$ on 
 each round, and so with probability $1-\delta$ have at most 
-$\frac{3\log(1/\delta)}{\epsilon\beta}$ rounds. By a union bound, 
-$|\langle T, \robs - \frac{k}{m}\ravg \rangle| \leq \frac{\epsilon}{3}$ is 
-small for all of the rounds, implying that the accepted set $T$ satisfies 
-\begin{align}
-\sum_{j \in T} \ravg_j &\geq \frac{m}{k}\sum_{j \in T} \robs_j - \frac{\epsilon}{3}\beta m \\
- &\geq \frac{m}{k}\sum_{j \in [m]} (T_0)_j \robs_j - \frac{2\epsilon}{3}\beta m \geq \sum_{j \in T^*} \ravg_j - (\epsilon_1+\epsilon),
-\end{align}
+$\frac{4\log(1/\delta)}{\epsilon\beta}$ rounds. By a union bound, 
+$|\langle T, \robs' - \frac{k_0}{m}\ravg \rangle| \leq \frac{\epsilon}{4}$ 
+for all of the rounds, implying that the accepted set $T$ satisfies 
+\begin{alignat}{2}
+\notag \sum_{j \in T} \ravg_j &\geq \frac{m}{k_0}\sum_{j \in T} \robs'_j - \frac{\epsilon}{4}\beta m &&\geq \frac{m}{k_0}\sum_{j \in [m]}(T_0)_j\robs'_j  - \frac{2\epsilon}{4}\beta m \\
+ &\geq \sum_{j \in [m]} (T_0)_j \ravg_j - \frac{3\epsilon}{4}\beta m &&\geq \sum_{j \in T^*} \ravg_j - (\epsilon_1+\epsilon),
+\end{alignat}
 which is what we wanted to show in Proposition~\ref{prop:recover-T}. We refer 
 the reader to Section~\ref{sec:recover-T-proof} for a more detailed proof.

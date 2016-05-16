@@ -13,12 +13,13 @@ sets $V \subseteq [n]$ with $|V| \geq v$.
 \end{lemma}
 Given Lemma~\ref{lem:chernoff}, the rest of the proof is fairly straightforward.
 Noting that $\epsilon \leq 1$ and applying this conclusion for 
-$v = \alpha n$, and $k_0 \geq \frac{108\log(2/\alpha\delta)}{\epsilon^2}$, 
+$v = \alpha n$, and $k_0 \geq \frac{3 \cdot 8^2\log(2/\alpha\delta)}{\epsilon^2}$, 
 we see that
 \begin{align}
-\frac{1}{\alpha n} \sum_{i \in \goodapprox} \sum_{j \in [m]} \M_{ij} \ravg_{ij} &\geq \frac{1}{\alpha n}\frac{m}{k_0} \sum_{i \in \goodapprox} \sum_{j \in [m]} \M_{ij} \robs_{ij} - \frac{\epsilon}{6} \beta m \\
- &\geq \frac{1}{|\good|}\frac{m}{k_0} \sum_{i \in \good} \sum_{j \in [m]} \M_{ij} \robs_{ij} - \frac{\epsilon}{6} \beta m \\
- &\geq \frac{1}{|\good|}\sum_{i \in \good} \sum_{j \in [m]} \M_{ij} \ravg_{ij} - \frac{\epsilon}{3} \beta m,
+\frac{1}{\alpha n} \sum_{i \in \goodapprox} \sum_{j \in [m]} \M_{ij} \ravg_{ij} &\geq \frac{1}{\alpha n}\frac{m}{k_0} \sum_{i \in \goodapprox} \sum_{j \in [m]} \M_{ij} \robs_{ij} - \frac{\epsilon}{8} \beta m \\
+ &\geq \frac{1}{|\good|}\frac{m}{k_0} \sum_{i \in \good} \sum_{j \in [m]} \M_{ij} \robs_{ij} - \frac{\epsilon}{8} \beta m \\
+ &\geq \frac{1}{|\good|}\sum_{i \in \good} \sum_{j \in [m]} \M_{ij} \ravg_{ij} - \frac{\epsilon}{4} \beta m,
+% &\geq \sum_{j \in T^*} \ravg_j - (\epsilon_1 + \epsilon/4)\beta m,
 \end{align}
 as was to be shown.
 

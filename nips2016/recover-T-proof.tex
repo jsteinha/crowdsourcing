@@ -1,2 +1,34 @@
 \subsection{Correctness of Algorithm~\ref{alg:recover-T} (Proof of Proposition~\ref{prop:recover-T})}
 \label{sec:recover-T-proof}
+
+First, we claim that with probability $1-\delta$, we will invoke 
+\texttt{RandomizedRound} at most $\frac{4\log(1/\delta)}{\epsilon\beta}$ times. 
+To see this, note that $\bE[\langle T, \robs' \rangle] = \langle T_0, \robs' \rangle$, and 
+$\langle T, \robs' \rangle \in [0, k_0]$ almost surely. 
+By Markov's inequality, the probability that 
+$\langle T, \robs' \rangle < \langle T_0, \robs' \rangle - \frac{\epsilon}{4}\beta k_0$ is at most $\frac{k_0 - \langle T_0, \robs' \rangle}{k_0 - \langle T_0, \robs' \rangle + (\epsilon/4)\beta k_0}$. We can assume that 
+$\langle T_0, \robs' \rangle \geq (\epsilon/4)\beta k_0$ (since otherwise 
+we accept $T$ with probability $1$), in which case the preceding expression 
+is bounded by 
+$\frac{k_0 - (\epsilon/4)\beta k_0}{k_0} = 1 - \frac{\epsilon}{4}\beta$. 
+Therefore, the probability of accepting $T$ in any given iteration of the while 
+loop is at least $\frac{\epsilon}{4}\beta$, and so the probability of 
+accepting at least once in $\frac{4\log(1/\delta)}{\epsilon\beta}$ iterations is 
+indeed at least $1 - \delta$.
+
+Next, for $k_0 \geq \Omega\p{\frac{\log(2/\epsilon\beta\delta)}{\beta \epsilon^2}}$, 
+we can make the probability that $|\langle T, \robs - \frac{k_0}{m}\ravg \rangle| \geq \frac{\epsilon}{4} \beta k_0$ be at most $\frac{\delta\epsilon\beta}{4\log(1/\delta)+1}$ (this follows from a standard Chernoff argument which we omit; 
+Lemma~\ref{lem:chernoff} contains a superset of the necessary ideas). 
+Therefore, by union bounding over the $\frac{4\log(1/\delta)}{\epsilon\beta}$ 
+possible $T$ as well as $T_0$, with probability $1-2\delta$ we have $|\langle T, \robs - \frac{k_0}{m} \ravg \rangle| \leq \frac{\epsilon}{4}\beta k_0$ for whichever $T$ we end up accepting, as well as for $T = T_0$.
+
+Consequently, we have
+\begin{align}
+\langle T, \ravg \rangle &\geq \frac{m}{k_0} \langle T, \robs' \rangle - \frac{\epsilon}{4}\beta m \\
+ &\geq \frac{m}{k_0} \langle T_0, \robs' \rangle - \frac{2\epsilon}{4}\beta m \\
+ &\geq \langle T_0, \ravg \rangle - \frac{3\epsilon}{4}\beta m \\
+ &\geq \langle \frac{1}{|\good|} \sum_{i \in \good} \M_i,\, \ravg \rangle - \epsilon\beta m,
+\end{align}
+where the final step is Lemma~\ref{lem:robs-rtrue}.
+By appropriately scaling 
+down the failure probability $\delta$, Proposition~\ref{prop:recover-T} follows.
