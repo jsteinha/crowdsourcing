@@ -1,2 +1,41 @@
 \subsection{Details of Lipschitz Bound (Equation \ref{eq:lipschitz-usage})}
 \label{sec:lipschitz-details}
+
+The proof essentially consists of matching up each value $\ravg_j$, for 
+$j \in T^*$, with a set of values $\ravg_{j'}$, $j' \geq j$, where the 
+corresponding $\M_{i,j'}$ sum to $1$; we can then invoke the condition 
+\eqref{eq:lipschitz}. Unfortunately, expressing this idea 
+formally is a bit notationally cumbersome.
+
+Before we start, we observe that the Lipschitz condition \eqref{eq:lipschitz} 
+implies that, if $\ravg_j \geq \ravg_{j'}$, then 
+$\ravg_j - \ravg_{j'} \leq L \cdot \p{\Aavg_{i,j} - \Aavg_{i,j'}} + \epsilon_0$. 
+It is this form of \eqref{eq:lipschitz} that we will make use of below.
+
+Now, let $I_j = \bI[j \in T^*]$, and without loss of generality suppose that 
+the indices $j$ are such that $\ravg_1 \geq \ravg_2 \geq \cdots \geq \ravg_m$. 
+For a vector $v \in [0,1]^m$, define
+\begin{equation}
+\label{eq:def-h}
+h(\tau, v) \eqdef \inf\{j \mid \sum_{j' = 1}^j v_{j'} \geq \tau\},
+\end{equation} 
+where $h(\tau,v) = \infty$ if no such $j$ exists.
+We observe that for any vector $v \in [0,1]^m$, we have 
+\begin{equation}
+\label{eq:sum-integral}
+\sum_{j \in [m]} v_j\ravg_j = \int_{0}^{\infty} \ravg_{h(\tau; v)} d\tau,
+\end{equation}
+where we define $\ravg_{\infty} = 0$ (note that the integrand is therefore $0$ 
+for any $\tau \geq \|v\|_1$). Hence, we have
+\begin{align}
+\sum_{j \in T^*} \ravg_j - \sum_{j \in [m]} \M_{i,j}\ravg_j 
+ &= \sum_{j \in [m]} I_j\ravg_j - \sum_{j \in [m]} \M_{i,j}\ravg_j \\
+ &= \int_{0}^{\beta m} \ravg_{h(\tau, I)} - \ravg_{h(\tau, \M_i)} d\tau \\
+ &\stackrel{(i)}{\leq} \int_{0}^{\beta m} \left[L \cdot \p{\Aavg_{h(\tau, I)} - \Aavg_{h(\tau, \M_i)}} + \epsilon_0\right] d\tau \\
+ &= L\cdot \p{\sum_{j \in [m]} I_j\Aavg_j - \sum_{j \in [m]} \M_{i,j}\Aavg_j} + \beta m\epsilon_0 \\
+ &= L\cdot \p{\sum_{j \in T^*} \Aavg_j - \sum_{j \in [m]} \M_{i,j}\Aavg_j} + \beta m\epsilon_0,
+\end{align}
+which implies \eqref{eq:lipschitz-usage}. The key step is (i), 
+which uses the fact that $h(\tau,I) \leq h(\tau, \M_i)$ (because $I$ is 
+maximally concentrated on the left-most indices of $[m]$), and hence 
+$\ravg_{h(\tau,I)} \geq \ravg_{h(\tau, \M_i)}$.
