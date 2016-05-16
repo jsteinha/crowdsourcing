@@ -5,24 +5,33 @@ Let $\sP_0$ be the superset of $\sP$ where we have removed the
 nuclear norm constraint. By Lagrangian duality we 
 know that there is some $\mu$ such that maximizing 
 $\langle \Aa, M \rangle$ over $\sP \cap \{M_{\sC} = R_{\sC}\}$ 
-is equivalent to maximizing $f_\mu(M) \eqdef \langle \Aa, M \rangle + \mu\p{\frac{2}{\epsilon\alpha}\sqrt{\frac{\alpha n}{\beta m}} - \|M\|_*}$ over 
+is equivalent to maximizing $f_\mu(M) \eqdef \langle \Aa, M \rangle + \mu\p{\frac{2}{\epsilon\alpha}\sqrt{\alpha\beta nm} - \|M\|_*}$ over 
 $\sP_0 \cap \{M_{\sC} = R_{\sC}\}$. 
 
-We start by bounding $\mu$. We claim that $\mu \leq \epsilon \sqrt{\alpha\beta nm}$. 
-To show this, first note that for any $M \in \sP_0$, we have 
+We start by bounding $\mu$. We claim that 
+$\mu \leq \epsilon k \sqrt{\alpha\beta n/m}$. 
+To show this, we will first show that $\langle \Aa, M \rangle$ cannot get 
+too large. Let $\Obs$ be the set of $(i,j)$ for which ratings are observed, 
+and define the matrix $B'$ as 
+$(B')_{ij} = \frac{k}{m} + \bI[(i,j) \in \Obs]\p{B_{ij} - 1}$; note 
+that $(B-B')_{ij} = \bI[(i,j) \in \Obs] - \frac{k}{m}$.
+For any $M \in \sP_0$, we have 
 \begin{align}
-\langle \Aa, M \rangle &\leq \langle \Aavg, M \rangle + \langle \Aa - \Aavg, M \rangle \\
- &\leq n + \|\Aa - \Aavg\|_{\op}\|M\|_* \\
- &\leq n + \frac{m}{\sqrt{\fac}}\|M\|_* \\
- &\leq n + \frac{\epsilon\sqrt{\alpha\beta nm}}{2}\|M\|_*,
+\langle \Aa, M \rangle &\leq \langle B', M \rangle + \langle \Aa - B', M \rangle \\
+ &\leq \beta kn + \|\Aa - B'\|_{\op}\|M\|_* \\
+ &\stackrel{(i)}{\leq} \beta kn + \sqrt{k\max(1, n/m)}\|M\|_* \\
+ &\stackrel{(ii)}{\leq} k\p{\beta n + \frac{\epsilon\sqrt{\alpha\beta n/m}}{2} \|M\|_*},
 \end{align}
-where in the last step we used the assumption $\fac = \Omega\p{\frac{1}{\alpha\beta\epsilon^2}\frac{m}{n}}$.
+where in (i) we used the matrix concentration inequality \todo{Greg?} and in (ii) 
+we used the assumption $k = \Omega\p{\frac{1}{\alpha\beta\epsilon^2}\max\p{1,\frac{m}{n}}}$.
 
-Now, suppose that we take $\mu_0 = \epsilon \sqrt{\alpha\beta nm}$ and optimize $\langle \Aa, M \rangle - \mu_0\|M\|_*$ over 
-$\sP_0 \cap \{M_{\sC} = R_{\sC}\}$. Since $\langle \Aa, M \rangle - \mu_0\|M\|_* \leq n - \frac{\epsilon \sqrt{\alpha\beta nm}}{2}\|M\|_*$, 
-any $M$ with $\|M\|_* > \frac{2}{\epsilon\alpha}\sqrt{\frac{\alpha n}{\beta m}}$ cannot possibly be optimal, since the solution $M = 0$ would 
+Now, suppose that we take $\mu_0 = \epsilon \sqrt{\alpha\beta n/m}k$ and optimize $\langle \Aa, M \rangle - \mu_0\|M\|_*$ over 
+$\sP_0 \cap \{M_{\sC} = R_{\sC}\}$. By the above inequalities, 
+we have $\langle \Aa, M \rangle - \mu_0\|M\|_* \leq \beta kn - \frac{\epsilon \sqrt{\alpha\beta n/m}k}{2}\|M\|_*$, 
+and so any $M$ with $\|M\|_* > \frac{2}{\epsilon\alpha}\sqrt{\alpha\beta nm}$ 
+cannot possibly be optimal, since the solution $M = 0$ would 
 be better. Hence, $\mu_0$ is a large enough Lagrange multiplier to ensure that $M \in \sP$, and so 
-$\mu \leq \mu_0 = \epsilon \sqrt{\alpha\beta nm}$, as claimed.
+$\mu \leq \mu_0 = \epsilon k\sqrt{\alpha\beta n/m}$, as claimed.
 
 We next characterize the subgradient of $f_{\mu}$ at $M = \Mm$.
 Define the projection matrix $P$ as
@@ -30,46 +39,51 @@ Define the projection matrix $P$ as
 Thus $PM = M$ if and only if all rows in $\sC$ are equal to each other.
 In particular, $PM = M$ whenever $M_{\sC} = R_{\sC}$. Now, since $\Mm$ is the maximum 
 of $f_{\mu}(M)$ over all $M \in \sP_0 \cap \{M_{\sC} = R_{\sC}\}$, there must be some 
-$B \in \partial f(\Mm)$ such that $\langle B, M - \Mm \rangle \leq 0$ for all $M \in \sP_0 \cap \{M_{\sC} = R_{\sC}\}$.
+$G \in \partial f_{\mu}(\Mm)$ such that $\langle G, M - \Mm \rangle \leq 0$ for all $M \in \sP_0 \cap \{M_{\sC} = R_{\sC}\}$. The following lemma says that without 
+loss of generality we can assume that $PG = G$:
 \begin{lemma}
 \label{lem:subgradient-2}
-Suppose that $B \in \partial f(\Mm)$ satisfies $\langle B, M - \Mm \rangle \leq 0$ for all $M \in \sP_0 \cap \{M_{\sC} = R_{\sC}\}$. 
-Then, $PB$ satisfies the same property, and lies in $\partial f(\Mm)$ as well.
+Suppose that $G \in \partial f(\Mm)$ satisfies $\langle G, M - \Mm \rangle \leq 0$ 
+for all $M \in \sP_0 \cap \{M_{\sC} = R_{\sC}\}$. 
+Then, $PG$ satisfies the same property, and lies in $\partial f(\Mm)$ as well.
 \end{lemma}
 We can further note (by differentiating $f_{\mu}$) that 
-$B = \Aa - \mu Z_0$, where $\|Z_0\|_{\op} \leq 1$. Hence 
-$PB = P\Aa - \mu PZ_0 = \Aa - \mu PZ_0$. Let $r(M)$ denote the 
+$G = \Aa - \mu Z_0$, where $\|Z_0\|_{\op} \leq 1$\footnote{This is due to the 
+more general result that, for any norm $\|\cdot\|$, the subgradient of $\|\cdot\|$ 
+at any point has dual norm at most $1$.}. Then
+$PG = P\Aa - \mu PZ_0 = \Aa - \mu PZ_0$. Let $r(M)$ denote the 
 matrix where $M_{\sC}$ is replaced with $R_{\sC}$ (so $r(M) \in \sP_0 \cap \{R_{\sC} = M_{\sC}\}$ 
-whenever $M \in \sP_0$). The rest of the proof is basically algebra:
+whenever $M \in \sP_0$). The rest of the proof is basically algebra; for any 
+$M \in \sP$, we have
 \begin{align}
 \langle \Aa, M - \Mm \rangle &\stackrel{(i)}{\leq} f_{\mu}(M) - f_{\mu}(\Mm) \\
  &\stackrel{(ii)}{\leq} \langle \Aa - \mu PZ_0, M - \Mm \rangle \\
  &= \langle \Aa - \mu PZ_0, M - r(M) \rangle + \langle \Aa - \mu PZ_0, r(M) - \Mm \rangle \\
  &\stackrel{(iii)}{\leq} \langle \Aa - \mu PZ_0, M - r(M) \rangle \\
- &= \langle \Aa_{\sC} - \mu (PZ_0)_{\sC}, M_{\sC} - r(M)_{\sC} \rangle \\
+ &\stackrel{(iv)}{=} \langle \Aa_{\sC} - \mu (PZ_0)_{\sC}, M_{\sC} - r(M)_{\sC} \rangle \\
  &= \langle \Aa_{\sC} - \mu (PZ_0)_{\sC}, M_{\sC} - \Mm_{\sC} \rangle,
 \end{align}
-where (i) is by complementary slackness (either $\mu = 0$ or $\|\Mm\|_* = \frac{2}{\alpha\epsilon}$); 
-(ii) is concavity of $f_{\mu}$, and the fact that $\Aa - \mu PZ_0$ is a subgradient; and 
+where (i) is by complementary slackness (either $\mu = 0$ or $\|\Mm\|_* = \frac{2}{\alpha\epsilon}\sqrt{\alpha\beta nm}$); 
+(ii) is concavity of $f_{\mu}$, and the fact that $\Aa - \mu PZ_0$ is a subgradient;  
 (iii) is the property from Lemma~\ref{lem:subgradient-2} ($\langle \Aa - \mu PZ_0, r(M) - \Mm \rangle \leq 0$ since 
-$r(M) \in \sP_0$).
+$r(M) \in \sP_0$); and (iv) is because $M$ and $r(M)$ only differ on $\good$.
 
 To finish, we will take $Z = \mu (PZ_0)_{\sC}$. We note that
-$\|Z\|_{\op} = \|\mu (PZ)_{\sC}\|_{\op} \leq \mu \|PZ\|_{\op} \leq \mu \|Z\|_{\op} \leq \mu$.
-Moreover, $Z$ has rank $1$ and so $\|Z\|_F = \|Z\|_{\op} \leq \mu \leq \epsilon\sqrt{\alpha\beta nm}$, as was to be shown.
+$\|Z\|_{\op} = \|\mu (PZ_0)_{\sC}\|_{\op} \leq \mu \|PZ_0\|_{\op} \leq \mu \|Z_0\|_{\op} \leq \mu$.
+Moreover, $Z$ has rank $1$ and so $\|Z\|_F = \|Z\|_{\op} \leq \mu \leq \epsilon k\sqrt{\alpha\beta n/m}$, as was to be shown.
 
 \paragraph{Proof of Lemma~\ref{lem:subgradient-2}.}
 First, since $PM = M$ for all $M \in \sP_0 \cap \{M_{\sC} = R_{\sC}\}$, and $PM^* = M^*$, 
-it is clear that $\langle PB, M-M^* \rangle = \langle B, P(M-M^*) \rangle = \langle B, M-M^* \rangle \leq 0$, 
-so we need only show that $PB$ is still a subgradient of $f_{\mu}$. Indeed, we have (for any $M$)
+we have $\langle PG, M-M^* \rangle = \langle G, P(M-M^*) \rangle = \langle G, M-M^* \rangle \leq 0$. 
+We thus only need to show that $PG$ is still a subgradient of $f_{\mu}$. Indeed, we have (for arbitrary $M$)
 \begin{align}
-\langle PB, M-M^* \rangle &= \langle B, PM - M^* \rangle \\
+\langle PG, M-M^* \rangle &= \langle G, PM - M^* \rangle \\
  &\stackrel{(i)}{\geq} f_{\mu}(PM) - f_{\mu}(M^*) \\
- &= \langle A^*, PM \rangle - \mu \|PM\|_* - f_{\mu}(M^*) \\
- &= \langle A^*, M \rangle - \mu \|PM\|_* - f_{\mu}(M^*) \\
- &\stackrel{(ii)}{\geq} \langle A^*, M \rangle - \mu \|M\|_* - f_{\mu}(M^*) \\
+ &= \langle \Aa, PM \rangle - \mu \|PM\|_* - f_{\mu}(M^*) \\
+ &= \langle \Aa, M \rangle - \mu \|PM\|_* - f_{\mu}(M^*) \\
+ &\stackrel{(ii)}{\geq} \langle \Aa, M \rangle - \mu \|M\|_* - f_{\mu}(M^*) \\
  &= f_{\mu}(M) - f_{\mu}(M^*),
 \end{align}
-where (i) is because $B \in \partial f_{\mu}(M^*)$, and (ii) is because projecting 
-decreases the nuclear norm. Since the inequality $\langle PB, M-M^* \rangle \geq f_{\mu}(M) - f_{\mu}(M^*)$ 
-is the defining property of $\partial f_{\mu}(M^*)$, the proof is complete.
+where (i) is because $G \in \partial f_{\mu}(M^*)$, and (ii) is because projecting 
+decreases the nuclear norm. Since the inequality $\langle PG, M-M^* \rangle \geq f_{\mu}(M) - f_{\mu}(M^*)$ 
+is the defining property for $PG$ to lie in $\partial f_{\mu}(M^*)$, the proof is complete.
