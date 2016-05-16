@@ -1,2 +1,9 @@
 \subsection{Correctness of Randomized Rounding (Proof of Lemma~\ref{lem:rounding})}
 \label{sec:rounding-proof}
+
+Our goal is to show that the output of 
+Algorithm~\ref{alg:round} satisfies $\bE[T] = T_0$. First, observe that 
+since $(T_0)_j \leq 1$ for all $j$, each interval $[s_{j-1},s_j)$ has length 
+at most $1$, and so the for loop over $z$ never picks the same index $j$ 
+twice. Moreover, the probability that $j$ is included in $T_0$ is exactly 
+$s_j - s_{j-1} = (T_0)_j$. The result follows by linearity of expectation.

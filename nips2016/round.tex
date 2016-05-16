@@ -7,8 +7,8 @@
 \State Let $s_j \gets \sum_{j'=1}^j (T_0)_{j'}$ for $j = 0,\ldots,m$ \Comment{vector of partial sums}
 \State Sample $u \sim \Uniform([0,1])$.
 \State $T \gets [0,\ldots,0] \in \bR^d$
-\For{$k = 0$ {\bfseries to} $\beta m - 1$}
-\State Find $j$ such that $u+k \in [s_{j-1},s_j)$. \Comment{if no such $j$ exists, skip the next step}
+\For{$z = 0$ {\bfseries to} $\beta m - 1$}
+\State Find $j$ such that $u+z \in [s_{j-1},s_j)$. \Comment{if no such $j$ exists, skip the next step}
 \State $T_j \gets 1$
 \EndFor
 \State \Return $T$
