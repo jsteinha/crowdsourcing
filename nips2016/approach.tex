@@ -321,8 +321,9 @@ $\|T\|_0 \leq \beta m$.
 \input round
 
 Recall that in Algorithm~\ref{alg:recover-T}, we accept $T$ if 
-$\langle T, \robs' \rangle \geq \langle T_0, \robs' \rangle - \frac{1}{4}\epsilon\beta k_0$. Since $\langle T, \robs \rangle \in [0,k_0]$ almost surely, and 
-$\bE[\langle T, \robs \rangle] = \langle T_0, \robs \rangle$, Markov's inequality 
+$\langle T, \robs' \rangle \geq \langle T_0, \robs' \rangle - \frac{1}{4}\epsilon\beta k_0$. Since $\langle T, \robs' \rangle \in [0,k_0]$ almost surely, and 
+$\bE[\langle T, \robs' \rangle] = \langle T_0, \robs' \rangle$, 
+Markov's inequality 
 implies that we accept with probability at least $\frac{\beta \epsilon}{4}$ on 
 each round, and so with probability $1-\delta$ have at most 
 $\frac{4\log(1/\delta)}{\epsilon\beta}$ rounds. By a union bound, 
