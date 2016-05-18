@@ -1,5 +1,5 @@
 \begin{algorithm}[t!]
-\caption{Algorithm for recovering set $T$ from $\beta$-quantile matrix $\M$.}
+\caption{Algorithm for recovering an accurate $\beta$-quantile $T$ from the $\beta$-quantile matrix $\M$.}
 \label{alg:recover-T}
 \begin{algorithmic}[1]
 \State Parameters: number of ratings $k_0$, tolerance $\epsilon$
@@ -11,7 +11,7 @@
 \State Let $\goodapprox$ be the set of $\alpha n$ indices $i \in [n]$ for which 
        $\sum_j \M_{ij}\robs_j$ is largest.
 \State $T_0 \gets \frac{1}{|\goodapprox|} \sum_{i \in \goodapprox} \M_i$. \Comment{$T_0 \in [0,1]^m$}
-\State Generate $\robs'$ by randomly selecting $k_0$ additional indices
+\State Generate $\robs'$ in the same way as $\robs$ by randomly selecting $k_0$ additional indices
 \While{{\bfseries true}}
 \State $T \gets \textsc{RandomizedRound}(T_0)$ \Comment{$T \in \{0,1\}^m$}
 \If{$\sum_{j} (T_j - (T_0)_j)\robs'_j \geq -\frac{\epsilon}{4}\beta k$}

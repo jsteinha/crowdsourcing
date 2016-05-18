@@ -130,12 +130,12 @@ but which will be useful for analysis purposes:
 \begin{align}
 \label{eq:optimization-noiseless}
 \text{maximize } &\langle \Aa, M \rangle, \\
-\notag \text{ subject to } &M_{\good} = R_{\good}, \\
-\notag  &0 \leq M_{ij} \leq 1 \,\,\, \forall i,j,  \\
+\notag \text{ subject to } &M_{\good} = R_{\good}, 
+  &&\hskip-0.4in 0 \leq M_{ij} \leq 1 \,\,\, \forall i,j,  \\
 %  &&\hskip-0.4in\sum_j M_{ij} \leq 1 \,\,\, \forall i, \\
-\notag  &\sum_j M_{ij} \leq \beta m \,\,\, \forall i, \\
+\notag  &{\textstyle \sum_j} M_{ij} \leq \beta m \,\,\, \forall i, 
 %  &&\hskip-0.4in\|M\|_* \leq \frac{2}{\alpha\epsilon}\sqrt{\frac{\alpha n}{\beta m}}, \phantom{xxxxxxx}
-\notag  &\|M\|_* \leq \frac{2}{\alpha\epsilon}\sqrt{\alpha\beta nm} \phantom{xxxxxxx}
+  &&\hskip-0.4in \|M\|_* \leq \frac{2}{\alpha\epsilon}\sqrt{\alpha\beta nm} \phantom{xxxxxxx}
 \end{align}
 Our goal is to show that $\M$ is ``close'' to $\Mm$. 
 Following an idea of \citet{guedon2014community}, we have the following result:

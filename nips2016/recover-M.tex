@@ -10,11 +10,11 @@ noisy ratings $\A$.}
   \label{eq:optimization-noisy}
   \text{maximize } &\langle \A, M \rangle, \\
   \notag \text{ subject to } &0 \leq M_{ij} \leq 1 \,\,\, \forall i,j, \\
-  \notag                     &\sum_{j} M_{ij} \leq \beta m \,\,\, \forall j, \\
+  \notag                     &{\textstyle \sum_{j}} M_{ij} \leq \beta m \,\,\, \forall j, \quad\quad
 %    &&\hskip-0.4in\sum_j M_{ij} \leq 1 \,\,\, \forall i, \\
 %  \notag  &\max_j M_{ij} \leq \frac{1}{\beta m}\sum_j M_{ij} \,\,\, \forall i, 
 %    &&\hskip-0.4in
-  \notag                    &\|M\|_* \leq \frac{2}{\alpha\epsilon}\sqrt{\alpha\beta nm}, \phantom{xxxxxxx}
+                      \|M\|_* \leq \frac{2}{\alpha\epsilon}\sqrt{\alpha\beta nm}, \phantom{xxxxxxx}
   \end{align}
   where $\|\cdot\|_*$ denotes nuclear norm.
 \State Output $\M$.

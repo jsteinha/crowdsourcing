@@ -1,4 +1,48 @@
 \section{Discussion}
 \label{sec:discussion}
 
-\todo{fill in}
+\todo{fill in with lower bounds and conjectures that explain what 
+``best possible'' result would look like, and how adversarial and 
+stochastic settings compare}
+
+\paragraph{Related work.}
+Our setting is closely related to the problem of \emph{peer prediction} 
+\citep{miller2005eliciting}, in which we wish to obtain truthful information 
+from a population of raters by exploiting inter-rater agreement. 
+While several mechanisms have been proposed for these tasks, 
+they typically assume that rater accuracy is observable online
+\citep{resnick2007influence}, that raters are 
+rational agents maximizing a payoff function \citep{dasgupta2013crowdsourced,
+kamble2015truth,shnayder2016strong}, that the workers follow a simple 
+statistical model \citep{karger2014budget,zhang2014crowdsourcing,
+zhou2015regularized}, or some combination of the above \citep{shah2015double,
+shah2015approval}. 
+
+In crowdsourcing, it is common to use ``gold sets'' -- questions where the 
+ground truth is known -- to assess worker performance. 
+However, there are tasks for which gold sets do not make sense
+--- for instance, ``draw an interesting picture'' or ``translate this sentence'', 
+where there are different equally good answers. In this case, the only way to 
+evaluate quality is via evaluation by other workers or by the manager of 
+the experiment. Even for more straightforward tasks, \citet{vuurens2011spam} 
+suggest that workers may be able to identify gold set questions in some 
+instances. Beyond crowdsourcing, there are settings where human judgment is 
+necessary and where there are documented attempts to game the system --- 
+\citet{harmon2004amazon} reports that many authors and filmmakers 
+engage in dishonest tactics to inflate their reviews on amazon.com, while 
+\citet{priedhorsky2007creating} find that roughly $5\%$ of revisions on 
+wikipedia are damaged in some way (e.g. by vandalism). In such settings where 
+content is primarily moderated by the crowd, building resilient ratings 
+mechanisms is important for maintaining quality.
+
+The work most closely related to ours is that of \citet{christiano2014provably,
+christiano2016robust}, who studies online collaborative prediction in 
+the presence of adversaries; roughly, when raters interact with an item 
+they predict its quality and afterwards observe the actual quality; the 
+goal is to minimize the number of incorrect 
+predictions among the honest raters. This differs from our setting in that 
+(i) the raters are trying to learn the item qualities as part of the task, 
+and (ii) there is no requirement to induce a final global estimate of the 
+high-quality items, which is necessary for estimating quantiles.
+It seems possible however that there are theoretical ties between this 
+setting and ours, which would be interesting to explore.
