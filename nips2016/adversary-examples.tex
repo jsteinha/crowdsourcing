@@ -1,0 +1,111 @@
+\section{Examples of Adversarial Behavior}
+
+In this section, in order to provide some intuition we show 
+two possible attacks that adversaries could employ to make it 
+hard for us to recover the good items. The first attack creates a 
+symmetric situation, whereby there are $\frac{1}{\alpha}$ indistinguishable 
+sets of potentially good items, and we are therefore forced to consider 
+each set before we can find out which one is actually good. The 
+second attack demonstrates the necessity of constraining each row 
+to have a fixed sum, by showing that adversaries that are allowed to 
+create very dense rows can have disproportionate influence on nuclear norm-based 
+recovery algorithms
+
+\subsection{Necessity of Nuclear Norm Scaling}
+
+Suppose for simplicity that $\alpha = \beta$ and $n = m$. Let $J$ be the 
+$\alpha n \times \alpha n$ all-ones matrix, and suppose that the full 
+rating matrix $A$ has a block structure:
+\begin{equation}
+A^* = \left[ \begin{array}{cccc} J & (1-\epsilon)J & \cdots & (1-\epsilon)J \\ (1-\epsilon)J & J & \cdots & (1-\epsilon)J \\ \vdots & \vdots & \ddots & \vdots \\ (1-\epsilon)J & (1-\epsilon)J & \cdots & J \end{array} \right]
+\end{equation}
+In other words, both the items and raters are partitioned into $\frac{1}{\alpha}$ 
+blocks, each of size $\alpha n$. A rater assigns a rating of $1$ to 
+everything in their corresponding block, and a rating of $1-\epsilon$ to 
+everything outside of their block. Thus, there are $\frac{1}{\alpha}$ completely 
+symmetric blocks, only one of which corresponds to the good raters. Since we do 
+not know which of these blocks is actually good, we need to include them all 
+in our solution $M^*$. Therefore, $M^*$ should be
+\begin{equation}
+M^* = \left[ \begin{array}{cccc} J & 0 & \cdots & 0 \\ 0 & J & \cdots & 0 \\ \vdots & \vdots & \ddots & \vdots \\ 0 & 0 & \cdots & J \end{array} \right]
+\end{equation}
+Note however that in this case, $\|M^*\|_* = n$, while 
+$\sqrt{\alpha\beta nm} = \sqrt{\alpha^2n^2} = \alpha n$. We therefore need the 
+nuclear norm constraint in \eqref{eq:optimization-noisy} to be at least 
+$\frac{1}{\alpha}$ times larger than $\sqrt{\alpha\beta nm}$ in order to capture 
+the solution $M^*$ above.
+
+It is not obvious to us that the additional $\frac{2}{\epsilon}$ factor appearing 
+in \eqref{eq:optimization-noisy} is actually necessary, but it was needed in our 
+analysis in order to bound the impact of adversaries.
+
+\subsection{Necessity of Row Normalization}
+
+Suppose that we did not include the row-normalization constraint 
+$\sum_j \M_{ij} \leq \beta m$ in \eqref{eq:optimization-noisy}. For instance, 
+this might happen if, instead of seeking all items of quality above a given 
+quantile, we sought all items with quality above a given \emph{threshold} (say, 
+whose quality was great than $\frac{1}{2}$). In this case we might pose the 
+optimization problem
+\begin{align}
+\label{eq:optimization-naive}
+\text{maximize } &\langle \A-\tfrac{1}{2}J_{n,m}, M \rangle, \\
+\notag \text{ subject to } &0 \leq M_{ij} \leq 1 \,\,\, \forall i,j, \\
+\notag                     &\|M\|_* \leq \frac{2}{\alpha\epsilon}\sqrt{\alpha\beta nm},
+\end{align}
+where $J_{n,m}$ is the $n \times m$ all-ones matrix. There are several reasons not 
+to do this (for instance, focusing on quality thresholds rather than quantile 
+thresholds loses the robustness to monotonic transformations that our method 
+enjoys). In this section, we will focus on the particular issue that 
+\eqref{eq:optimization-naive} is \emph{less robust to adversaries} than 
+\eqref{eq:optimization-noisy}.
+
+Concretely, we will suppose that the adversaries are split into 
+$\frac{1}{3\beta}\p{\frac{1}{\alpha}-1}$ blocks of size $3\alpha\beta n$, 
+each of which rates a random subset of 
+$\frac{m}{2}$ items positively and the rest negatively. So for instance 
+the matrix $A^*$ might look like (with $\alpha=\frac{2}{5}, \beta=\frac{1}{6}, n=10, m=12$):
+\newcommand\topstrut[1][1.2ex]{\setlength\bigstrutjot{#1}{\bigstrut[t]}}
+\newcommand\botstrut[1][0.9ex]{\setlength\bigstrutjot{#1}{\bigstrut[b]}}
+\begin{equation}
+\label{eq:row-construction}
+\def\arraystretch{1.5}
+A^* = \begin{blockarray}{c[cccccccccccc]}
+\multirow{4}{*}{\rotatebox[origin=c]{90}{\textrm{good}}} 
+ & 1 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \topstrut \\
+&  1 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+&  1 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+&  1 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+\cline{2-13}
+\multirow{2}{*}{\rotatebox[origin=c]{90}{\textrm{bad $1$}}}
+ & 0 & 1 & 0 & 0 & 1 & 0 & 0 & 0 & 1 & 1 & 1 & 1 \\
+&  0 & 1 & 0 & 0 & 1 & 0 & 0 & 0 & 1 & 1 & 1 & 1 \\
+\cline{2-13}
+\multirow{2}{*}{\rotatebox[origin=c]{90}{\textrm{bad $2$}}}
+ & 0 & 1 & 1 & 0 & 1 & 1 & 0 & 1 & 0 & 0 & 1 & 0 \\
+&  0 & 1 & 1 & 0 & 1 & 1 & 0 & 1 & 0 & 0 & 1 & 0 \\
+\cline{2-13}
+\multirow{2}{*}{\rotatebox[origin=c]{90}{\textrm{bad $3$}}}
+ & 1 & 0 & 1 & 1 & 0 & 0 & 1 & 0 & 0 & 1 & 0 & 1 \\
+&  1 & 0 & 1 & 1 & 0 & 0 & 1 & 0 & 0 & 1 & 0 & 1 \botstrut \\
+\end{blockarray}
+\end{equation}
+The nuclear norm of each individual bad block is 
+$\sqrt{\frac{3}{2}\alpha\beta nm}$, and because the blocks are 
+chosen independently of each other, the nuclear norm will be approximately 
+additive across blocks. In addition, including a given bad block 
+increases $\langle \A - \frac{1}{2}J, M \rangle$ by $\frac{3}{4}\alpha\beta nm$.
+In contrast, including the good block increases the nuclear norm by 
+$\sqrt{\alpha\beta nm}$ and only increases the objective by $\frac{1}{2}\alpha\beta nm$. The bad blocks therefore all give more ``bang for the buck'' in terms of 
+how much they increase the objective vs. how much much they increase the nuclear 
+norm, so we will add them before the good block.
+
+To accomodate all these bad 
+blocks, we need to allow $\|M\|_*$ to be at least roughly 
+$\frac{1}{3\beta}\p{\frac{1}{\alpha}-1} \times \sqrt{\frac{3}{2}\alpha\beta nm} 
+= \Omega\p{\frac{1}{\alpha\beta}\sqrt{\alpha\beta nm}}$, which is adds an extra 
+factor of $\frac{1}{\beta}$ relative to when we constrain the column sum. 
+The issue can be seen in the above construction in \eqref{eq:row-construction}: 
+if we do not normalize the rows, then the rows controlled by adversaries can 
+exert disproportionate influence (up to a factor of $\frac{1}{\beta}$) by 
+creating columns that are much denser than those of the reliable raters.
