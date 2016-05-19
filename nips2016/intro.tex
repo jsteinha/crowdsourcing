@@ -8,84 +8,95 @@
 % NEW INTRO
 How can we reliably obtain information from humans, given that the humans 
 themselves are unreliable, and might even have incentives to mislead us?
-This question is important, for instance, if we wish to curate a large 
-dataset via crowdsourcing --- many of the workers in the crowd do not produce 
-high-quality data, but they are incentivized to fool us into thinking that 
-it is high-quality in order to get paid. This raises the question: given a 
-core of reliable workers, where the rest of the workers are unreliable and 
-potentially adversarial, can we obtain almost all of the data from the 
-reliable workers while allowing in almost none of the data from the 
-unreliable workers?
+Versions of this question arise in crowdsourcing \citep{vuurens2011spam}, 
+collaborative knowledge generation \citep{priedhorsky2007creating}, peer grading 
+in online classrooms \citep{kulkarni2015peer,piech2013tuned}, and aggregation 
+of customer reviews \citep{harmon2004amazon}. A key challenge is to ensure 
+high information quality despite the fact that many people interacting with 
+the system may be unreliable or even adversarial.
+
+% talk about gold sets --- say not okay because too constrainint
+One approach to ensuring quality is to use \emph{gold sets} --- questions where 
+the answer is known, which can be used to assess reliability on unknown questions. 
+However, this is overly constraining --- it does not make sense for open-ended 
+tasks such as knowledge generation on wikipedia, nor even for crowdsourcing 
+tasks such as ``translate this sentence'' or ``draw an interesting picture'' 
+where there are different equally good answers. 
+In this work, we take a different perspective: we make no restrictions on the 
+content that people can produce, and instead focus on \emph{evaluating} this 
+content, using human ratings to achieve scalability in this evaluation task. 
+For instance, in a crowdsourcing setting where we wanted to translate sentences 
+from Chinese to English, we would first ask workers to perform the translation, 
+and then ask a (potentially) new set of workers to evaluate the quality of 
+the translations.
+
+% our insight --- let humans rate other humans!
+% challenges: different scales, different responses to different items
+This leads to several challenges. First, many workers may be unreliable; 
+second, some reliable raters might be harsher or more lenient than others; 
+third, some outputs may be harder to evaluate than others 
+%(e.g. long vs. short sentences) 
+and so rater error rates could vary from item to item. 
+Finally, some 
+workers may even collude (e.g. by agreeing to rate each other's output highly).
+On the other hand, depiste all these difficulties, at least some of the workers 
+actually are reliable. This raises the question: can we somehow extract the 
+information from the reliable workers, without knowing who they are a priori?
 
 In this work, we answer this question in the affirmative, under surprisingly 
-weak assumptions that improve substantially upon previous results. 
-In particular:
+weak assumptions:
 \begin{itemize}
 \item We do not assume that there is a ``gold set'' or other cheap way to judge 
-      worker performance (instead, we rely on a small number of our own post hoc judgments).
+      worker performance;instead, we rely on a small number of our own post hoc judgments.
 \item We do not assume that the majority of workers are reliable.
 \item We do not assume that the unreliable workers conform to any statistical 
       model; they could behave fully adversarially, in collusion with each other 
       and with full knowledge of how the reliable workers behave.
-\item We do not assume that worker judgments match our own, but only that they are 
-      ``approximately monotonic'' in our judgments, in a sense that will be 
+\item We do not assume that worker ratings match our own, but only that they are 
+      ``approximately monotonic'' in our ratings, in a sense that will be 
       formalized later.
 \end{itemize}
-For concreteness, let us consider a simple formalization of the crowdsourcing 
-setting in which to describe our algorithm and results (our actual results hold 
-in a more general setting). We assume that there are $n$ workers, at least 
-$\alpha n$ of whom are reliable in the following sense: (i) $90\%$ of the data 
-that they produce is correct, and (ii) when they judge whether someone else's data 
-is correct, they are right with probability at least $60\%$ and make independent 
-errors. Each worker is assigned to judge a randomly selected output from each 
-of $k$ other workers (also chosen at random). In addition, we ourselves judge 
-an output from each of $k_0$ workers. The results of this paper imply the 
-following:
+For concreteness, we describe a simple formalization of the crowdsourcing 
+setting (our actual results hold in a more general setting). We assume 
+there are $n$ workers (raters) and $n$ outputs to evaluate (items), which can
+be correct or incorrect. At least $\alpha n$ workers are reliable:
+they judge correctness with at least $60\%$ accuracy on each item 
+and make independent errors. Each worker is assigned to judge a randomly selected 
+output from between $k$ and $2k$ other workers (also chosen at random). In 
+addition, we ourselves judge an output from each of $k_0$ workers. Our results 
+imply the following:
 
 \input matrix-figure
 
 \begin{theorem}
 \label{thm:intro}
-In the scenario above, suppose that $k \geq \Omega(1/\alpha^4\epsilon^4)$
-and that $k_0 \geq \Omega(\log(1/\alpha\epsilon)/\alpha\epsilon^2)$. Then, with probability 
-at least $99\%$, we will select $\alpha n$ workers, whose data is correct on 
-average with probability at least $0.9-\epsilon$.
+In the setting above, suppose that $\beta n$ of the outputs are correct, that 
+$k \geq \Omega(1/\beta\alpha^3\epsilon^4)$, and that 
+$k_0 \geq \Omega(\log(1/\alpha\beta\epsilon)/\beta\epsilon^2)$. Then, with probability 
+at least $99\%$, we can recover $\beta n$ outputs of which at most $\epsilon\beta n$ 
+are incorrect.
 \end{theorem}
-In other words, compared to the situation where we know exactly who is reliable, 
-we obtain the same amount of data, and its average quality is worse by at most 
-$\epsilon$. Amazingly, the amount of work that each worker (and we ourselves) has 
+Amazingly, the amount of work that each worker (and we ourselves) has 
 to do does not grow with $n$; it depends only on the fraction $\alpha$ of 
 reliable workers and the the desired accuracy $\epsilon$.
+Our general results allow for scalar ratings lying in $[0,1]$, and only 
+exploit inter-rater agreement (the expected value of the ratings induce 
+the same ranking) and independent errors among the reliable raters.
 
-Our algorithm only exploits inter-rater agreement among the reliable workers, 
-and does rely on the fact that reliable workers also produce reliable data.
-Our results therefore hold in a more general setting where we have $n$ raters and 
-$m$ items, and $\alpha n$ of the raters are reliable; our goal is to 
-recover the \emph{$\beta$-quantile} of the items --- the $\beta m$ items 
-with the highest rating according to our own judgment. In the setting above, 
-the raters are the workers and the items are the data they produce. Our original 
-goal corresponded to recovering the $\alpha$-quantile, i.e. the data 
-produced by the $\alpha n$ best workers.
-
-Another scenario that our setting applies to is peer assessment in MOOCs (massive 
-online open courses). Here a single class could have thousands of students, 
+Our results are also applicable to peer grading in massive online open courses. 
+A single class could have thousands of students, 
 and to achieve scalability instructors often ask students to grade each others' 
 papers \citep{kulkarni2015peer,piech2013tuned}. 
 Some student graders will simply not have mastered the material themselves, 
 and some enterprising but dishonest students are likely to collude, 
 so building grading systems that are robust to large errors as well as 
 collusion is crucial. 
-Our results apply to this setting as well, and imply that we can estimate the 
-$\beta$-quantile after asking each student to grade 
-$\Omega(1/\beta\alpha^3\epsilon^4)$ other student papers at random, and 
-grading $\Omega(\log(1/\alpha)/\beta\epsilon^2)$ papers ourselves.
-Estimating, say, the $0.1$-quantile is 
-sensible if we wish to assign A's to the top $10\%$ of the class. 
 An important aspect of our results is that they hold even if some graders are 
-more lenient than others, as long as the \emph{ranking} produces by the graders 
-is the same. The focus on quantiles rather than raw scores is what enables this 
-(note that once we estimate the quantiles, we can approximately recover the 
-raw scores by evaluating a few items in each quantile).
+more lenient than others, as long as the \emph{ranking} produced by the graders 
+is the same. The focus on quantiles rather than raw scores is what enables this. 
+Note that once we estimate the quantiles, we can approximately recover the 
+raw scores by evaluating a few items in each quantile (though for some purposes, 
+such as assigning an A to the top $10\%$ of the class, the quantiles already suffice).
 
 % Overview of Related Work
 % Budget-Optimal Task Allocation for Reliable Crowdsourcing Systems
