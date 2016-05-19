@@ -1,4 +1,4 @@
-\section{Algorithm}
+\section{Algorithm and Intuition}
 \label{sec:algorithm}
 
 We now describe our recovery algorithm. To fix notation, we assume that 
@@ -7,33 +7,31 @@ $\A \in [0,1]^{n \times m}$, obtained by asking each rater to rate $k$
 items chosen at random: $\A_{ij} = 0$ if rater $i$ does not rate item 
 $j$, and otherwise $\A_{ij}$ is the assigned rating, which takes values 
 in $[0,1]$. In the settings we 
-care about $\A$ is very sparse --- it will only have a constant number of 
+care about $\A$ is very sparse --- it only has a constant number of 
 non-zero entries in each row. Remember that our goal is to recover the 
-$\beta m$ best items according to our own rating (while only actually rating a 
-constant number of items).
+the $\beta m$ best items according to our own rating--called the $\beta$-quantile--while only rating a 
+small number of items.
 
 Our algorithm is based on the following intuition: the reliable raters must 
-(approximately) agree with each other, and so if we can somehow cluster the 
-rows of $\A$, then the reliable raters should form a single very large cluster 
+(approximately) agree on the ranking of items, and so if we can cluster the 
+rows of $\A$ appropriately, then the reliable raters should form a single very large cluster 
 (of size $\alpha n$). There can only be $\frac{1}{\alpha}$ such clusters, and 
-so we can manually check the accuracy of each large cluster (for instance, 
-by randomly selecting some ratings and comparing them to our own rating) and 
+so we can manually check the accuracy of each large cluster (by checking agreement 
+with our own rating on a few randomly selected items) and 
 then choose the best one.
-Our algorithm differs from this outline due to various 
-optimizations, but adheres in spirit to the fundamental idea. 
 
 \input recover-M
 
 One major challenge in using the clustering intuition is the sparsity of 
 $\A$: any two rows of $\A$ will almost certainly have no ratings in common, 
-and so we must somehow exploit the global structure of $\A$ to discover 
+so we must exploit the global structure of $\A$ to discover 
 clusters, rather than using pairwise comparisons of rows.
 The key is to view our problem as a form of \emph{noisy matrix completion} --- 
-we imagine a matrix $\Aavg$ in which all of the ratings have been filled in 
-and all noise from individual ratings has been removed. We can then define a 
+we imagine a matrix $\Aavg$ in which all the ratings have been filled in 
+and all noise from individual ratings has been removed. We define a 
 matrix $\Mavg$ that indicates the top $\beta m$ items in each row of $\Aavg$: 
 $\Mavg_{ij} = 1$ if item $j$ has one of the top $\beta m$ ratings from rater $i$, 
-and $\Mavg_{ij} = 0$ otherwise. If we could recover $\Mavg$, we would be very 
+and $\Mavg_{ij} = 0$ otherwise. If we could recover $\Mavg$, we would be 
 close to obtaining the clustering we wanted.
 
 The key observation that allows us to approximate $\Mavg$ given only the noisy, 
@@ -59,35 +57,34 @@ in $\A$.
 
 Once we have recovered $\M$ using Algorithm~\ref{alg:recover-M}, it remains to 
 recover a specific set $T$ that approximates the $\beta$-quantile according to 
-our ratings. Algorithm~\ref{alg:recover-T} provides a simple recipe for doing so: 
-first, rate $k'$ items at random, obtaining a vector $\robs$ similar to to 
-$\Aobs$: $\robs_j = 0$ if we did not rate item $j$, and otherwise $\robs_j$ is 
-the (possibly noisy) rating that we assign to item $j$. Second, pick the 
-$\alpha n$ rows whose item sets score highest according to our rating: that is, 
-the indices $i$ for which $\sum_j \M_{ij}\robs_j$ is highest. Finally, let 
-$T_0$ be the average of these $\M_i$. The only catch is that $T_0$ lies in 
-$[0,1]^m$ rather than $\{0,1\}^m$, so it is not necessarily the indicator 
-function of a set. To remedy this, we use a randomized rounding algorithm to 
-obtain a set $T$ whose quality matches $T_0$ in expectation. This algorithm 
-is described in detail in Section~\ref{sec:rounding}.
+our ratings. Algorithm~\ref{alg:recover-T} provides a recipe for doing so: 
+first, rate $k_0$ items at random, obtaining the vector $\robs$:
+$\robs_j = 0$ if we did not rate item $j$, and otherwise $\robs_j$ is 
+the (possibly noisy) rating that we assign to item $j$. Next, score each 
+row $\M_{i}$ based on the noisy ratings $\sum_j \M_{ij}\robs_j$, and let $T_0$ be the 
+indices $i$ of the $\alpha n$ highest-scoring $\M_i$.
+Finally, use randomized rounding to turn the vector $T_0 \in [0,1]^m$ into 
+a discrete vector $T \in \{0,1\}^m$, and treat $T$ as the indicator function 
+of a set approximating the $\beta$-quantile
+(see Section~\ref{sec:rounding} for details of the rounding algorithm).
 
 In summary, given a noisy rating matrix $\Aobs$, we will first run 
 Algorithm~\ref{alg:recover-M} to recover a $\beta$-quantile matrix $\M$ for 
 each rater, and then run Algorithm~\ref{alg:recover-T} to recover our 
 personal $\beta$-quantile from $\M$.
 
-\paragraph{Possible attacks by adversaries.} We note the necessity of a 
-few aspects of our algorithm by exhibiting attacks that would be possible 
-in our absence. First, the only attack vector by which adversaries can 
-influence $M_i$ for reliable raters $i$ is via the nuclear norm constraint 
-(the other constraints are separable across rows). This makes sense because 
+\paragraph{Possible attacks by adversaries.} In our algorithm, 
+the adversaries can influence $\M_i$ for reliable raters $i$ via 
+the nuclear norm constraint (note that the other constraints are 
+separable across rows). This makes sense because 
 the nuclear norm is what causes us to pool global structure across 
-raters (and thus potentially pool bad information). The constraint on the 
+raters (and thus potentially pool bad information). In order to 
+limit this influence, the constraint on the 
 nuclear norm is weaker than is typical by a factor of $\frac{2}{\epsilon}$; 
-this looseness limits the influence of adversaries at the expense of more 
-work by the honest raters.
+it is not clear to us whether this is actually necessary or due to a 
+loose analysis.
 
-Second, why is it necessary to include some of our own ratings? 
+Why is it necessary to include some of our own ratings? 
 If we did not, and $\alpha < \frac{1}{2}$, then an adversary could create a set of 
 dishonest raters that were identical to the reliable raters except with the 
 item indices permuted by a random permutation of $\{1,\ldots,m\}$. In this case, 
@@ -96,14 +93,15 @@ breaking the symmetry with our own ratings.
 
 Finally, the constraint $\sum_j M_{ij} \leq \beta m$ is 
 not typical in the literature. For instance, \citep{chen2014improved} 
-instead normalize $\A$ to lie in $[-1,1]^{m \times m}$ but place no 
+place no 
 constraint on the sum of each row in $M$ (instead of recovering 
-the $\beta$-quantile, they recover the set of items with positive rating).
-Our row normalization constraint is necessary to prevent a type of attack 
+the $\beta$-quantile, they normalize $\A$ to lie in $[-1,1]^{m \times m}$ recover 
+the items with a positive rating).
+Our row normalization constraint prevents an attack 
 in which a spammer rates a random subset of items as high as possible and 
 rates the remaining items as low as possible. If the actual set of 
 high-quality items has density much smaller than $50\%$, then the 
-spammer might have undue influence relative to honest raters that 
-only give high ratings to e.g. $10\%$ of the items. Normalizing $M$ to 
-have the same total sum in each row prevents this (see 
-Appendix~\ref{sec:normalization} for a more formal version of this argument).
+spammer gains undue influence relative to honest raters that 
+only rate e.g. $10\%$ of the items highly. Normalizing $M$ to 
+have a fixed row sum prevents this. See Section~\ref{sec:adversary-examples} 
+for elaboration on this and the preceding point.
