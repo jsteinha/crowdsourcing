@@ -1,32 +1,50 @@
+\begin{figure}
+\centering
+\FrameSep0pt
+\newcommand{\ob}[1]{{\color{blue}#1}}
+\newcommand{\ot}[1]{{\color{black}#1}}
+\newcommand{\ns}[1]{{\color{red!50!gray!60!white}#1}}
 \begin{equation*}
 \label{eq:row-construction}
 \def\arraystretch{1.1}
 \begin{blockarray}{cccccccccccccccc}
-r^* & \begin{varwidth}{4em}\begin{center}\small true ratings\end{center}\end{varwidth} & 1 & 0.8 & 0.6 & 0.4 & 0.2 & 0.1 
+&& \BAmulticolumn{6}{c}{\text{\small items}} &&&&&&& \\[0.5ex]
+r^* & \begin{varwidth}{4em}\begin{center}\small true ratings\end{center}\end{varwidth} & \ns{1} & \ob{0.8} & \ns{0.6} & \ns{0.4} & \ob{0.2} & \ns{0.1} 
 &&
-T^* &1&1&1&0&0&0 \\
+T^* &\ot{1}&\ot{1}&\ot{1}&\ot{0}&\ot{0}&\ot{0} \\
 \begin{block}{cc[cccccc]cc[cccccc]}
-\multirow{6}{*}{$A$} &
- \multirow{2}{*}{\begin{varwidth}{4em}\begin{center}\small good raters\end{center}\end{varwidth}} & .9 & .8 & .7 & .6 & .5 & .4 \topstrut 
+\multirow{6}{*}{$\A$} &
+ \multirow{2}{*}{\begin{varwidth}{4em}\begin{center}\small good raters\end{center}\end{varwidth}} & \ob{.9} & \ns{.8} & \ns{.7} & \ns{.6} & \ob{.5} & \ns{.4} \topstrut 
 & \multirow{6}{*}{$\implies$} &
 \multirow{6}{*}{$M^*$} 
- & 1 & 1 & 1 & 0 & 0 & 0 \topstrut \\
- & & 1 & .9 & .8 & .2 & .1 & 0 
+ & \ot{1} & \ot{1} & \ot{1} & \ot{0} & \ot{0} & \ot{0} \topstrut \\
+ & & \ns{1} & \ob{.9} & \ns{.8} & \ns{.2} & \ob{.1} & \ns{0} 
  &&
- & 1 & 1 & 1 & 0 & 0 & 0 \\
+ & \ot{1} & \ot{1} & \ot{1} & \ot{0} & \ot{0} & \ot{0} \\
 \cmidrule(lr){3-8}
 & \begin{varwidth}{4em}\begin{center}\small random\end{center}\end{varwidth}
-& 1 & 0 & 1 & 0 & 1 & 0 
+& \ob{1} & \ns{0} & \ns{1} & \ns{0} & \ns{1} & \ob{0} 
 &&
- & 1 & 0 & 1 & 0 & 1 & 0 \\
+ & \ot{1} & \ot{0} & \ot{1} & \ot{0} & \ot{1} & \ot{0} \\
 \cmidrule(lr){3-8}
 & \multirow{2}{*}{\begin{varwidth}{4em}\begin{center}\small adversaries\end{center}\end{varwidth}}
- & 1 & 1 & 0 & 0 & 0 & 1 
+ & \ns{1} & \ns{1} & \ob{0} & \ob{0} & \ns{0} & \ns{1} 
 &&
- & 1 & 1 & 0 & 0 & 0 & 1 \\
-&& 1 & 1 & 0 & 0 & 0 & 1 \botstrut 
+ & \ot{1} & \ot{1} & \ot{0} & \ot{0} & \ot{0} & \ot{1} \\
+&& \ns{1} & \ns{1} & \ns{0} & \ob{0} & \ns{0} & \ob{1} \botstrut 
 &&
- & 1 & 1 & 0 & 0 & 0 & 1 \botstrut \\
+ & \ot{1} & \ot{1} & \ot{0} & \ot{0} & \ot{0} & \ot{1} \botstrut \\
 \end{block}
 \end{blockarray}
 \end{equation*}
+\vskip -0.15in
+\caption{Illustration of our problem setting. We observe a small number of 
+ratings from each rater (indicated a blue), which we represent as entries in a 
+matrix $\A$ (unobserved ratings in red, treated as zero by our algorithm). 
+We also rate a small number of items ourself, indicated by $\robs$. Our goal is 
+to recover the set $T^*$ representing the top $\beta$ fraction of items under 
+our rating. As an intermediate step, we recover a matrix $M^*$ that approximates 
+the top items for each individual rater.
+}
+\label{fig:matrix}
+\end{figure}
