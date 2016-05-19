@@ -30,7 +30,12 @@
 \usepackage{algorithm,algorithmicx,algcompatible,algpseudocode}
 
 \usepackage{blkarray, bigstrut}
-\usepackage{multirow}
+\makeatletter
+\newbox\BA@first@box
+\makeatother
+\usepackage{multirow,varwidth}
+\newcommand\topstrut[1][1.2ex]{\setlength\bigstrutjot{#1}{\bigstrut[t]}}
+\newcommand\botstrut[1][0.9ex]{\setlength\bigstrutjot{#1}{\bigstrut[b]}}
 
 \input std-macros
 \input macros
