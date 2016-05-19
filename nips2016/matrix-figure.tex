@@ -1,31 +1,31 @@
 \begin{equation*}
 \label{eq:row-construction}
-\def\arraystretch{1.25}
-\begin{blockarray}{cccccccc}
-r^* & \begin{varwidth}{4em}\begin{center}\small true ratings\end{center}\end{varwidth} & 1 & 0.8 & 0.6 & 0.4 & 0.2 & 0.1 \\
-\begin{block}{cc[cccccc]}
-\multirow{6}{*}{$A$} &
- \multirow{2}{*}{\begin{varwidth}{4em}\begin{center}\small good raters\end{center}\end{varwidth}} & .9 & .8 & .7 & .6 & .5 & .4 \topstrut \\
- & & 1 & .9 & .8 & .2 & .1 & 0 \\
-\cmidrule(lr){3-8}
-& \begin{varwidth}{4em}\begin{center}\small random\end{center}\end{varwidth}
-& 1 & 0 & 1 & 0 & 1 & 0 \\
-\cmidrule(lr){3-8}
-& \multirow{2}{*}{\begin{varwidth}{4em}\begin{center}\small adversaries\end{center}\end{varwidth}}
- & 1 & 1 & 0 & 0 & 0 & 1 \\
-&& 1 & 1 & 0 & 0 & 0 & 1 \botstrut \\
-\end{block}
-\end{blockarray} \implies 
-\begin{blockarray}{ccccccc}
+\def\arraystretch{1.1}
+\begin{blockarray}{cccccccccccccccc}
+r^* & \begin{varwidth}{4em}\begin{center}\small true ratings\end{center}\end{varwidth} & 1 & 0.8 & 0.6 & 0.4 & 0.2 & 0.1 
+&&
 T^* &1&1&1&0&0&0 \\
-\begin{block}{c[cccccc]}
+\begin{block}{cc[cccccc]cc[cccccc]}
+\multirow{6}{*}{$A$} &
+ \multirow{2}{*}{\begin{varwidth}{4em}\begin{center}\small good raters\end{center}\end{varwidth}} & .9 & .8 & .7 & .6 & .5 & .4 \topstrut 
+& \multirow{6}{*}{$\implies$} &
 \multirow{6}{*}{$M^*$} 
  & 1 & 1 & 1 & 0 & 0 & 0 \topstrut \\
+ & & 1 & .9 & .8 & .2 & .1 & 0 
+ &&
  & 1 & 1 & 1 & 0 & 0 & 0 \\
-\cmidrule(lr){2-7}
+\cmidrule(lr){3-8}
+& \begin{varwidth}{4em}\begin{center}\small random\end{center}\end{varwidth}
+& 1 & 0 & 1 & 0 & 1 & 0 
+&&
  & 1 & 0 & 1 & 0 & 1 & 0 \\
-\cmidrule(lr){2-7}
+\cmidrule(lr){3-8}
+& \multirow{2}{*}{\begin{varwidth}{4em}\begin{center}\small adversaries\end{center}\end{varwidth}}
+ & 1 & 1 & 0 & 0 & 0 & 1 
+&&
  & 1 & 1 & 0 & 0 & 0 & 1 \\
+&& 1 & 1 & 0 & 0 & 0 & 1 \botstrut 
+&&
  & 1 & 1 & 0 & 0 & 0 & 1 \botstrut \\
 \end{block}
 \end{blockarray}
