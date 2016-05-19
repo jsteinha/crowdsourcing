@@ -1,6 +1,8 @@
 \section{Algorithm and Intuition}
 \label{sec:algorithm}
 
+\input recover-M
+
 We now describe our recovery algorithm. To fix notation, we assume that 
 there are $n$ raters and $m$ items, and that we observe a matrix 
 $\A \in [0,1]^{n \times m}$, obtained by asking each rater to rate at most $k$ 
@@ -19,8 +21,6 @@ rows of $\A$ appropriately, then the reliable raters should form a single very l
 so we can manually check the accuracy of each large cluster (by checking agreement 
 with our own rating on a few randomly selected items) and 
 then choose the best one.
-
-\input recover-M
 
 One major challenge in using the clustering intuition is the sparsity of 
 $\A$: any two rows of $\A$ will almost certainly have no ratings in common, 
