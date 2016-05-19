@@ -1,23 +1,32 @@
-\begin{algorithm}[b!]
-\caption{Algorithm for obtaining (unreliable) ratings matrix $\A$.}
-\label{alg:create-A}
-\begin{algorithmic}[1]
-\State Input: number of raters $n$,  number of items $m$, and parameter $k$.
-\State For every rater, initially choose a set of items for them to rate by selecting each item independently with probability $k/2m$.  
-\State For every rater who is initially assigned more than $k$ items to rate, arbitrarily reduce the number of items assigned to that worker to $k$ (e.g. by selecting the $k$ items of lowest index that were assigned to that rater).
-\State For every item that is initially assigned to more than $\max\left(k,k\frac{n}{m}\right)$ raters, arbitrarily reduce the number of raters assigned to that item to $\max\left(k, k \frac{n}{m}\right)$ (e.g. by selecting the $\max \left(k, k \frac{n}{m}\right)$ raters of lowest index that were assigned to that item).
-\State Have the raters submit ratings of their assigned items, and let $\A$ denote the resulting matrix of ratings with zeros corresponding to missing entries.
-\end{algorithmic}
-\end{algorithm}
+%\begin{algorithm}[b!]
+%\caption{Algorithm for obtaining (unreliable) ratings matrix $\A$.}
+%\label{alg:create-A}
+%\begin{algorithmic}[1]
+%\State Input: number of raters $n$,  number of items $m$, and parameter $k$.
+%\State For every rater, initially choose a set of items for them to rate by selecting each item independently with probability $k/2m$.  
+%\State For every rater who is initially assigned more than $k$ items to rate, arbitrarily reduce the number of items assigned to that worker to $k$ (e.g. by selecting the $k$ items of lowest index that were assigned to that rater).
+%\State For every item that is initially assigned to more than $\max\left(k,k\frac{n}{m}\right)$ raters, arbitrarily reduce the number of raters assigned to that item to $\max\left(k, k \frac{n}{m}\right)$ (e.g. by selecting the $\max \left(k, k \frac{n}{m}\right)$ raters of lowest index that were assigned to that item).
+%\State Have the raters submit ratings of their assigned items, and let $\A$ denote the resulting matrix of ratings with zeros corresponding to missing entries.
+%\end{algorithmic}
+%\end{algorithm}
 
 
 \begin{algorithm}[b!]
-\caption{Algorithm for recovering $\beta$-quantile matrix $\M$ from 
+\caption{Algorithm for recovering $\beta$-quantile matrix $\M$ using
 (unreliable) ratings $\A$.}
 \label{alg:recover-M}
 \begin{algorithmic}[1]
-\State Parameters: reliable fraction $\alpha$, quantile $\beta$, tolerance $\epsilon$
-\State Input: matrix $\A$ of noisy ratings
+\State Parameters: reliable fraction $\alpha$, quantile $\beta$, tolerance $\epsilon$, number of raters $n$, number of items $m$
+\State $\A \gets 0 \in \bR^{n \times m}$
+\For{$i,j = 1$ {\bfseries to } $m,n$} \Comment{generate noisy ratings matrix $\A$}
+\If{more than $k$ ratings in row $i$ or $k\max(1,n/m)$ ratings in column $j$}
+\State {\bfseries continue} \Comment{ensures no row or column is too dense}
+\EndIf
+\If{\texttt{flip}($\tfrac{k}{2m}$)} \Comment{query rating with probability $k/2m$}
+\State $\A_{ij} \gets \texttt{noisyRating}(i,j)$
+\EndIf
+\EndFor
+\State
 \State Let $\M$ be the solution of the optimization problem \eqref{eq:optimization-noisy}:
   \begin{align}
   \label{eq:optimization-noisy}
