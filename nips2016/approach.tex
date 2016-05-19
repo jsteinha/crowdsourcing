@@ -164,9 +164,11 @@ essentially identical, and so optimizing one also optimizes the other.
 
 Using the inequality $|\langle \A - B, M \rangle| \leq \|\A-B\|_{\op}\|M\|_*$, 
 where $\|\cdot\|_{\op}$ denotes operator norm, it suffices to establish a matrix 
-concentration inequality showing that $\|\A - B\|_{\op}$ is small. 
-\todo{Greg, can you fill this in with the relevant matrix concentration 
-result?}
+concentration inequality bounding the operator norm $\|\A - B\|_{\op}$.   This follows immediately from the following general matrix concentration result from~\cite{Le2015}:
+
+\begin{theorem}[Theorem 2.1 in~\cite{Le2015}]
+Given an $s \times s$ matrix $P$ with entries $P_{i,j} \in [0,1]$, and a random matrix $A$ with the properties that 1) each entry of $A$ is chosen independently, 2) $\E[A_{i,j}] = P_{i,j}$, and 3) $A_{i,j} \in [0,1]$, then for any $r \ge 1$, the following holds with probability at least $1-s^{-r}$:  let $d = s \cdot \max_{i,j} P_{i,j}$, and modify any subset of at most $10s/d$ rows and/or columns of $A$ by arbitrarily decreasing the value of nonzero elements of those rows or columns to form the matrix $A'$ with entries in $[0,1]$, then $$||A' - P||_{op} \le C r^{3/2}\left(\sqrt{d} + \sqrt{d'}\right),$$ where $d'$ is the maximum $\ell_2$ norm of any row or column of $A'$, and $C$ is an absolute constant.
+\end{theorem}
 
 \paragraph{Part 2: bounding the influence of adversaries.} 
 Next, we need to show that the nuclear norm constraint does 
