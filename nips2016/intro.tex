@@ -34,7 +34,7 @@ the translations.
 % challenges: different scales, different responses to different items
 This leads to several challenges. First, many workers may be unreliable; 
 second, some reliable raters might be harsher or more lenient than others; 
-third, some outputs may be harder to evaluate than others 
+third, some translations may be harder to evaluate than others 
 %(e.g. long vs. short sentences) 
 and so rater error rates could vary from item to item; 
 finally, some workers may even collude. % (e.g. one worker agrees to rate another's output highly).
@@ -45,6 +45,7 @@ information from the reliable workers, without knowing who they are a priori?
 In this work, we answer this question in the affirmative, under surprisingly 
 weak assumptions:
 \begin{itemize}
+%\begin{itemize}[itemsep=2pt,topsep=0pt,parsep=0pt,partopsep=0pt,leftmargin=18pt]
 \item We do not assume that there is a ``gold set'' or other cheap way to judge 
       worker performance; instead, we rely on a small number of our own post hoc judgments.
 \item We do not assume that the majority of workers are reliable.
@@ -57,45 +58,44 @@ weak assumptions:
 \end{itemize}
 For concreteness, we describe a simple formalization of the crowdsourcing 
 setting (our actual results hold in a more general setting). We assume 
-there are $n$ workers (raters) and $n$ outputs to evaluate (items), which can
-be correct or incorrect. At least $\alpha n$ workers are reliable:
-they judge correctness with at least $60\%$ accuracy on each item 
-and make independent errors. Each worker is assigned to judge at most $k$ randomly selected 
-outputs. In 
-addition, we ourselves judge an output from each of $k_0$ workers. Our results 
-imply the following:
+there are $n$ workers (raters) and $n$ items to evaluate, which have an unknown 
+quality level in $[0,1]$. At least $\alpha n$ workers are reliable:
+their judgments match our own in expectation, and they make independent errors.
+Each worker is assigned to judge at most $k$ randomly selected 
+items. In addition, we ourselves judge $k_0$ items. Our goal is to 
+recover the \emph{$\beta$-quantile}: the set $T^*$ of the $\beta n$ highest-quality items. 
+Our results imply the following:
 
 \input matrix-figure
 
 \begin{theorem}
 \label{thm:intro}
-In the setting above, suppose that $\beta n$ of the outputs are correct, that 
-$k \geq \Omega(1/\beta\alpha^3\epsilon^4)$, and that 
+In the setting above, suppose that
+$k \geq \Omega(1/\beta\alpha^3\epsilon^4)$ and 
 $k_0 \geq \Omega(\log(1/\alpha\beta\epsilon)/\beta\epsilon^2)$. Then, with probability 
-at least $99\%$, we can recover $\beta n$ outputs of which at most $\epsilon\beta n$ 
-are incorrect.
+at least $99\%$, we can identify $\beta n$ items whose average quality is at most 
+$\epsilon$ worse than $T^*$.
 \end{theorem}
 Amazingly, the amount of work that each worker (and we ourselves) has 
 to do does not grow with $n$; it depends only on the fraction $\alpha$ of 
 reliable workers and the the desired accuracy $\epsilon$.
-Our general results allow for scalar ratings lying in $[0,1]$, and only 
-exploit inter-rater agreement (the expected value of the ratings induce 
-the same ranking) and independent errors among the reliable raters.
 
-Our results are also applicable to peer grading in massive online open courses. 
+Our general results only require a weaker form of inter-rater agreement --- 
+they hold even if e.g. some raters are harsher than others, as long as 
+the expected ratings induce approximately the same ranking.
+The focus on quantiles rather than raw ratings is what enables this. 
+Note that once we estimate the quantiles, we can approximately recover the 
+ratings by evaluating a few items in each quantile.
+
+Another setting that our results apply to is peer grading in massive online open courses. 
 A single class could have thousands of students, 
 and to achieve scalability instructors often ask students to grade each others' 
 papers \citep{kulkarni2015peer,piech2013tuned}. 
 Some student graders will simply not have mastered the material themselves, 
-and some enterprising but dishonest students are likely to collude, 
-so building grading systems that are robust to large errors as well as 
-collusion is crucial. 
-An important aspect of our results is that they hold even if some graders are 
-more lenient than others, as long as the \emph{ranking} produced by the graders 
-is the same. The focus on quantiles rather than raw scores is what enables this. 
-Note that once we estimate the quantiles, we can approximately recover the 
-raw scores by evaluating a few items in each quantile (though for some purposes, 
-such as assigning an A to the top $10\%$ of the class, the quantiles already suffice).
+and some enterprising but dishonest students are likely to collude. Theorem~\ref{thm:intro} 
+implies that our algorithm is robust to both of these. 
+As mentioned above, it also automatically adjusts for differences among graders 
+as long as their grades produce the same ranking.
 
 % Overview of Related Work
 % Budget-Optimal Task Allocation for Reliable Crowdsourcing Systems
@@ -168,12 +168,13 @@ expected accuracy on every item); this is implausible as it rules out
 most types of strategic behavior.
 In removing this assumption, we face a key technical challenge: while previous 
 analyses consider errors relative to a ground truth clustering 
-\citep[e.g.][]{chen2014improved}, in our setting 
+%\citep[e.g.][]{chen2014improved}, 
+in our setting 
 the ground truth only exists for rows of the matrix corresponding to reliable 
 raters, while the remaining rows could behave arbitrarily even in the limit 
 where all ratings are observed. This necessitates a more careful analysis, 
-which has the advantage of clarifying which properties of previous clustering 
-models were necessary and which were superfluous.
+which helps to clarify what properties of a clustering are truly necessary 
+for identifying it.
 
 
 \paragraph{Overview of the paper.} In Section~\ref{sec:algorithm}, we 
