@@ -23,10 +23,23 @@ tasks such as knowledge generation on wikipedia, nor even for crowdsourcing
 tasks such as ``translate this paragraph'' or ``draw an interesting picture'' 
 where there are different equally good answers.   Additionally, such an approach might not be effective in some settings, such as orchestrating an effective peer grading system in massive online open courses, particularly given the presence of a non-negligible fraction of students colluding to inflate their grades.
 
-In this work, we take a different perspective: we make no restrictions on the 
-content that people can produce, and instead focus on \emph{evaluating} this 
+In this work, we consider the challenge of using crowdsourced human ratings to accurately and efficiently evaluate a large dataset of content.   In some settings, such as peer grading, the end goal is to obtain the accurate evaluation of each datum; in other settings, such as the curation of a large dataset, accurate evaluations could be leveraged to select a high-quality subset of a larger cohort of variable-quality (perhaps crowd-generated) data.  
+
+There are several confounding difficulties that arise in extracting accurate evaluations.  First, many workers may be unreliable and give evaluations that are uncorrelated with the actual quality of the items they evaluate; 
+second, some reliable raters might be harsher or more lenient than others; 
+third, some items may be harder to evaluate than others 
+%(e.g. long vs. short sentences) 
+and so worker error rates could vary from item to item, even among reliable workers; 
+finally, some workers may even collude. % (e.g. one worker agrees to rate another's output highly).
+This raises the question: can we obtain 
+information from the reliable workers, without knowing who they are a priori?
+
+
+\iffalse
+
+In this work, we take a different perspective: we make no restrictions on the content that people can produce, and instead focus on \emph{evaluating} this 
 content, using human ratings to achieve scalability in this evaluation task. 
-For instance, in a crowdsourcing setting where we wanted to translate sentences 
+For instance, in a crowdsourcing setting where we wanted to translate paragraphs 
 from Chinese to English, we would first ask workers to perform the translation, 
 and then ask a (potentially) new set of workers to evaluate the quality of 
 the translations.   
@@ -42,7 +55,7 @@ finally, some workers may even collude. % (e.g. one worker agrees to rate anothe
 Despite these difficulties, though, at least some workers 
 actually are reliable. This raises the question: can we obtain 
 information from the reliable workers, without knowing who they are a priori?
-
+\fi
 
 In this work, we answer this question in the affirmative, under surprisingly 
 weak assumptions:
@@ -59,11 +72,11 @@ weak assumptions:
       formalized later.
 \end{itemize}
 For concreteness, we describe a simple formalization of the crowdsourcing 
-setting (our actual results hold in a more general setting). We assume 
+setting (our actual results hold in a more general setting). We consider the setting where 
 there are $n$ workers (raters) and $n$ items to evaluate, which have an unknown 
-quality level in $[0,1]$. At least $\alpha n$ workers are reliable:
+quality level in $[0,1]$. At least $\alpha n$ workers are ``reliable'' in that 
 their judgments match our own in expectation, and they make independent errors.
-Each worker is assigned to evaluate roughly $k$ randomly selected items (with no worker assigned more than $2k$ items). In addition, we ourselves judge $k_0$ items. Our goal is to 
+We assign each worker to evaluate roughly $k$ randomly selected items (with no worker assigned more than $2k$ items). In addition, we ourselves judge $k_0$ items. Our goal is to 
 recover the \emph{$\beta$-quantile}: the set $T^*$ of the $\beta n$ highest-quality items. 
 Our main result is the following:
 
