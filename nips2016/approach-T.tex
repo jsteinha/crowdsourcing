@@ -22,10 +22,12 @@ The validity of this procedure hinges on two results. First, we need to establis
 a concentration bound showing that $\sum_j \M_{ij}\robs_j$ is close to 
 $\frac{k_0}{m}\sum_j \M_{ij}\rtrue_j$ for all $i \in \good$, which implies that 
 the $\goodfrac n$ best rows of $\M$ according to $\robs$ also look good 
-according to $\robs$. This is captured in the following lemma:
+according to $\ravg$. This is captured in the following lemma:
 \begin{lemma}
 \label{lem:robs-rtrue}
-Suppose that $\robs$ satisfies Assumption~\ref{ass:independent} and that 
+Let $\goodapprox$ be the $\goodfrac n$ best rows according to $\robs$, as 
+in Algorithm~\ref{alg:recover-T}. 
+Suppose that $\robs$ satisfies Assumption~\ref{ass:independent} and that
 $k_0 \geq \Omega\p{\frac{\log(1/\alpha\failprob)}{\beta\epsilon^2}}$. 
 Then, with probability $1-\delta$, we have
 \begin{equation}
@@ -38,16 +40,18 @@ The idea is to establish a uniform bound showing that
 $\sum_{i \in S} \sum_{j \in [m]} \M_{ij}(\robs_j - \rtrue_j)$ is small for any 
 set of $\goodfrac n$ rows $S$, and hence that greedily taking the $\goodfrac n$ 
 best rows according to $\robs$ is almost as good as taking the $\goodfrac n$ 
-best rows according to $\rtrue$. Our analysis follows that of 
-\citet{todo}, improving over a na\"{i}ve union bound by exploiting power mean 
-inequalities for the cumulant function. \todo{Greg can you fill in this 
-citation?}
+best rows according to $\rtrue$. We 
+%Our analysis follows that of \citet{todo}, 
+improve over a na\"{i}ve union bound by exploiting power mean 
+inequalities for the cumulant function. 
+%\todo{Greg can you fill in this citation?}
 
-Once we have recovered a set $\goodapprox$ of good rows, we need to turn this 
-into an actual set $T \subset [m]$. To this end, first let $T_0 \in [0,1]^m$ 
-be defined as $T_0 \eqdef \frac{1}{|\goodapprox|} \sum_{i \in \goodapprox} \M_i$. 
-We will use randomized rounding to obtain a vector $T \in \{0,1\}^m$ such that 
-$\bE[T_0] = T$; $T$ is then the indicator function of our desired set.
+Having recovered a set $\goodapprox$ of good rows, define their 
+average $T_0 \in [0,1]^m$ as $T_0 \eqdef \frac{1}{|\goodapprox|} \sum_{i \in \goodapprox} \M_i$. 
+We need to turn $T_0$ into a binary vector so that 
+Algorithm~\ref{alg:recover-T} can output a set;
+we do so via randomized rounding, obtaining a vector $T \in \{0,1\}^m$ such that 
+$\bE[T_0] = T$.
 Our rounding procedure is given in Algorithm~\ref{alg:round}; the following 
 lemma, proved in \ref{sec:rounding-proof}, asserts its correctness:
 \begin{lemma}
@@ -58,19 +62,23 @@ $\|T\|_0 \leq \beta m$.
 
 \input round
 
-Recall that in Algorithm~\ref{alg:recover-T}, we accept $T$ if 
-$\langle T, \robs' \rangle \geq \langle T_0, \robs' \rangle - \frac{1}{4}\epsilon\beta k_0$. Since $\langle T, \robs' \rangle \in [0,k_0]$ almost surely, and 
-$\bE[\langle T, \robs' \rangle] = \langle T_0, \robs' \rangle$, 
-Markov's inequality 
-implies that we accept with probability at least $\frac{\beta \epsilon}{4}$ on 
-each round, and so with probability $1-\delta$ have at most 
-$\frac{4\log(1/\delta)}{\epsilon\beta}$ rounds. By a union bound, 
-$|\langle T, \robs' - \frac{k_0}{m}\ravg \rangle| \leq \frac{\epsilon}{4}$ 
-for all of the rounds, implying that the accepted set $T$ satisfies 
-\begin{alignat}{2}
-\notag \sum_{j \in T} \ravg_j &\geq \frac{m}{k_0}\sum_{j \in T} \robs'_j - \frac{\epsilon}{4}\beta m &&\geq \frac{m}{k_0}\sum_{j \in [m]}(T_0)_j\robs'_j  - \frac{2\epsilon}{4}\beta m \\
- &\geq \sum_{j \in [m]} (T_0)_j \ravg_j - \frac{3\epsilon}{4}\beta m &&\geq \sum_{j \in T^*} \ravg_j - (\epsilon_1+\epsilon),
-\end{alignat}
-which is what we wanted to show in Proposition~\ref{prop:recover-T}. We refer 
-the reader to Section~\ref{sec:recover-T-proof} for a more detailed proof.
-
+The remainder of the proof involves lower-bounding the probability 
+that $T$ is accepted in each stage of the while loop in 
+Algorithm~\ref{alg:recover-T}.
+We refer the reader to Section~\ref{sec:recover-T-proof} for details.
+%Recall that in Algorithm~\ref{alg:recover-T}, we accept $T$ if 
+%$\langle T, \robs' \rangle \geq \langle T_0, \robs' \rangle - \frac{1}{4}\epsilon\beta k_0$. Since $\langle T, \robs' \rangle \in [0,k_0]$ almost surely, and 
+%$\bE[\langle T, \robs' \rangle] = \langle T_0, \robs' \rangle$, 
+%Markov's inequality 
+%implies that we accept with probability at least $\frac{\beta \epsilon}{4}$ on 
+%each round, and so with probability $1-\delta$ have at most 
+%$\frac{4\log(1/\delta)}{\epsilon\beta}$ rounds. By a union bound, 
+%$|\langle T, \robs' - \frac{k_0}{m}\ravg \rangle| \leq \frac{\epsilon}{4}$ 
+%for all of the rounds, implying that the accepted set $T$ satisfies 
+%\begin{alignat}{2}
+%\notag \sum_{j \in T} \ravg_j &\geq \frac{m}{k_0}\sum_{j \in T} \robs'_j - \frac{\epsilon}{4}\beta m &&\geq \frac{m}{k_0}\sum_{j \in [m]}(T_0)_j\robs'_j  - \frac{2\epsilon}{4}\beta m \\
+% &\geq \sum_{j \in [m]} (T_0)_j \ravg_j - \frac{3\epsilon}{4}\beta m &&\geq \sum_{j \in T^*} \ravg_j - (\epsilon_1+\epsilon),
+%\end{alignat}
+%which is what we wanted to show in Proposition~\ref{prop:recover-T}. We refer 
+%the reader to Section~\ref{sec:recover-T-proof} for a more detailed proof.
+%
