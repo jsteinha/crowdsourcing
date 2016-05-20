@@ -77,10 +77,9 @@ $\epsilon$ worse than $T^*$.
 \end{theorem}
 Amazingly, the amount of work that each worker (and we ourselves) has 
 to do does not grow with $n$; it depends only on the fraction $\alpha$ of 
-reliable workers and the the desired accuracy $\epsilon$.
+reliable workers and the the desired accuracy $\epsilon$.   While the dependency of the number of evaluations that each worker must do,  $k$, on $\alpha$ and $\epsilon$ is likely not optimal, we note that the amount of work required of us, $k_0$, is near optimal: for $\alpha \le \beta$, it is information theoretically necessary for us to evaluate at least $1/\beta\eps^2$ items.
 
-Our general results only require a weaker form of inter-rater agreement --- 
-they hold even if e.g. some raters are harsher than others, as long as 
+Our results hold in a considerable more general setting where we require a weaker form of inter-rater agreement --- our results hold even if e.g. some of the reliable raters are harsher than others, as long as 
 the expected ratings induce approximately the same ranking.
 The focus on quantiles rather than raw ratings is what enables this. 
 Note that once we estimate the quantiles, we can approximately recover the 
