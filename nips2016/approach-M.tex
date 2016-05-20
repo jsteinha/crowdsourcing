@@ -161,8 +161,8 @@ If we formalize this intuition and analyze $Z$ in detail, we obtain the
 following result:
 \begin{lemma}
 \label{lem:subgradient}
-Suppose that $k = \Omega\p{\frac{1}{\alpha\beta\epsilon^2}\max\p{1,\frac{m}{n}}}$. 
-Then there exists a matrix $Z$ with 
+Suppose that $k = \Omega\p{\frac{\log^3(1/\delta)}{\alpha\beta\epsilon^2}\max\p{1,\frac{m}{n}}}$. 
+Then with probability at least $1-\delta$ there exists a matrix $Z$ with 
 $\rank(Z) = 1$, $\|Z\|_F \leq \epsilon k\sqrt{\alpha\beta n/m}$ such that
 \begin{align}
 \langle \Aa_{\good} - Z_{\good}, \Mm_{\good} - M_{\good} \rangle &\leq \langle \Aa, \Mm - M \rangle \text{ for all $M \in \sP$}.
