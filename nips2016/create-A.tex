@@ -1,0 +1,17 @@
+\begin{algorithm}[b!]
+\caption{Algorithm for obtaining (unreliable) ratings matrix $\A$.}
+\label{alg:create-A}
+\begin{algorithmic}[1]
+\State Input: number of raters $n$,  number of items $m$, and ratings per rater $k$.
+\State Initially assign each rater to each item independently probability $k/2m$.  
+\State For every rater assigned more than $k$ items, un-assign items until 
+       there are $k$ remaining.
+\State For every item assigned to more than $k$
+       raters, un-assign raters until there are $k$ remaining.
+\State Have the raters submit ratings of their assigned items, and let $\A$ 
+       denote the resulting matrix of ratings with missing entries fill in with 
+       zeros.
+\end{algorithmic}
+\end{algorithm}
+
+
