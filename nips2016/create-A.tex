@@ -3,7 +3,7 @@
 \label{alg:create-A}
 \begin{algorithmic}[1]
 \State Input: number of raters $n$,  number of items $m$, and ratings per rater $k$.
-\State Initially assign each rater to each item independently probability $k/2m$.  
+\State Initially assign each rater to each item independently with probability $k/2m$.  
 \State For every rater assigned more than $k$ items, un-assign items until 
        there are $k$ remaining.
 \State For every item assigned to more than $k$
