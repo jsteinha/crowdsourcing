@@ -1,0 +1,23 @@
+\subsection{Proof of Proposition~\ref{prop:recover-M}}
+In this section, we will prove Proposition~\ref{prop:recover-M} 
+from Lemmas~\ref{lem:objective-bound} and \ref{lem:subgradient}.
+We start by plugging in $\M$ for $M$ in Lemma~\ref{lem:subgradient}. This yields
+%\begin{align}
+$\langle \Aa_{\good} - Z_{\good}, \Mm_{\good} - \M_{\good} \rangle \leq \langle \Aa, \Mm - \M \rangle \leq \epsilon \alpha\beta kn$
+%\end{align}
+by Lemma~\ref{lem:objective-bound}.
+On the other hand, we have 
+\begin{align}
+|\langle Z_{\good}, \Mm_{\good} - \M_{\good} \rangle| &\leq \|Z_{\good}\|_F\|\Mm_{\good} - \M_{\good}\|_F \\
+ &\leq \epsilon\sqrt{\alpha\beta nk/m} \sqrt{\|\Mm_{\good} - \M_{\good}\|_{1}\|\Mm_{\good} - \M_{\good}\|_{\infty}} \\
+ &\leq \epsilon\sqrt{\alpha\beta nk/m} \sqrt{2\alpha\beta mn} = \sqrt{2}\epsilon\alpha\beta kn.
+\end{align}
+Putting these together, we obtain
+%\begin{align}
+$\langle \Aa_{\good}, \Mm_{\good} - \M_{\good} \rangle \leq (1+\sqrt{2})\epsilon \alpha\beta kn$.
+%\end{align}
+Expanding $\langle \Aa_{\good}, \Mm_{\good} - \M_{\good} \rangle$ as 
+$\frac{k}{m}\sum_{i \in \good}\p{\sum_{j \in [m]} (R_{ij} - \M_{ij})\Aavg_{ij}}$,
+we obtain 
+\[ \frac{1}{|\good|}\frac{1}{\beta m}\sum_{i \in \good}\sum_{j \in [m]} (T_j^*-\M_{ij})\Aavg_{ij} \leq (1+\sqrt{2})\epsilon. \]
+Scaling $\epsilon$ by a factor of $1+\sqrt{2}$ yields the desired result.
