@@ -28,12 +28,13 @@ students might collude to inflate their grades.
 
 In this work, we consider the challenge of using crowdsourced human ratings to accurately and efficiently evaluate a large dataset of content.   In some settings, such as peer grading, the end goal is to obtain the accurate evaluation of each datum; in other settings, such as the curation of a large dataset, accurate evaluations could be leveraged to select a high-quality subset of a larger set of variable-quality (perhaps crowd-generated) data.  
 
-There are several confounding difficulties that arise in extracting accurate evaluations.  First, many raters may be unreliable and give evaluations that are uncorrelated with the actual quality of the items they evaluate; 
+There are several confounding difficulties that arise in extracting accurate evaluations.  First, many raters may be unreliable and give evaluations 
+that are uncorrelated with the actual item quality; 
 second, some reliable raters might be harsher or more lenient than others; 
 third, some items may be harder to evaluate than others 
 %(e.g. long vs. short sentences) 
 and so error rates could vary from item to item, even among reliable raters; 
-finally, some raters may even collude. % (e.g. one worker agrees to rate another's output highly).
+finally, some raters may even collude or want to hack the system. % (e.g. one worker agrees to rate another's output highly).
 This raises the question: can we obtain 
 information from the reliable raters, without knowing who they are a priori?
 
@@ -79,9 +80,10 @@ setting (our actual results hold in a more general setting).
 There are $n$ raters and $n$ items to evaluate, which have an unknown 
 quality level in $[0,1]$. At least $\alpha n$ workers are ``reliable'' in that 
 their judgments match our own in expectation, and they make independent errors.
-We assign each worker to evaluate roughly $k$ randomly selected items (with no worker assigned more than $2k$ items). In addition, we ourselves judge $k_0$ items. Our goal is to 
+We assign each worker to evaluate at most $k$ randomly selected items. 
+In addition, we ourselves judge $k_0$ items. Our goal is to 
 recover the \emph{$\beta$-quantile}: the set $T^*$ of the $\beta n$ highest-quality items. 
-
+%
 Our main result is the following:
 
 \input matrix-figure

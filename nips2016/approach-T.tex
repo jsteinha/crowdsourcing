@@ -19,11 +19,11 @@ With probability $1-\delta$, Algorithm~\ref{alg:recover-T} outputs a set $T$ sat
 \frac{1}{\beta m}\sum_{j \in T} \ravg_j \geq \p{\frac{1}{\beta m}\frac{1}{|\good|}\sum_{i \in \good} \sum_{j \in [m]} \M_{ij}\ravg_j} - \epsilon.
 \end{equation}
 \end{proposition}
-The validity of this procedure hinges on two results. First, we need to establish 
+The validity of this procedure hinges on two results. First, establish 
 a concentration bound showing that $\sum_j \M_{ij}\robs_j$ is close to 
 $\frac{k_0}{m}\sum_j \M_{ij}\rtrue_j$ for all $i \in \good$, which implies that 
 the $\goodfrac n$ best rows of $\M$ according to $\robs$ also look good 
-according to $\ravg$. This is captured in the following lemma:
+according to $\ravg$. This yields the following lemma:
 \begin{lemma}
 \label{lem:robs-rtrue}
 Let $\goodapprox$ be the $\goodfrac n$ best rows according to $\robs$, as 

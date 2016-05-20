@@ -3,7 +3,7 @@
 \caption{Algorithm for recovering an accurate $\beta$-quantile $T$ from the $\beta$-quantile matrix $\M$.}
 \label{alg:recover-T}
 \begin{algorithmic}[1]
-\State Parameters: number of ratings $k_0$, tolerance $\epsilon$
+\State Parameters: tolerance $\epsilon$, reliable fraction $\alpha$
 \State Input: matrix $\M$ of approximate $\beta$-quantiles, noisy ratings $\robs$, $\robs'$
 \State Let $\goodapprox$ be the set of $\alpha n$ indices $i \in [n]$ for which 
        $\sum_j \M_{ij}\robs_j$ is largest.

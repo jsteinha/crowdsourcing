@@ -12,7 +12,7 @@ ratings $\robs$, $\robs'$.}
 \State Have the raters submit ratings of their assigned items, and let $\A$ 
        denote the resulting matrix of ratings with missing entries fill in with 
        zeros.
-\State Generate each of $\robs$ and $\robs'$ by randomly rating $k_0$ items (again fill in missing entries with zeros)
+\State Generate each of $\robs$ and $\robs'$ by rating items with probability $\frac{k_0}{m}$ (fill in missing entries with zeros)
 \State Output $\A$, $\robs$, and $\robs'$
 \end{algorithmic}
 \end{algorithm}

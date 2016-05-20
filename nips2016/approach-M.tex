@@ -31,19 +31,19 @@ we let $X_{\good}$ denote the rows indexed by $\sC$ and $X_{\bad}$ the remaining
 
 In a bit 
 more detail, if we let $\Mm$ denote a denoised version of $\M$, and $\Aa$ 
-denote a denoised version of $\A$, we will first show 
+denote a denoised version of $\A$, we first show 
 (Lemma~\ref{lem:objective-bound}) that 
 $\langle B, \M - \Mm \rangle \geq -\epsilon'$ for some $\epsilon'$ 
-determined below. This can be established via the matrix concentration 
+determined below. This is established via the matrix concentration 
 inequalities in \citetm{le2015concentration}. Lemma~\ref{lem:objective-bound} already 
 suffices for standard approaches \citepm[e.g.,][]{guedon2014community}, 
 but in our case we must grapple with the issue that the rows of $B$ could be 
 arbitrary outside of $\sC$, and hence closeness according to $B$ may not 
-imply actual closeness between $\M$ and $\Mm$. This leads to our main 
-novel technical contribution, Lemma~\ref{lem:subgradient}, where we show 
+imply actual closeness between $\M$ and $\Mm$. Our main 
+technical contribution, Lemma~\ref{lem:subgradient}, shows
 that $\langle B_{\good}, \M_{\good} - \Mm_{\good} \rangle \geq \langle B, \M - \Mm \rangle - \epsilon'$; 
 that is, \emph{closeness according to $B$ implies closeness according to 
-$B_{\good}$}. We can then restrict the remainder of our analysis to the 
+$B_{\good}$}. We can then restrict attention to the 
 reliable raters, and obtain Proposition~\ref{prop:recover-M}.
 
 \paragraph{Part 1: noise-robustness.} Let $\Aa$ be the matrix satisfying 
@@ -90,7 +90,7 @@ $i \in \good$. Lemma~\ref{lem:objective-bound} shows that $\M$ is ``close'' to $
 Let $m \geq n$. Suppose that Assumption~\ref{ass:independent} holds and that 
 $k = \Omega\p{ \frac{\log^3(1/\delta)}{\beta\alpha^3\eps^4}\frac{m}{n}}$. 
 Then, the solution $\M$ to \eqref{eq:optimization-noisy} performs nearly as 
-well as $\Mm$ under $B$; specifically,
+well as $\Mm$ under $B$; specifically, with probability $1-\delta$,
 \begin{equation}
 \label{eq:objective-bound}
 \langle \Aa, \M \rangle \geq \langle \Aa, \Mm \rangle - \epsilon \alpha\beta kn.
@@ -141,7 +141,7 @@ with appropriate modifications to the objective function.
 To gain some intuition, consider 
 Figure~\ref{fig:lagrangian}. The key is that the Lagrange 
 multiplier $Z_{\good}$ can bound the amount that $\langle B, M \rangle$ 
-can increase from changing $M$ outside of $\good$.
+can increase due to changing $M$ outside of $\good$.
 %In \eqref{eq:optimization-noiseless}, we optimize 
 %$\langle B, M \rangle$ subject to $M_{\good} = R_{\good}$, as well as subject to 
 %the nuclear norm and other constraints; this yields the optimal value $M^*$. 
@@ -179,7 +179,7 @@ By localizing $\langle \Aa, \Mm - M \rangle$ to $\good$ via
 %by a small term $\langle Z_{\good}, \Mm_{\good} - M_{\good} \rangle$ that depends only 
 %on $M_{\good}$, thereby 
 Lemma~\ref{lem:subgradient} bounds the effect that the adversaries can have 
-on $M_{\good}$. It is therefore the key 
+on $\M_{\good}$. It is therefore the key 
 technical tool powering our results, and is proved in 
 Section~\ref{sec:subgradient-proof}. Proposition~\ref{prop:recover-M} 
 is proved from Lemmas~\ref{lem:objective-bound} and \ref{lem:subgradient} 

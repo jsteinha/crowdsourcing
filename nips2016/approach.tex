@@ -76,11 +76,11 @@ Under the model given in Assumption~\ref{ass:independent},
 our algorithm for collecting ratings is given in 
 Algorithm~\ref{alg:create-A}. Given integers $k$ and $k_0$, 
 Algorithm~\ref{alg:create-A} assigns each rater at most $2k$ 
-ratings, and assigns us $2k_0$ ratings. The output is a 
+ratings, and assigns us $2k_0$ ratings in expectation. The output is a 
 noisy rating matrix $\A \in [0,1]^{n \times m}$ as well 
 as noisy rating vectors $\robs, \robs' \in [0,1]^m$ (we need 
 to create two independent rating vectors for technical reasons; 
-in practice we can probably use a single vector).
+in practice we can use a single vector).
 Our main result states that we can use $\A$ and $\robs$ to 
 estimate the $\beta$-quantile $T^*$; throughout we will assume 
 that $m$ is at least $n$.

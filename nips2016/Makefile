@@ -5,6 +5,11 @@ default: refdb sfig
 	bibtex m
 	bibtex a
 
+cut:
+	pdftk main.pdf cat 1-9 output paper.pdf
+	cp main.pdf full.pdf
+	zip supplement.zip full.pdf paper.pdf
+
 clean:
 	rm main.aux main.log main.out main.bbl main.blg
 

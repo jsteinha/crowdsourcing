@@ -37,7 +37,7 @@ and all noise from individual ratings has been removed. We define a
 matrix $\Mavg$ that indicates the top $\beta m$ items in each row of $\Aavg$: 
 $\Mavg_{ij} = 1$ if item $j$ has one of the top $\beta m$ ratings from rater $i$, 
 and $\Mavg_{ij} = 0$ otherwise (this differs from the actual 
-definition of $\Mavg$ given in Section~\ref{sec:approach-M}, is the same in spirit). If we could recover $\Mavg$, we would be 
+definition of $\Mavg$ given in Section~\ref{sec:approach-M}, but is the same in spirit). If we could recover $\Mavg$, we would be 
 close to obtaining the clustering we wanted.
 
 The key observation that allows us to approximate $\Mavg$ given only the noisy, 
@@ -88,10 +88,9 @@ raters (and thus potentially pool bad information). In order to
 limit this influence, the constraint on the 
 nuclear norm is weaker than is typical by a factor of $\frac{2}{\epsilon}$; 
 it is not clear to us whether this is actually necessary or due to a 
-loose analysis. (Note that $M_{\good}^*$, i.e. $M^*$ restricted to the 
-reliable rows, 
-has nuclear norm $\sqrt{\alpha\beta nm}$, since it is the 
-$\alpha n \times \beta m$ all-ones matrix; the constraint on $\|M\|_*$ must 
+loose analysis. (Note that $M_{\good}^*$--$M^*$ restricted to the 
+reliable rows--has nuclear norm $\sqrt{\alpha\beta nm}$, since it is the 
+$\alpha n \times \beta m$ all-$1$s matrix padded by zeros; the constraint on $\|M\|_*$ must 
 be at least $\frac{1}{\alpha}$ times as large as this since the adversaries 
 could produce $\frac{1}{\alpha}$ permuted copies of $M_{\good}^*$.)
 
@@ -99,7 +98,7 @@ The constraint $\sum_j M_{ij} \leq \beta m$ is
 not typical in the literature. For instance, \citepm{chen2014improved} 
 place no 
 constraint on the sum of each row in $M$ (instead of recovering 
-the $\beta$-quantile, they normalize $\A$ to lie in $[-1,1]^{m \times m}$ recover 
+the $\beta$-quantile, they normalize $\A$ to lie in $[-1,1]^{m \times m}$ and recover 
 the items with a positive rating).
 Our row normalization constraint prevents an attack 
 in which a spammer rates a random subset of items as high as possible and 
