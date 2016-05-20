@@ -1,6 +1,7 @@
 \documentclass{article}
 \usepackage{amsmath,amsfonts,amsthm,amssymb}
 
+
 % if you need to pass options to natbib, use, e.g.:
 % \PassOptionsToPackage{numbers, compress}{natbib}
 % before loading nips_2016
@@ -38,6 +39,13 @@
 \usepackage{multirow,varwidth}
 \newcommand\topstrut[1][1.2ex]{\setlength\bigstrutjot{#1}{\bigstrut[t]}}
 \newcommand\botstrut[1][0.9ex]{\setlength\bigstrutjot{#1}{\bigstrut[b]}}
+
+\let\OLDthebibliography\thebibliography
+\renewcommand\thebibliography[1]{
+  \OLDthebibliography{#1}
+  \setlength{\parskip}{0pt}
+  \setlength{\itemsep}{0pt plus 0.3ex}
+}
 
 \input std-macros
 \input macros
@@ -126,11 +134,10 @@
 \input discussion
 
 %\section*{Acknowledgments}
-
 {\small
 \bibliographystyle{plainnat}
-\bibliography{refdb/all}
-}
+\bibliography{refdb/all}}
+
 
 \appendix
 \input proofs
