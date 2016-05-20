@@ -1,4 +1,5 @@
-\begin{algorithm}[b!]
+\algdef{SE}[DOWHILE]{Do}{doWhile}{\algorithmicdo}[1]{\algorithmicwhile\ #1}%
+\begin{algorithm}[t!]
 \caption{Algorithm for recovering an accurate $\beta$-quantile $T$ from the $\beta$-quantile matrix $\M$.}
 \label{alg:recover-T}
 \begin{algorithmic}[1]
@@ -7,11 +8,7 @@
 \State Let $\goodapprox$ be the set of $\alpha n$ indices $i \in [n]$ for which 
        $\sum_j \M_{ij}\robs_j$ is largest.
 \State $T_0 \gets \frac{1}{|\goodapprox|} \sum_{i \in \goodapprox} \M_i$. \Comment{$T_0 \in [0,1]^m$}
-\While{{\bfseries true}}
-\State $T \gets \textsc{RandomizedRound}(T_0)$ \Comment{$T \in \{0,1\}^m$}
-\If{$\langle T-T_0, \robs' \rangle \geq -\frac{\epsilon}{4}\beta k$}
-\State \Return $T$
-\EndIf
-\EndWhile
+\State {\bfseries do} \ $T \gets \textsc{RandomizedRound}(T_0)$ {\bfseries while } $\langle T-T_0, \robs' \rangle < -\frac{\epsilon}{4}\beta k$
+\State \Return $T$ \Comment{$T \in \{0,1\}^m$} 
 \end{algorithmic}
 \end{algorithm}

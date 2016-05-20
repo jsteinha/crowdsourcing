@@ -10,9 +10,9 @@ the following:
 \label{prop:recover-T}
 %Suppose that the output $\M$ of Algorithm~\ref{alg:recover-M} satisfies 
 %$\frac{1}{|\good|} \frac{1}{\beta m}\sum_{i \in \good}\sum_{j \in [m]} \M_{ij}\ravg_j \geq \p{\frac{1}{\beta m} \sum_{j \in T^*} \ravg_j} - \epsilon_1$. 
-Suppose that Assumption~\ref{ass:independent} holds and that 
+Suppose Assumption~\ref{ass:independent} holds and 
 $k_0 \geq \Omega\p{\frac{\log(1/\alpha\beta\epsilon\delta)}{\beta\epsilon^2}}$. 
-Then, Algorithm~\ref{alg:recover-T} outputs a set $T$ satisfying 
+With probability $1-\delta$, Algorithm~\ref{alg:recover-T} outputs a set $T$ satisfying 
 \begin{equation}
 \label{eq:recover-T}
 \frac{1}{\beta m}\sum_{j \in T} \ravg_j \geq \p{\frac{1}{\beta m}\frac{1}{|\good|}\sum_{i \in \good} \sum_{j \in [m]} \M_{ij}\ravg_j} - \epsilon.

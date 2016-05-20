@@ -19,8 +19,8 @@ In particular (see \ref{sec:lipschitz-details} for details)
 \begin{align}
 \label{eq:lipschitz-usage}
 \frac{1}{|\good|}\frac{1}{\beta m}\sum_{i \in \good}\sum_{j \in [m]} (T_j^*-\M_{ij})\ravg_j
-&\leq L \cdot \frac{1}{|\good|}\frac{1}{\beta m}\sum_{i \in \good}\sum_{j \in [m]} (T_j^*-\M_{ij})\Aavg_{ij} + \epsilon_0 \\
-&\leq L \cdot \epsilon + \epsilon_0.
+&\leq L \cdot \frac{1}{|\good|}\frac{1}{\beta m}\sum_{i \in \good}\sum_{j \in [m]} (T_j^*-\M_{ij})\Aavg_{ij} + \epsilon_0 
+\leq L \cdot \epsilon + \epsilon_0.
 \end{align}
 
 Proving Proposition~\ref{prop:recover-M} involves two major steps: showing 
@@ -83,8 +83,7 @@ but which will be useful for analysis purposes:
   &&\hskip-0.4in \|M\|_* \leq \frac{2}{\alpha\epsilon}\sqrt{\alpha\beta nm} \phantom{xxxxxxx}
 \end{align}
 Importantly, \eqref{eq:optimization-noiseless} enforces $\Mm_{ij} = T_j^*$ for all 
-$i \in \good$. Our goal is to show that $\M$ is ``close'' to $\Mm$. 
-The following lemma formalizes this:
+$i \in \good$. Lemma~\ref{lem:objective-bound} shows that $\M$ is ``close'' to $\Mm$: 
 %Following an idea of \citet{guedon2014community}, we have the following result:
 \begin{lemma}
 \label{lem:objective-bound}
@@ -131,34 +130,36 @@ with appropriate modifications to the objective function.
 
 \input lagrangian-figure
 
-In this instance, 
-Lagrangian duality guarantees that \eqref{eq:optimization-noiseless} has the 
-same solution as a modified problem where the constraint on $\|M\|_*$ is removed, 
-and where the objective is modified to $\langle B - Z, M \rangle$, for an 
-appropriately chosen $Z$. In particular, $Z$ lies in the subgradient of 
-$\mu \|M\|_*$ for some $\mu > 0$.
+%In this instance, 
+%Lagrangian duality guarantees that \eqref{eq:optimization-noiseless} has the 
+%same solution as a modified problem where the constraint on $\|M\|_*$ is removed, 
+%and where the objective is modified to $\langle B - Z, M \rangle$, for an 
+%appropriately chosen $Z$. In particular, $Z$ lies in the subgradient of 
+%$\mu \|M\|_*$ for some $\mu > 0$.
 
 To gain some intuition, consider 
-Figure~\ref{fig:lagrangian}. In \eqref{eq:optimization-noiseless}, we optimize 
-$\langle B, M \rangle$ subject to $M_{\good} = R_{\good}$, as well as subject to 
-the nuclear norm and other constraints; this yields the optimal value $M^*$. 
-We know by Lemma~\ref{lem:objective-bound} that $\langle B, \M \rangle$ is almost 
-as large as $\langle B, M^* \rangle$, and would like to conclude that 
-$\M_{\good} \approx M^*_{\good}$. Since $B$ points to the right in Figure~\ref{fig:lagrangian}, 
-decreasing $M_{\good}$ will decrease $\langle B, M \rangle$. The problem is that 
-we may then be able to increase $M_{\bad}$, which would offset 
-this decrease; then $M_{\good}$ could potentially decrease quite a 
-bit with minimal effect on $\langle B, M \rangle$. 
-To rule this out, we find a Lagrange 
-multiplier $Z$ that supports 
-the constraint $\|M\|_* \leq \rho$, in the sense that optimizing 
-$\langle B-Z, M \rangle$ yields $M^*$ even without the constraint. 
-Then, $M_{\good}$ and $M_{\bad}$ become separable and we conclude that 
-$\langle B_{\good} - Z_{\good}, \M_{\good} \rangle$ must be within $\epsilon$ of 
-$\langle B_{\good} - Z_{\good}, M^*_{\good} \rangle$, which implies that 
-$\M_{\good} \approx M^*_{\good}$.
-
-If we formalize this intuition and analyze $Z$ in detail, we obtain the 
+Figure~\ref{fig:lagrangian}. The key is that the Lagrange 
+multiplier $Z_{\good}$ can bound the amount that $\langle B, M \rangle$ 
+can increase from changing $M$ outside of $\good$.
+%In \eqref{eq:optimization-noiseless}, we optimize 
+%$\langle B, M \rangle$ subject to $M_{\good} = R_{\good}$, as well as subject to 
+%the nuclear norm and other constraints; this yields the optimal value $M^*$. 
+%We know by Lemma~\ref{lem:objective-bound} that $\langle B, \M \rangle$ is almost 
+%as large as $\langle B, M^* \rangle$, and would like to conclude that 
+%$\M_{\good} \approx M^*_{\good}$. Since $B$ points to the right in Figure~\ref{fig:lagrangian}, 
+%decreasing $M_{\good}$ will decrease $\langle B, M \rangle$. The problem is that 
+%we may then be able to increase $M_{\bad}$, which would offset 
+%this decrease; then $M_{\good}$ could potentially decrease quite a 
+%bit with minimal effect on $\langle B, M \rangle$. 
+%To rule this out, we find a Lagrange 
+%multiplier $Z$ that supports 
+%the constraint $\|M\|_* \leq \rho$, in the sense that optimizing 
+%$\langle B-Z, M \rangle$ yields $M^*$ even without the constraint. 
+%Then, $M_{\good}$ and $M_{\bad}$ become separable and we conclude that 
+%$\langle B_{\good} - Z_{\good}, \M_{\good} \rangle$ must be within $\epsilon$ of 
+%$\langle B_{\good} - Z_{\good}, M^*_{\good} \rangle$, which implies that 
+%$\M_{\good} \approx M^*_{\good}$.
+If we formalize this and analyze $Z$ in detail, we obtain the 
 following result:
 \begin{lemma}
 \label{lem:subgradient}
@@ -166,14 +167,18 @@ Let $m \geq n$. Suppose that $k = \Omega\p{\frac{\log^3(1/\delta)}{\alpha\beta\e
 Then with probability at least $1-\delta$ there exists a matrix $Z$ with 
 $\rank(Z) = 1$, $\|Z\|_F \leq \epsilon k\sqrt{\alpha\beta n/m}$ such that
 \begin{align}
+\label{eq:localize}
 \langle \Aa_{\good} - Z_{\good}, \Mm_{\good} - M_{\good} \rangle &\leq \langle \Aa, \Mm - M \rangle \text{ for all $M \in \sP$}.
 \end{align}
 \end{lemma}
-Essentially, Lemma~\ref{lem:subgradient} shows that any change in 
-$\langle \Aa, M \rangle$ caused by changing $M_{\bad}$ can be upper-bounded 
-by a small term $\langle Z_{\good}, \Mm_{\good} - M_{\good} \rangle$ that depends only 
-on $M_{\good}$, thereby bounding the effect that the adversaries can have 
-on $M_{\good}$. Lemma~\ref{lem:subgradient} is therefore the key 
+By localizing $\langle \Aa, \Mm - M \rangle$ to $\good$ via 
+\eqref{eq:localize}, 
+%Essentially, Lemma~\ref{lem:subgradient} shows that any change in 
+%$\langle \Aa, M \rangle$ caused by changing $M_{\bad}$ can be upper-bounded 
+%by a small term $\langle Z_{\good}, \Mm_{\good} - M_{\good} \rangle$ that depends only 
+%on $M_{\good}$, thereby 
+Lemma~\ref{lem:subgradient} bounds the effect that the adversaries can have 
+on $M_{\good}$. It is therefore the key 
 technical tool powering our results, and is proved in 
 Section~\ref{sec:subgradient-proof}. Proposition~\ref{prop:recover-M} 
 is proved from Lemmas~\ref{lem:objective-bound} and \ref{lem:subgradient} 
