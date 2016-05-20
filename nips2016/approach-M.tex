@@ -88,9 +88,9 @@ The following lemma formalizes this:
 \begin{lemma}
 \label{lem:objective-bound}
 Suppose that Assumption~\ref{ass:independent} holds and that 
-$k = \Omega\p{\frac{1}{\alpha^3\beta\epsilon^4}\max\p{\frac{m}{n},1}}$. 
+$k = \Omega\p{ \log^3 \frac{1}{\delta} \frac{\max{1,\frac{m}{n}}}{\eps^4 \alpha^3 \beta}}$. 
 Then, the solution $\M$ to \eqref{eq:optimization-noisy} performs nearly as 
-well as $\Mm$ under $B$:
+well as $\Mm$ under $B$; specifically,
 \begin{equation}
 \label{eq:objective-bound}
 \langle \Aa, \M \rangle \geq \langle \Aa, \Mm \rangle - \epsilon \alpha\beta kn.
