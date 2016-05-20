@@ -21,9 +21,9 @@ the answer is known, which can be used to assess reliability on unknown question
 However, this is overly constraining --- it does not make sense for open-ended 
 tasks such as knowledge generation on wikipedia, nor even for crowdsourcing 
 tasks such as ``translate this paragraph'' or ``draw an interesting picture'' 
-where there are different equally good answers.   This approach could also fail 
+where there are different equally good answers.   This approach may also fail 
 in settings, such as %orchestrating an effective 
-peer grading in massive online open courses, where a non-negligible fraction of 
+peer grading in massive online open courses, where 
 students might collude to inflate their grades.
 
 In this work, we consider the challenge of using crowdsourced human ratings to accurately and efficiently evaluate a large dataset of content.   In some settings, such as peer grading, the end goal is to obtain the accurate evaluation of each datum; in other settings, such as the curation of a large dataset, accurate evaluations could be leveraged to select a high-quality subset of a larger set of variable-quality (perhaps crowd-generated) data.  
@@ -88,10 +88,10 @@ Our main result is the following:
 
 \begin{theorem}
 \label{thm:intro}
-In the setting above, suppose that
+In the setting above, suppose 
 $k \geq \Omega(1/\beta\alpha^3\epsilon^4)$ and 
 $k_0 \geq \Omega(\log(1/\alpha\beta\epsilon)/\beta\epsilon^2)$. Then, with probability 
-at least $99\%$, we can identify $\beta n$ items whose average quality is at most 
+at least $99\%$, we can identify $\beta n$ items with average quality at most 
 $\epsilon$ worse than $T^*$.
 \end{theorem}
 Amazingly, the amount of work that each worker (and we ourselves) has 
@@ -122,9 +122,8 @@ and to achieve scalability instructors often ask students to grade each others'
 papers \citep{kulkarni2015peer,piech2013tuned}. 
 Some student graders will simply not have mastered the material themselves (and hence may give unreliable grades), 
 and some enterprising but dishonest students are likely to collude. Theorem~\ref{thm:intro} 
-implies that our algorithm is robust to both of these. 
-As mentioned above, it also automatically adjusts for differences among graders 
-as long as their grades produce the same ranking.
+implies that our algorithm is robust to both of these possibilities. 
+It also automatically adjusts for differences in leniency across graders.
 
 % Overview of Related Work
 % Budget-Optimal Task Allocation for Reliable Crowdsourcing Systems
