@@ -1,4 +1,5 @@
 \section{Assumptions and Approach}
+\vskip -0.08in
 \label{sec:assumptions}
 \label{sec:approach}
 
@@ -50,10 +51,12 @@ We want $\Aavg$ to be roughly increasing in $\ravg$:
 We say that the reliable raters are \emph{$(L,\epsilon)$-monotonic} if 
 %their 
 %average ratings satisfy
+\vskip -0.18in
 \begin{equation}
 \label{eq:lipschitz}
 \ravg_j - \ravg_{j'} \leq L \cdot (\Aavg_{ij} - \Aavg_{ij'}) + \epsilon
 \end{equation}
+\vskip -0.07in
 whenever $\ravg_j \geq \ravg_{j'}$, and
 for all $i \in \good$ and all $j,j' \in [m]$.
 \end{definition}
@@ -91,8 +94,10 @@ with $k \geq \Omega\p{\frac{\log^3(1/\delta)}{\beta\alpha^3\epsilon^4}\frac{m}{n
 $k_0 \geq \Omega\p{\frac{\log(1/\alpha\beta\epsilon\delta)}{\beta\epsilon^2}}$.
 Then, with probability $1-\delta$, 
 Algorithms~\ref{alg:recover-M} and \ref{alg:recover-T} recover a set $T$ satisfying 
+\vskip -0.18in
 \[ \frac{1}{\beta m} \p{\sum_{j \in T^*} \ravg_j - \sum_{j \in T} \ravg_j} 
 \leq (L+1) \cdot \epsilon + \epsilon_0. \]
+\vskip -0.07in
 \end{theorem}
 Note that the amount of work for the raters scales as $\frac{m}{n}$. Some dependence 
 on $\frac{m}{n}$ is necessary, since we need to make sure that every item gets rated at least once.

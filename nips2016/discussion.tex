@@ -13,19 +13,12 @@ when $m = n$ a tight result would have
 $k = \Theta\p{\frac{\log(1/\alpha)}{\min (\alpha,\beta)\eps^2}}$, in loose analogy
 to recent results for the stochastic block model \citep{banks2016information}.
 
-
-More generally, there are a number of other regimes that seem worth considering.  
-While we focus on the regime where the number of items exceeds the number of 
-workers, it is also worth considering the regime where the number of workers 
-exceeds the number of items:  in such a regime, is it sufficient to have each 
-worker review only $2/\alpha$ items?  If items can be assigned to workers in an 
-adaptive setting (dependent on the ratings we have already seen), how much can 
-we reduce the amount of work?  What is the tradeoff between the total amount of 
-work required across all workers, and the non-uniformity in the amount of work 
-assigned to each worker?  (For example, in the extreme setting where we  are 
-willing to assign all $m$ items to $O(1/\alpha)$ workers, then the total 
-required work is only $O(m/\alpha)$.)
-
+Our results also leave some open questions for variations on our setting. 
+One concerns the regime where $m \ll n$: in this case, can we get by 
+with much less work per rater?
+Another question concerns adaptivity: if the choice of queries is based 
+on previous worker ratings, can we reduce the amount of work?
+We would be quite interested in answers to either question.
 
 
 \paragraph{Related work.}

@@ -120,6 +120,9 @@ not give the adversaries too much influence over the de-noised program
 \eqref{eq:optimization-noiseless}; this is the most novel aspect 
 of our argument.
 
+\input lagrangian-figure
+
+
 Suppose that the constraint on $\|M\|_*$ were not present in 
 \eqref{eq:optimization-noiseless}. Then the adversaries would have 
 no influence on $\Mm_{\good}$, because all the remaining constraints 
@@ -127,8 +130,6 @@ in \eqref{eq:optimization-noiseless} are separable across rows.
 How can we quantify the effect of this nuclear norm constraint?
 We exploit Lagrangian duality, which allows us to replace constraints 
 with appropriate modifications to the objective function.
-
-\input lagrangian-figure
 
 %In this instance, 
 %Lagrangian duality guarantees that \eqref{eq:optimization-noiseless} has the 
