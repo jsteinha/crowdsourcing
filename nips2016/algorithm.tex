@@ -6,19 +6,24 @@
 
 We now describe our recovery algorithm. To fix notation, we assume that 
 there are $n$ raters and $m$ items, and that we observe a matrix 
-$\A \in [0,1]^{n \times m}$, obtained by asking each rater to rate at most $k$ 
-items chosen at random: $\A_{ij} = 0$ if rater $i$ does not rate item 
-$j$, and otherwise $\A_{ij}$ is the assigned rating, which takes values 
+$\A \in [0,1]^{n \times m}$: 
+%obtained by asking each rater to rate at most $k$ 
+%items chosen at random: 
+$\A_{ij} = 0$ if rater $i$ does not rate item $j$, and otherwise $\A_{ij}$ 
+is the assigned rating, which takes values 
 in $[0,1]$. In the settings we 
-care about $\A$ is very sparse --- it only has a constant number of 
-non-zero entries in each row. Remember that our goal is to recover the 
-the $\beta m$ best items according to our own rating--called the $\beta$-quantile--while only rating a 
-small number of items.
+care about $\A$ is very sparse --- each rater only rates a few items.
+Remember that our goal is to recover the $\beta$-quantile $T^*$ of the 
+best items according to our own rating. 
+% TODO move this later
+%In what follows, we will represent 
+%$T^*$ as a vector in $\{0,1\}^m$: $T_j^* = 1$ if $j$ is one of the top 
+%$\beta m$ items, and $T_j^* = 0$ otherwise.
 
 Our algorithm is based on the following intuition: the reliable raters must 
 (approximately) agree on the ranking of items, and so if we can cluster the 
 rows of $\A$ appropriately, then the reliable raters should form a single very large cluster 
-(of size $\alpha n$). There can only be $\frac{1}{\alpha}$ such clusters, and 
+(of size $\alpha n$). There can be at most $\frac{1}{\alpha}$ disjoint clusters of this size, and 
 so we can manually check the accuracy of each large cluster (by checking agreement 
 with our own rating on a few randomly selected items) and 
 then choose the best one.
@@ -32,7 +37,8 @@ we imagine a matrix $\Aavg$ in which all the ratings have been filled in
 and all noise from individual ratings has been removed. We define a 
 matrix $\Mavg$ that indicates the top $\beta m$ items in each row of $\Aavg$: 
 $\Mavg_{ij} = 1$ if item $j$ has one of the top $\beta m$ ratings from rater $i$, 
-and $\Mavg_{ij} = 0$ otherwise. If we could recover $\Mavg$, we would be 
+and $\Mavg_{ij} = 0$ otherwise (this differs from the actual 
+definition of $\Mavg$ given in Section~\ref{sec:approach-M}, is the same in spirit). If we could recover $\Mavg$, we would be 
 close to obtaining the clustering we wanted.
 
 The key observation that allows us to approximate $\Mavg$ given only the noisy, 

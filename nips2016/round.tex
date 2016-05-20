@@ -2,11 +2,11 @@
 \caption{Randomized rounding algorithm.}
 \label{alg:round}
 \begin{algorithmic}[1]
-\Procedure{RandomizedRound}{$T_0,\epsilon$}
+\Procedure{RandomizedRound}{$T_0$}
 \Comment{$T_0 \in [0,1]^m$ satisfies $\|T_0\|_1 \leq \beta m$}
-\State Let $s_j \gets \sum_{j'=1}^j (T_0)_{j'}$ for $j = 0,\ldots,m$ \Comment{vector of partial sums}
+\State Let $s$ be the vector of partial sums of $T_0$ \Comment i.e., $s_j = (T_0)_1 + \cdots + (T_0)_j$
 \State Sample $u \sim \Uniform([0,1])$.
-\State $T \gets [0,\ldots,0] \in \bR^d$
+\State $T \gets [0,\ldots,0] \in \bR^m$
 \For{$z = 0$ {\bfseries to} $\beta m - 1$}
 \State Find $j$ such that $u+z \in [s_{j-1},s_j)$. \Comment{if no such $j$ exists, skip the next step}
 \State $T_j \gets 1$
