@@ -6,9 +6,15 @@
 stochastic settings compare}\fi
 
 \paragraph{Future Directions}
-On the theoretical side, perhaps the most immediate open question is whether it is possible to improve the dependence of $k$ (the amount of work required per worker) on the parameters $\alpha, \beta,$ and $\eps$.  It is tempting to hope that, at least in the problem setting we propose, a tight result would have $k = \Theta(1/\min (\alpha,\beta)\eps^2$.   
+On the theoretical side, perhaps the most immediate open question is whether it is 
+possible to improve the dependence of $k$ (the amount of work required per worker) 
+on the parameters $\alpha, \beta,$ and $\eps$.  It is tempting to hope that 
+a tight result would have 
+$k = \Theta\p{\frac{\log(1/\alpha)}{\min (\alpha,\beta)\eps^2}}$, in loose analogy
+to recent results for the stochastic block model \citep{banks2016information}.
 
-More generally, there are a number of other parameter regimes and settings that seem worth considering.  While we focus on the regime where the number of items exceeds the number of workers, it is also worth considering the regime where the number of workers exceeds the number of items:  in such a regime, is it sufficient to have each worker review only 2 items?  If items can be assigned to workers in an adaptive setting (dependent on the ratings we have already seen), how much can we reduce the amount of work?  What is the tradeoff between the total amount of work required across all workers, and the non-uniformity in the amount of work assigned to each worker?  (For example, in the extreme setting where we  are willing to assign all $m$ items to $O(1/\alpha)$ workers, then the total required work is only $O(m/\alpha)$.)
+
+More generally, there are a number of other parameter regimes and settings that seem worth considering.  While we focus on the regime where the number of items exceeds the number of workers, it is also worth considering the regime where the number of workers exceeds the number of items:  in such a regime, is it sufficient to have each worker review only $2/\alpha$ items?  If items can be assigned to workers in an adaptive setting (dependent on the ratings we have already seen), how much can we reduce the amount of work?  What is the tradeoff between the total amount of work required across all workers, and the non-uniformity in the amount of work assigned to each worker?  (For example, in the extreme setting where we  are willing to assign all $m$ items to $O(1/\alpha)$ workers, then the total required work is only $O(m/\alpha)$.)
 
 
 
@@ -42,8 +48,8 @@ shah2015approval}.
 %content is primarily moderated by the crowd, building resilient ratings 
 %mechanisms is important for maintaining quality.
 
-The work most closely related to ours is that of \citet{christiano2014provably,
-christiano2016robust}, who studies online collaborative prediction in 
+The work most close to ours is \citet{christiano2014provably,
+christiano2016robust}, which studies online collaborative prediction in 
 the presence of adversaries; roughly, when raters interact with an item 
 they predict its quality and afterwards observe the actual quality; the 
 goal is to minimize the number of incorrect 

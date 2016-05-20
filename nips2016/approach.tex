@@ -2,6 +2,8 @@
 \label{sec:assumptions}
 \label{sec:approach}
 
+\input create-A
+
 We now state our assumptions more formally, state the general form 
 of our results, and outline the key ingredients of the proof.
 In our setting, we can query a rater $i \in [m]$ and item $j \in [m]$ to 
@@ -57,7 +59,7 @@ for all $i \in \good$ and all $j,j' \in [m]$.
 The $(L,\epsilon)$-monotonicity property says that if we think that one item is 
 substantially better than another item, the reliable raters should think 
 so as well. As an example, suppose that our own ratings are binary 
-($\ravg_j \in [0,1]$) and that each rating $\Aobs_{i,j}$ matches $\ravg_j$ 
+($\ravg_j \in \{0,1\}$) and that each rating $\Aobs_{i,j}$ matches $\ravg_j$ 
 with probability $\frac{3}{5}$. Then 
 $\Aavg_{i,j} = \frac{2}{5} + \frac{1}{5}\ravg_j$, 
 and hence the ratings are $(5,0)$-monotonic. 
@@ -100,7 +102,8 @@ and analyzing Algorithm~\ref{alg:recover-T} (Section~\ref{sec:approach-T}).
 At a high level, analyzing Algorithm~\ref{alg:recover-M} involves showing that 
 the nuclear norm constraint in \eqref{eq:optimization-noisy} imparts sufficient 
 noise robustness while not allowing the adversary too much influence over the 
-reliable rows of $\M$. Analyzing~\ref{alg:recover-T} is far more straightforward, 
+reliable rows of $\M$. Analyzing Algorithm~\ref{alg:recover-T} is far more 
+straightforward, 
 and requires only standard concentration inequalities and a standard randomized 
 rounding idea (though the latter is perhaps not well-known, so we will explain 
 it briefly in Section~\ref{sec:approach-T}).

@@ -8,11 +8,11 @@ approximates the $\beta$-quantile of $\ravg$ in the following sense:
 \label{prop:recover-M}
 Under the conditions of Theorem~\ref{thm:main}, Algorithm~\ref{alg:recover-M} 
 outputs a matrix $\M$ satisfying 
-\[ \frac{1}{|\good|} \frac{1}{\beta m} \sum_{i \in \good} \sum_{j \in [m]} (\M_{i,j}-T^*_j)\Aavg_{ij} \geq -\epsilon, \]
+\[ \frac{1}{|\good|} \frac{1}{\beta m} \sum_{i \in \good} \sum_{j \in [m]} (T^*_j - \M_{i,j})\Aavg_{ij} \leq \epsilon, \]
 where $T^*_j = 1$ if $j$ lies in the $\beta$-quantile of $\ravg$, and is $0$ otherwise.
 \end{proposition}
 Proposition~\ref{prop:recover-M} says that the row $\M_i$ 
-is good according to rater $i$'s ratings $\Aa_i$. Note that
+is good according to rater $i$'s ratings $\Aavg_i$. Note that
 $(L,\epsilon_0)$-monotonicity 
 then implies that $\M_i$ is also good according to $\ravg$.
 In particular (see \ref{sec:lipschitz-details} for details)
@@ -24,8 +24,8 @@ In particular (see \ref{sec:lipschitz-details} for details)
 \end{align}
 
 Proving Proposition~\ref{prop:recover-M} involves two major steps: showing 
-first that the nuclear norm constraint in \eqref{eq:optimization-noisy} 
-imparts noise-robustness, and second, that the constraint does not allow 
+(a) that the nuclear norm constraint in \eqref{eq:optimization-noisy} 
+imparts noise-robustness, and (b) that the constraint does not allow 
 the adversaries to influence $\M_{\good}$ too much. (For a matrix $X$ 
 we let $X_{\good}$ denote the rows indexed by $\sC$ and $X_{\bad}$ the remaining rows.)
 
@@ -36,7 +36,7 @@ denote a denoised version of $\A$, we will first show
 $\langle B, \M - \Mm \rangle \geq -\epsilon'$ for some $\epsilon'$ 
 determined below. This can be established via the matrix concentration 
 inequalities in \citet{le2015concentration}. Lemma~\ref{lem:objective-bound} already 
-suffices for standard approaches \citep[e.g.][]{guedon2014community}, 
+suffices for standard approaches \citep[e.g.,][]{guedon2014community}, 
 but in our case we must grapple with the issue that the rows of $B$ could be 
 arbitrary outside of $\sC$, and hence closeness according to $B$ may not 
 imply actual closeness between $\M$ and $\Mm$. This leads to our main 
@@ -82,7 +82,8 @@ but which will be useful for analysis purposes:
 %  &&\hskip-0.4in\|M\|_* \leq \frac{2}{\alpha\epsilon}\sqrt{\frac{\alpha n}{\beta m}}, \phantom{xxxxxxx}
   &&\hskip-0.4in \|M\|_* \leq \frac{2}{\alpha\epsilon}\sqrt{\alpha\beta nm} \phantom{xxxxxxx}
 \end{align}
-Our goal is to show that $\M$ is ``close'' to $\Mm$. 
+Importantly, \eqref{eq:optimization-noiseless} enforces $\Mm_{ij} = T_j^*$ for all 
+$i \in \good$. Our goal is to show that $\M$ is ``close'' to $\Mm$. 
 The following lemma formalizes this:
 %Following an idea of \citet{guedon2014community}, we have the following result:
 \begin{lemma}
@@ -153,9 +154,9 @@ multiplier $Z$ that supports
 the constraint $\|M\|_* \leq \rho$, in the sense that optimizing 
 $\langle B-Z, M \rangle$ yields $M^*$ even without the constraint. 
 Then, $M_{\good}$ and $M_{\bad}$ become separable and we conclude that 
-$\langle B_{\good} - Z_{\good}, M_{\good} \rangle$ must be within $\epsilon$ of 
+$\langle B_{\good} - Z_{\good}, \M_{\good} \rangle$ must be within $\epsilon$ of 
 $\langle B_{\good} - Z_{\good}, M^*_{\good} \rangle$, which implies that 
-$M_{\good} \approx M^*_{\good}$.
+$\M_{\good} \approx M^*_{\good}$.
 
 If we formalize this intuition and analyze $Z$ in detail, we obtain the 
 following result:
