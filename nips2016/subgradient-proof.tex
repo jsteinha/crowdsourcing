@@ -19,11 +19,10 @@ For any $M \in \sP_0$, we have
 \begin{align}
 \langle \Aa, M \rangle &\leq \langle B', M \rangle + \langle \Aa - B', M \rangle \\
  &\leq \beta kn + \|\Aa - B'\|_{\op}\|M\|_* \\
- &\stackrel{(i)}{\leq} \beta kn + \sqrt{k\max(1, n/m)}\|M\|_* \\
- &\stackrel{(ii)}{\leq} k\p{\beta n + \frac{\epsilon\sqrt{\alpha\beta n/m}}{2} \|M\|_*},
+ &\stackrel{(i)}{\leq} \beta kn + \log(1/\delta)^{3/2} 2\sqrt{2k}\|M\|_* \\
+ &\stackrel{(ii)}{\leq} k\p{\beta n +  \frac{\epsilon\sqrt{\alpha\beta n/m}}{2} \|M\|_*}.
 \end{align}
-where in (i) we used the matrix concentration inequality \todo{Greg?} and in (ii) 
-we used the assumption $k = \Omega\p{\frac{1}{\alpha\beta\epsilon^2}\max\p{1,\frac{m}{n}}}$.
+In (i) we used the matrix concentration inequality of Theorem~\ref{thm:le}, in a similar manner as was used in our proof of Lemma~\ref{lem:objective-bound}.  Specifically, we consider padding $\Aa$ and $B'$ with zeros so as to make both into $n\times n$ matrices. Provided the total number of raters and items whose initial assignments are removed in the second and third steps of the rater/item assignment procedure (Algorithm~\ref{alg:create-A}) is bounded by $10n/k$, which occurs with probability at least $1-\delta/2$ given our choice of $k$, then Theorem~\ref{thm:le} applies with $r = \log (1/\delta)$, and $d$ and $d'$ bounded by $2k$, yielding an operator norm bound of $r^{3/2}(\sqrt{k} +\sqrt{2k}) \le \log(1/\delta)^{3/2} 2\sqrt{2k}$, that holds with probability $1-n^{-r} > 1-\delta/2$.  In (ii) we plug in our assumption $k = \Omega\p{\frac{\log(1/\delta)^3}{\alpha\beta\epsilon^2}\max\p{1,\frac{m}{n}}}$.
 
 Now, suppose that we take $\mu_0 = \epsilon \sqrt{\alpha\beta n/m}k$ and optimize $\langle \Aa, M \rangle - \mu_0\|M\|_*$ over 
 $\sP_0 \cap \{M_{\sC} = R_{\sC}\}$. By the above inequalities, 
