@@ -8,10 +8,10 @@
 % NEW INTRO
 How can we reliably obtain information from humans, given that the humans 
 themselves are unreliable, and might even have incentives to mislead us?
-Versions of this question arise in crowdsourcing \citep{vuurens2011spam}, 
-collaborative knowledge generation \citep{priedhorsky2007creating}, peer grading 
-in online classrooms \citep{piech2013tuned,kulkarni2015peer},  aggregation 
-of customer reviews \citep{harmon2004amazon}, and the generation/curation of large datasets \citep{deng2009imagenet}. A key challenge is to ensure 
+Versions of this question arise in crowdsourcing \citepa{vuurens2011spam}, 
+collaborative knowledge generation \citepm{priedhorsky2007creating}, peer grading 
+in online classrooms \citepm{piech2013tuned,kulkarni2015peer},  aggregation 
+of customer reviews \citepa{harmon2004amazon}, and the generation/curation of large datasets \citepm{deng2009imagenet}. A key challenge is to ensure 
 high information quality despite the fact that many people interacting with 
 the system may be unreliable or even adversarial.
 
@@ -100,7 +100,7 @@ reliable workers and the the desired accuracy $\epsilon$.   While the number
 of evaluations $k$ for each worker is likely not optimal, we note that 
 the amount of work $k_0$ required of us is close to optimal: 
 for $\alpha \le \beta$, it is information theoretically necessary for us to evaluate $\Omega(1/\beta\eps^2)$ items,via a reduction to estimating 
-noisy coin flips \citep{mannor2004sample}.
+noisy coin flips \citepa{mannor2004sample}.
 %\footnote{This can be shown via a reduction to the task of selecting a coin of bias $1/2+\eps$ from among $1/\beta$ coins of bias $1/2$. \iffalse To see this, consider the setting where $\alpha = \beta$ and imagine that the items are partitioned into $1/\beta$ sets; suppose the workers are also partitioned into $1/\beta$ sets with the reliable workers consisting of one such set.  Suppose the $i$th set of workers behaves as if the $i$th set of items have quality $1/2+\eps$, and the rest of the items have quality $1/2$.  By the symmetry of the setting, the ratings give no information into which set of items actually have quality $1/2+\eps$, hence we must determine this via our own evaluations, which is analogous to the task of selecting the coin of bias $1/2+\eps$ from among $1/\beta$ coins of bias $1/2$, which requires $1/\beta \eps^2$ flips, in expectation.\fi }
 
 Why is it necessary to include some of our own ratings? 
@@ -119,7 +119,7 @@ ratings by evaluating a few items in each quantile.
 %Another setting that our results apply to is peer grading in massive online open courses. 
 %A single class could have thousands of students, 
 %and to achieve scalability instructors often ask students to grade each others' 
-%papers \citep{kulkarni2015peer,piech2013tuned}. 
+%papers \citepm{kulkarni2015peer,piech2013tuned}. 
 %Some student graders will simply not have mastered the material themselves (and hence may give unreliable grades), 
 %and some enterprising but dishonest students are likely to collude. Theorem~\ref{thm:intro} 
 %implies that our algorithm is robust to both of these possibilities. 
@@ -172,21 +172,21 @@ ratings by evaluating a few items in each quantile.
 %  Community detection in sparse networks via Grothendieck_0s inequality
 Our technical tools draw on semidefinite programming methods for matrix 
 completion, which have been used to study graph clustering as well 
-as community detection in the stochastic block model \citep{holland1983stochastic,condon2001algorithms}. 
+as community detection in the stochastic block model \citepm{holland1983stochastic,condon2001algorithms}. 
 Our setting corresponds to the sparse case where all nodes have constant degree, 
-which has recently seen great interest \citep{decelle2011asymptotic,
+which has recently seen great interest \citepa{decelle2011asymptotic,
 mossel2012stochastic,mossel2013proof,mossel2013belief,
 massoulie2014community,guedon2014community,mossel2015consistency,
 chin2015stochastic,abbe2015community,makarychev2015learning}. 
-\citet{makarychev2015learning} in particular provide an algorithm that is 
+\citetm{makarychev2015learning} in particular provide an algorithm that is 
 robust to adversarial perturbations, but only if the perturbation has 
-size $o(n)$; see also \citet{cai2015robust} for robusness results when 
+size $o(n)$; see also \citetm{cai2015robust} for robusness results when 
 the node degree is logarithmic.
 % NOTE: decelle2011asymptotic make a conjecture that implies 
 % 1/alpha^2epsilon^2 is tight even in a very simple case
 
 Several authors have considered semirandom settings for graph clustering, which 
-allow for some types of adversarial behavior \citep{feige2000finding,
+allow for some types of adversarial behavior \citepa{feige2000finding,
 feige2001heuristics,coja2004coloring,krivelevich2006semirandom,
 coja2007solving,makarychev2012approximation,chen2014improved,guedon2014community,
 moitra2015robust,agarwal2015multisection}. 
@@ -196,7 +196,7 @@ expected accuracy on every item; this is implausible as it rules out
 most types of strategic behavior.
 In removing this assumption, we face a key technical challenge: while previous 
 analyses consider errors relative to a ground truth clustering, 
-%\citep[e.g.][]{chen2014improved}, 
+%\citepm[e.g.][]{chen2014improved}, 
 in our setting 
 the ground truth only exists for rows of the matrix corresponding to reliable 
 raters while the remaining rows could behave arbitrarily even in the limit 

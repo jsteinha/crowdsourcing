@@ -1,9 +1,9 @@
 default: refdb sfig
 	#node figures.js
 	pdflatex main
-	bibtex main
-	#bibtex m
-	#bibtex a
+	#bibtex main
+	bibtex m
+	bibtex a
 
 clean:
 	rm main.aux main.log main.out main.bbl main.blg
