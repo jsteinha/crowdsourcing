@@ -23,11 +23,11 @@ In particular (see \ref{sec:lipschitz-details} for details)
 &\leq L \cdot \epsilon + \epsilon_0.
 \end{align}
 
-Proving Proposition~\ref{prop:recover-M} involves two major steps: first, 
-showing that the nuclear norm constraint in \eqref{eq:optimization-noisy} 
+Proving Proposition~\ref{prop:recover-M} involves two major steps: showing 
+first that the nuclear norm constraint in \eqref{eq:optimization-noisy} 
 imparts noise-robustness, and second, that the constraint does not allow 
-the adversaries to influence $\M_{\good}$ too much, where for a matrix $X$ 
-we let $X_{\good}$ denote the rows indexed by $\sC$ and $X_{\bad}$ the remaining rows.
+the adversaries to influence $\M_{\good}$ too much. (For a matrix $X$ 
+we let $X_{\good}$ denote the rows indexed by $\sC$ and $X_{\bad}$ the remaining rows.)
 
 In a bit 
 more detail, if we let $\Mm$ denote a denoised version of $\M$, and $\Aa$ 
@@ -115,7 +115,7 @@ This bound follows from the general matrix concentration result of~\cite{le2015c
 stated in Section~\ref{sec:le-statement}.
 
 \paragraph{Part 2: bounding the influence of adversaries.} 
-Next, we need to show that the nuclear norm constraint does 
+We next show that the nuclear norm constraint does 
 not give the adversaries too much influence over the de-noised program 
 \eqref{eq:optimization-noiseless}; this is the most novel aspect 
 of our argument.
