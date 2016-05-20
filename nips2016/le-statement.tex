@@ -1,0 +1,10 @@
+\subsection{Matrix Concentration Bound of \citet{le2015concentration}}
+\label{sec:le-statement}
+
+For ease of reference, here we state the matrix concentration bound 
+from \citet{le2015concentration}, which we make use of in the proofs below.
+\begin{theorem}[Theorem 2.1 in~\cite{le2015concentration}]
+Given an $s \times s$ matrix $P$ with entries $P_{i,j} \in [0,1]$, and a random matrix $A$ with the properties that 1) each entry of $A$ is chosen independently, 2) $\E[A_{i,j}] = P_{i,j}$, and 3) $A_{i,j} \in [0,1]$, then for any $r \ge 1$, the following holds with probability at least $1-s^{-r}$:  let $d = s \cdot \max_{i,j} P_{i,j}$, and modify any subset of at most $10s/d$ rows and/or columns of $A$ by arbitrarily decreasing the value of nonzero elements of those rows or columns to form the matrix $A'$ with entries in $[0,1]$, then $$||A' - P||_{op} \le C r^{3/2}\left(\sqrt{d} + \sqrt{d'}\right),$$ where $d'$ is the maximum $\ell_2$ norm of any row or column of $A'$, and $C$ is an absolute constant.
+\end{theorem}
+Note: The proof of this theorem in~\cite{le2015concentration} shows that the statement continues to hold in the slightly more general setting where the entries of $A$ are chosen independently according to random variables with bounded variance and sub-Gaussian tails, rather than just random variables restricted to the interval $[0,1]$.
+
