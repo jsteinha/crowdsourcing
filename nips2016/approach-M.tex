@@ -11,6 +11,18 @@ outputs a matrix $\M$ satisfying
 \[ \frac{1}{|\good|} \frac{1}{\beta m} \sum_{i \in \good} \sum_{j \in [m]} (\M_{i,j}-T^*_j)\Aavg_{ij} \geq -\epsilon, \]
 where $T^*_j = 1$ if $j$ lies in the $\beta$-quantile of $\ravg$, and is $0$ otherwise.
 \end{proposition}
+Proposition~\ref{prop:recover-M} says that the row $\M_i$ 
+is good according to rater $i$'s ratings $\Aa_i$. Note that
+$(L,\epsilon_0)$-monotonicity 
+then implies that $\M_i$ is also good according to $\ravg$.
+In particular (see \ref{sec:lipschitz-details} for details)
+\begin{align}
+\label{eq:lipschitz-usage}
+\frac{1}{|\good|}\frac{1}{\beta m}\sum_{i \in \good}\sum_{j \in [m]} (T_j^*-\M_{ij})\ravg_j
+&\leq L \cdot \frac{1}{|\good|}\frac{1}{\beta m}\sum_{i \in \good}\sum_{j \in [m]} (T_j^*-\M_{ij})\Aavg_{ij} + \epsilon_0 \\
+&\leq L \cdot \epsilon + \epsilon_0.
+\end{align}
+
 Proving Proposition~\ref{prop:recover-M} involves two major steps: first, 
 showing that the nuclear norm constraint in \eqref{eq:optimization-noisy} 
 imparts noise-robustness, and second, that the constraint does not allow 
@@ -162,15 +174,7 @@ by a small term $\langle Z_{\good}, \Mm_{\good} - M_{\good} \rangle$ that depend
 on $M_{\good}$, thereby bounding the effect that the adversaries can have 
 on $M_{\good}$. Lemma~\ref{lem:subgradient} is therefore the key 
 technical tool powering our results, and is proved in 
-Section~\ref{sec:subgradient-proof}.
+Section~\ref{sec:subgradient-proof}. Proposition~\ref{prop:recover-M} 
+is proved from Lemmas~\ref{lem:objective-bound} and \ref{lem:subgradient} 
+in Section~\ref{sec:recover-M-proof}.
 
-\paragraph{Proof of Proposition~\ref{prop:recover-M}.}
-Finally, by the $(L,\epsilon_0)$-monotonicity condition, we have (see \ref{sec:lipschitz-details} for details)
-\begin{align}
-\label{eq:lipschitz-usage}
-\frac{1}{|\good|}\frac{1}{\beta m}\sum_{i \in \good}\Big(\sum_{j \in T^*} \ravg_j - \sum_{j \in [m]} \M_{ij}\ravg_j\Big) 
-&\leq L \cdot \frac{1}{|\good|}\frac{1}{\beta m}\sum_{i \in \good}\Big(\sum_{j \in T^*} \Aavg_{ij} - \sum_{j \in [m]} \M_{ij}\Aavg_{ij}\Big) + \epsilon_0 \\
-&\leq L \cdot (1+\sqrt{2})\epsilon + \epsilon_0.
-\end{align}
-The desired result then follows after scaling down $\epsilon$ 
-by a factor of $1+\sqrt{2}$.
