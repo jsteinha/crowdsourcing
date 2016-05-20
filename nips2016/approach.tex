@@ -4,43 +4,44 @@
 
 We now state our assumptions more formally, state the general form 
 of our results, and outline the key ingredients of the proof.
-Recall that we obtain a matrix $\A \in [0,1]^{n \times m}$ by asking each 
-rater $i \in [n]$ to rate each item $j \in [m]$ with probability $\frac{k}{m}$ 
-(while avoiding giving any rater too many items to rate, as in Algorithm~\ref{alg:recover-M}).
-Let $\Obs$ be the set of ratings $(i,j)$ that are observed, and let $\good \subset [n]$ 
-be the set of reliable raters, where $|\good| \geq \alpha n$.
-Our main assumption is that the reliable raters make independent errors; we also 
-need a way of measuring agreement between our ratings and those of the reliable 
-raters.
-% the amount of agreement will show up in our final error bounds --- if 
-%there is no agreement then the error will be high. 
-We formalize both the 
-independence assumption and the notion of agreement below.
+In our setting, we can query a rater $i \in [m]$ and item $j \in [m]$ to 
+obtain a rating $\A_{ij} \in [0,1]$. Let 
+$\ravg \in [0,1]^m$ denote the vector of true ratings of the items. 
+We can also query an item $j$ (by rating it ourself) to obtain a noisy 
+rating $\robs_j$ such that $\bE[\robs_j] = \ravg_j$.
 
+% with probability $\frac{k}{m}$ 
+%(while avoiding giving any rater too many items to rate, as in Algorithm~\ref{alg:recover-M}).
+Let $\good \subseteq [n]$ be the set of reliable raters, where $|\good| \geq \alpha n$.
+Our main assumption is that the reliable raters make independent errors:
+% we also 
+%need a way of measuring agreement between our ratings and those of the reliable 
+%raters.
+%% the amount of agreement will show up in our final error bounds --- if 
+%%there is no agreement then the error will be high. 
+%We formalize both the 
+%independence assumption and the notion of agreement below.
 \begin{assumption}[Independence]
 \label{ass:independent}
-The values $\A_{i,j}$ for $i \in \good$, $j \in [m]$, are 
-jointly independent.
-In addition, the values $\robs_j$ are jointly independent 
-of each other as well as of $\A$ (including $\A_i$ for $i \not \in \good$).
+When we query a pair $(i,j)$, and $i \in \good$, we obtain an output 
+$\A_{ij}$ whose value is independent of all of the other queries so far.
+Similarly, when we query an item $j$, we obtain an output $\robs_j$ that 
+is independent of all of the other queries so far.
 \end{assumption}
 Note that Assumption~\ref{ass:independent} allows the unreliable ratings to 
-depend on the reliable ratings, allows arbitrary collusion among the unreliable 
-raters, and even allows the unreliable raters to know the pattern of random 
-assignments of the ratings. The only restriction on the unreliable raters is 
-that they may not depend on \emph{our} randomness (i.e., the randomness in 
-$\robs$). This can be ensured, for instance, if we wait to generate our 
-personal randomness until after everyone else has submitted their ratings. 
+depend on all previous ratings and also allows arbitrary collusion 
+among the unreliable raters. 
+In our algorithm, we will generate our own ratings after querying everyone 
+else, which ensures that at least $\robs$ is independent of the adversaries.
 %(assuming the adversaries don't gain access to our pseudorandom seed). 
 % JS: I cut this because it didn't seem important in the current formulation
 %We are also implicitly assuming that the adversaries cannot influence the set of 
 %items in a way that causes us or the reliable raters to accidentally rate a bad 
 %item highly or vice versa.
 
-We next need a way of formalizing the idea that the reliable raters should 
-agree with us. To this end, we let 
-$\Aavg_{i,j} \eqdef \bE[\A_{i,j} \mid (i,j) \in \Obs]$ and $\ravg_j$ denote the expected 
-rating that we assign to item $j$ (we assume $\ravg$ is the true rating we want to maximize).
+We need a way of formalizing the idea that the reliable raters should 
+agree with us. To this end, for $i \in \good$ we let $\Aavg_{ij}$ denote 
+the expected rating that rater $i$ assigns to item $j$.
 We want $\Aavg$ to be approximately increasing in $\ravg$:
 \begin{definition}[Monotonic raters]
 \label{def:lipschitz}
@@ -48,7 +49,7 @@ We say that the reliable raters are \emph{$(L,\epsilon)$-monotonic} if their
 average ratings satisfy
 \begin{equation}
 \label{eq:lipschitz}
-\ravg_j - \ravg_{j'} \leq L \cdot (\Aavg_{i,j} - \Aavg_{i,j'}) + \epsilon
+\ravg_j - \ravg_{j'} \leq L \cdot (\Aavg_{ij} - \Aavg_{ij'}) + \epsilon
 \end{equation}
 whenever $\ravg_j \geq \ravg_{j'}$, and
 for all $i \in \good$ and all $j,j' \in [m]$.
@@ -64,24 +65,34 @@ In general, the monotonicity property is fairly mild --- if the reliable ratings
 are not $(L,\epsilon)$-monotonic, it is not clear that they should 
 even be called reliable!
 
-With Assumption~\ref{ass:independent} and Definition~\ref{def:lipschitz} 
-in place, we are ready to state our main result. 
-
-\todo{include $\delta$ dependence for $k$ once we get the 
-right matrix concentration bound}
+\paragraph{Algorithm for collecting ratings.}
+Under the model given in Assumption~\ref{ass:independent}, 
+our algorithm for collecting ratings is given in 
+Algorithm~\ref{alg:create-A}. Given integers $k$ and $k_0$, 
+Algorithm~\ref{alg:create-A} assigns each rater at most $2k$ 
+ratings, and assigns us $2k_0$ ratings. The output is a 
+noisy rating matrix $\A \in [0,1]^{n \times m}$ as well 
+as noisy rating vectors $\robs, \robs' \in [0,1]^m$ (we need 
+to create two independent rating vectors for technical reasons; 
+in practice we can probably use a single vector).
+Our main result states that we can use $\A$ and $\robs$ to 
+estimate the $\beta$-quantile $T^*$; throughout we will assume 
+that $m$ is at least $n$.
 \begin{theorem}
 \label{thm:main}
-Suppose Assumption~\ref{ass:independent} holds, and that each rater is 
-assigned to rate $k$ items at random, that we rate $k'$ items at random, 
-where $k \geq \Omega\p{\frac{1}{\beta\alpha^3\epsilon^4}\max\p{1, \frac{m}{n}}}$ 
-and $k' \geq \Omega\p{\frac{\log(1/\alpha\beta\epsilon\delta)}{\beta\epsilon^2}}$.
-Then, if the reliable raters are $(L,\epsilon_0)$-monotonic, running 
-Algorithms~\ref{alg:recover-M} and \ref{alg:recover-T} recovers a set 
-$T$ satisfying 
+Let $m \geq n$. 
+Suppose that Assumption~\ref{ass:independent} holds, that 
+the reliable raters are $(L,\epsilon_0)$-monotonic, and 
+that we run Algorithm~\ref{alg:create-A} to obtain noisy ratings, 
+with $k \geq \Omega\p{\frac{\log^3(1/\delta)}{\beta\alpha^3\epsilon^4}\frac{m}{n}}$ and
+$k_0 \geq \Omega\p{\frac{\log(1/\alpha\beta\epsilon\delta)}{\beta\epsilon^2}}$.
+Then, with probability $1-\delta$, 
+Algorithms~\ref{alg:recover-M} and \ref{alg:recover-T} recover a set $T$ satisfying 
 \[ \frac{1}{\beta m} \p{\sum_{j \in T^*} \ravg_j - \sum_{j \in T} \ravg_j} 
-\leq (L+1) \cdot \epsilon + \epsilon_0 \]
-with probability $1-\delta$, where $T^*$ is the $\beta$-quantile of $\ravg$.
+\leq (L+1) \cdot \epsilon + \epsilon_0. \]
 \end{theorem}
+Note that the amount of work for the raters scales as $\frac{m}{n}$. Some dependence 
+on $\frac{m}{n}$ is necessary, since we need to make sure that every item gets rated at least once.
 
 The proof of Theorem~\ref{thm:main} can be split into two parts: analyzing 
 Algorithm~\ref{alg:recover-M} (Section~\ref{sec:approach-M}), 
