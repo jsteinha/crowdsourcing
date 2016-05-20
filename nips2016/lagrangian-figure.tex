@@ -2,18 +2,18 @@
 \begin{center}
 \begin{tikzpicture}[scale=5/6, every node/.style={scale=5/6}]
 \def\s{6.7}
-\def\x{0*\s};
-\def\y{0*\s};
+\def\x{0.3*\s};
+\def\y{0.2*\s};
 \def\X{1*\s};
-\def\Y{1*\s};
-\def\pux{0.5*\s};
+\def\Y{0.9*\s};
+\def\pux{0.57*\s};
 \def\puy{\Y};
 \def\Msx{\X};
 \def\Msy{0.7*\s};
 \def\Bx{\Msx+0.3*\s};
 \def\By{\Msy+0.12*\s};
-\def\plx{0.7*\s};
-\def\ply{\x};
+\def\plx{0.8*\s};
+\def\ply{\y};
 \def\ex{\X-0.14*\s}
 \coordinate (O) at (\x,\y);
 \coordinate (Cx) at (\X,\y);
@@ -36,7 +36,7 @@
 \fill [opacity=0.3,gray] (O) -- (Cy) -- (C) -- (Cx) -- cycle;
 \fill [opacity=0.3,blue]
   (O) -- (Cy) -- (p-u) -- (M-star) -- (p-l) -- cycle;
-\draw (p-u) edge[thick,blue!70!black] node[pos=0.4,below,sloped] {$\|M\|_* \leq \rho$} (M-star);
+\draw (p-u) edge[thick,blue!70!black] node[pos=0.3,below,sloped] {$\|M\|_* \leq \rho$} (M-star);
 \fill [opacity=0.3,red] (e1) -- (M-star) -- (e2) -- cycle;
 \draw (M-star) edge[thick,blue!70!black] (p-l);
 \draw (O) edge[thick,->] (x-ax);
@@ -54,12 +54,13 @@
 \node[right=-0.1em of x-ax] {$M_{\good}$};
 \node[above=-0.1em of y-ax] {$M_{\bad}$};
 \node[below left=-0.3em and -0.1em of M-star,scale=0.9] {$M^*$};
-\draw (\ex,\X+0.08*\s) edge[dashed,red!70!black] node[pos=0.43,above,rotate=90,scale=0.68,red!50!black] {$\langle B_{\good}\!-\!Z_{\good}, M^*\!-\!M \rangle \leq \epsilon$} (\ex,\x-0.09*\s);
+\draw (\ex,\Y+0.08*\s) edge[dashed,red!70!black] node[pos=0.47,above,rotate=90,scale=0.68,red!50!black] {$\langle B_{\good}\!-\!Z_{\good}, M^*\!-\!M \rangle \leq \epsilon$} (\ex,\y-0.09*\s);
 \coordinate[below right=0.65em and 0.45em of e1] (Mt);
 \fill(Mt) circle(1.5pt);
 \node[above right=0em and 0em of Mt,scale=0.9] {$\M$};
 \end{tikzpicture}
 \end{center}
+\vskip -0.15in
 \caption{Illustration of our Lagrangian duality argument, and of the role 
 of $Z$. The blue region represents the nuclear norm constraint and the gray 
 region the remaining constraints. Because the blue region slopes upwards, 
@@ -68,5 +69,6 @@ measuring $\langle B, M \rangle$. The vector $B-Z$ accounts for this offset,
 and the red region represents the constraint 
 $\langle B_{\good}-Z_{\good}, M^*_{\good} - M_{\good} \rangle \leq \epsilon$, which is guaranteed to contain $\M$.
 }
+\vskip -0.1in
 \label{fig:lagrangian}
 \end{figure}
