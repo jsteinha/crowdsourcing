@@ -41,9 +41,10 @@ T^* &\ot{1}&\ot{1}&\ot{1}&\ot{0}&\ot{0}&\ot{0} \\
 \caption{Illustration of our problem setting. We observe a small number of 
 ratings from each rater (indicated a blue), which we represent as entries in a 
 matrix $\A$ (unobserved ratings in red, treated as zero by our algorithm). 
-We also rate a small number of items ourself, indicated by $\robs$. Our goal is 
+There is also a true rating $\rtrue$ that we would assign to each item; 
+by rating some items ourself, we observe some entries of $\rtrue$ (also in blue). Our goal is 
 to recover the set $T^*$ representing the top $\beta$ fraction of items under 
-our rating. As an intermediate step, we recover a matrix $M^*$ that approximates 
+$\rtrue$. As an intermediate step, we recover a matrix $M^*$ that approximates 
 the top items for each individual rater.
 }
 \label{fig:matrix}

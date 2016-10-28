@@ -82,7 +82,7 @@ weak assumptions:
 \end{itemize}
 For concreteness, we describe a simple formalization of the crowdsourcing 
 setting (our actual results hold in a more general setting). 
-There are $n$ raters and $n$ items to evaluate, which have an unknown 
+There are $n$ raters and $m$ items to evaluate, which have an unknown 
 quality level in $[0,1]$. At least $\alpha n$ workers are ``reliable'' in that 
 their judgments match our own in expectation, and they make independent errors.
 We assign each worker to evaluate at most $k$ randomly selected items. 
@@ -95,18 +95,19 @@ Our main result is the following:
 
 \begin{theorem}
 \label{thm:intro}
-In the setting above, suppose 
-$k \geq \Omega(1/\beta\alpha^3\epsilon^4)$ and 
-$k_0 \geq \Omega(\log(1/\alpha\beta\epsilon)/\beta\epsilon^2)$. Then, with probability 
+In the setting above, suppose $n \geq m$, 
+$k \geq \Omega(\tfrac{1}{\beta\alpha^3\epsilon^4})$, and 
+$k_0 \geq \Omega(\tfrac{1}{\beta\alpha\epsilon^2})$. Then, with probability 
 at least $99\%$, we can identify $\beta n$ items with average quality at most 
 $\epsilon$ worse than $T^*$.
 \end{theorem}
 Amazingly, the amount of work that each worker (and we ourselves) has 
 to do does not grow with $n$; it depends only on the fraction $\alpha$ of 
-reliable workers and the the desired accuracy $\epsilon$.   While the number 
+reliable workers and the desired accuracy $\epsilon$. While the number 
 of evaluations $k$ for each worker is likely not optimal, we note that 
 the amount of work $k_0$ required of us is close to optimal: 
-for $\alpha \le \beta$, it is information theoretically necessary for us to evaluate $\Omega(1/\beta\eps^2)$ items,via a reduction to estimating 
+for $\alpha \le \beta$, it is information theoretically necessary for 
+us to evaluate $\Omega(1/\beta\eps^2)$ items, via a reduction to estimating 
 noisy coin flips \citepa{mannor2004sample}.
 %\footnote{This can be shown via a reduction to the task of selecting a coin of bias $1/2+\eps$ from among $1/\beta$ coins of bias $1/2$. \iffalse To see this, consider the setting where $\alpha = \beta$ and imagine that the items are partitioned into $1/\beta$ sets; suppose the workers are also partitioned into $1/\beta$ sets with the reliable workers consisting of one such set.  Suppose the $i$th set of workers behaves as if the $i$th set of items have quality $1/2+\eps$, and the rest of the items have quality $1/2$.  By the symmetry of the setting, the ratings give no information into which set of items actually have quality $1/2+\eps$, hence we must determine this via our own evaluations, which is analogous to the task of selecting the coin of bias $1/2+\eps$ from among $1/\beta$ coins of bias $1/2$, which requires $1/\beta \eps^2$ flips, in expectation.\fi }
 
@@ -117,7 +118,9 @@ item indices permuted by a random permutation of $\{1,\ldots,m\}$. In this case,
 there is no way to distinguish the honest from the dishonest raters except by 
 breaking the symmetry with our own ratings.
 
-Our main result holds in a considerably more general setting where we require a weaker form of inter-rater agreement --- for example, our results hold even if some of the reliable raters are harsher than others, as long as 
+Our main result holds in a considerably more general setting where we require a 
+weaker form of inter-rater agreement --- for example, our results hold even if 
+some of the reliable raters are harsher than others, as long as 
 the expected ratings induce approximately the same ranking.
 The focus on quantiles rather than raw ratings is what enables this. 
 Note that once we estimate the quantiles, we can approximately recover the 
@@ -180,7 +183,7 @@ ratings by evaluating a few items in each quantile.
 Our technical tools draw on semidefinite programming methods for matrix 
 completion, which have been used to study graph clustering as well 
 as community detection in the stochastic block model \citepm{holland1983stochastic,condon2001algorithms}. 
-Our setting corresponds to the sparse case where all nodes have constant degree, 
+Our setting corresponds to the sparse case of graphs with constant degree, 
 which has recently seen great interest \citepa{decelle2011asymptotic,
 mossel2012stochastic,mossel2013proof,mossel2013belief,
 massoulie2014community,guedon2014community,mossel2015consistency,
@@ -188,7 +191,7 @@ chin2015stochastic,abbe2015community,makarychev2015learning}.
 \citetm{makarychev2015learning} in particular provide an algorithm that is 
 robust to adversarial perturbations, but only if the perturbation has 
 size $o(n)$; see also \citetm{cai2015robust} for robusness results when 
-the node degree is logarithmic.
+the degree of the graph is logarithmic.
 % NOTE: decelle2011asymptotic make a conjecture that implies 
 % 1/alpha^2epsilon^2 is tight even in a very simple case
 
@@ -197,16 +200,20 @@ allow for some types of adversarial behavior \citepa{feige2000finding,
 feige2001heuristics,coja2004coloring,krivelevich2006semirandom,
 coja2007solving,makarychev2012approximation,chen2014improved,guedon2014community,
 moitra2015robust,agarwal2015multisection}. 
-In our setting, these semirandom models would need to assume that the adversaries 
-are strictly dominated by the reliable raters, in the sense of having lower 
-expected accuracy on every item; this is implausible as it rules out 
-most types of strategic behavior.
-In removing this assumption, we face a key technical challenge: while previous 
+In our setting, these semirandom models are unsuitable because they rule out 
+important types of strategic behavior, such as an adversary rating some items 
+accurately to gain credibility.
+%would need to assume that the adversaries 
+%are strictly dominated by the reliable raters, in the sense of having lower 
+%expected accuracy on every item; this is implausible as it rules out 
+%most types of strategic behavior.
+By allowing arbitrary behavior from the adversary, 
+we face a key technical challenge: while previous 
 analyses consider errors relative to a ground truth clustering, 
 %\citepm[e.g.][]{chen2014improved}, 
 in our setting 
 the ground truth only exists for rows of the matrix corresponding to reliable 
-raters while the remaining rows could behave arbitrarily even in the limit 
+raters, while the remaining rows could behave arbitrarily even in the limit 
 where all ratings are observed. This necessitates a more careful analysis, 
 which helps to clarify what properties of a clustering are truly necessary 
 for identifying it.

@@ -1,66 +1,20 @@
 \subsection{Concentration Bounds for $\robs$ (Proof of Lemma~\ref{lem:robs-rtrue})}
 \label{sec:concentration-proof}
-We start by stating a lemma which will be useful both here and later:
+
+We start with the following claim:
+\newcommand{\avg}{\mathrm{avg}}
 \begin{lemma}
-\label{lem:chernoff}
-Let $M \in [0,1]^{n \times m}$ be a matrix of random variables 
-such that $\|M_i\|_2^2 \leq \beta m$ for all rows $i \in [n]$. 
-Define the deviation $D_i \eqdef \sum_{j=1}^m \M_{ij}(\robs_j - \frac{k_0}{m}\ravg_j)$. 
-Then, for $k_0 \geq \frac{3\log(2n/v\delta)}{\min(\epsilon,\epsilon^2)}$, 
-with probability $1-\delta$, we have 
-$\left|\frac{1}{|V|} \sum_{i \in V} D_{i}\right| \leq \epsilon \beta k_0$ for all 
-sets $V \subseteq [n]$ with $|V| \geq v$.
+\label{lem:ellipse}
+Suppose that $\M_{\avg} = \sum_{i=1}^n c_i \M_i$, where 
+$0 \leq c_i \leq \frac{1}{\alpha n}$ for all $i$. 
+Then, for any vector $r$, we have $\langle r, \M_{\avg} \rangle^2 
+\leq r^{\top}Yr$, where $Y = \frac{1}{\alpha n} \sum_{i=1}^n \M_i\M_i^{\top}$, 
+and in particular $\tr(Y) \leq \frac{\beta m}{\alpha}$.
 \end{lemma}
-Given Lemma~\ref{lem:chernoff}, the rest of the proof is fairly straightforward.
-Noting that $\epsilon \leq 1$ and applying this conclusion for 
-$v = \alpha n$, and $k_0 \geq \frac{3 \cdot 8^2\log(2/\alpha\delta)}{\epsilon^2}$, 
-we see that
-\begin{align}
-\frac{1}{\alpha n} \sum_{i \in \goodapprox} \sum_{j \in [m]} \M_{ij} \ravg_{ij} &\geq \frac{1}{\alpha n}\frac{m}{k_0} \sum_{i \in \goodapprox} \sum_{j \in [m]} \M_{ij} \robs_{ij} - \frac{\epsilon}{8} \beta m \\
- &\geq \frac{1}{|\good|}\frac{m}{k_0} \sum_{i \in \good} \sum_{j \in [m]} \M_{ij} \robs_{ij} - \frac{\epsilon}{8} \beta m \\
- &\geq \frac{1}{|\good|}\sum_{i \in \good} \sum_{j \in [m]} \M_{ij} \ravg_{ij} - \frac{\epsilon}{4} \beta m,
-% &\geq \sum_{j \in T^*} \ravg_j - (\epsilon_1 + \epsilon/4)\beta m,
-\end{align}
-as was to be shown.
-
-\paragraph{Proof of Lemma~\ref{lem:chernoff}.}
-Define the cumulant function $c_i(\lambda) \eqdef \log(\bE_{\robs}[\exp(\lambda D_i)])$. We have
-\begin{align}
-c_i(\lambda) &=\log(\bE_{\robs}[\exp(\lambda \sum_j \M_{ij}(\robs_j - (k_0/m)\ravg_j))]) \\
- &=\sum_j \log(\bE_{\robs}[\exp(\lambda \M_{ij}(\robs_j - (k_0/m)\ravg_j))]) \\
- &\stackrel{(i)}{\leq} \sum_j (e^{\lambda} - \lambda - 1)\M_{ij}^2\Var[\robs_j] \\
- &\leq (e^{\lambda} - \lambda - 1) \sum_j \M_{ij}^2 \frac{k_0}{m} \\
- &\leq (e^{\lambda}-\lambda-1)\beta k_0,
-\end{align}
-where (i) is Bennet's inequality.
-
-We also consider the cumulant function for the maximum average deviation over 
-possible sets $V$:
-\begin{equation}
-\label{eq:def-C}
-C_v(\lambda) \eqdef \log\p{\bE_{\robs}\left[ \max_{|V| \geq v} \exp\p{\frac{\lambda}{|V|} \sum_{i \in V} D_{i}}\right]}.
-\end{equation}
-To bound $C_v(\lambda)$, we use the power mean inequality
-\begin{align}
-\max_{|V| \geq v} \exp\p{\frac{\lambda}{|V|} \sum_{i \in V} D_{i}} 
- &\leq \max_{|V| \geq v} \frac{1}{|V|} \sum_{i \in V} \exp\p{\lambda D_{i}} \\
- &\leq \max_{|V| \geq v} \frac{1}{|V|} \sum_{i=1}^n \exp\p{\lambda D_i} \\
- &\leq \frac{1}{v} \sum_{i=1}^n \exp\p{\lambda D_i}.
-\end{align}
-Therefore, 
-\begin{align}
-C_v(\lambda) &= \log\p{\bE_{\robs}\left[ \max_{|V| \geq v} \exp\p{\frac{\lambda}{|V|} \sum_{i \in V} D_{i}}\right]} \\
- &\leq \log\p{\bE_{\robs}\left[\frac{1}{v} \sum_{i=1}^n \exp\p{\lambda D_i}\right]} \\
- &\leq \log\p{\frac{n}{v}\exp\p{(e^{\lambda} - \lambda - 1)\beta k_0}} \\
- &= \log(n/v) + (e^{\lambda} - \lambda - 1)\beta k_0.
-\end{align}
-By applying a standard Chernoff bound argument to $C_v(\lambda)$, we obtain
-\begin{equation}
-\label{eq:chernoff-conclusion}
-\bP\left[\max_{|V| \geq v} \left|\frac{1}{|V|} \sum_{i \in V} D_{i}\right| \geq \epsilon \beta k_0\right] \leq \frac{2n}{v}\exp\p{-\frac{\beta k_0}{3}\min(\epsilon,\epsilon^2)}.
-\end{equation}
-In particular, for
-$k_0 \geq \frac{3\log(2n/v\delta)}{\beta\min(\epsilon,\epsilon^2)}$, 
-we have with probability $1-\delta$ that 
-$\left|\frac{1}{|V|} \sum_{i \in V} D_{i}\right| \leq \epsilon \beta k_0$ 
-for all sets $V \subseteq [n]$ with $|V| \geq v$, as was to be shown.
+First, we will show that Lemma~\ref{lem:robs-rtrue} follows from 
+Lemma~\ref{lem:ellipse}.
+Indeed, for any set $T$ of size at least $\goodfrac n$, Lemma~\ref{lem:ellipse} 
+implies that $\langle \robs - \rtrue, \frac{1}{|T|} \sum_{i=1}^n \M_i \rangle^2 
+\leq (\robs - \rtrue)^{\top}Y(\robs - \rtrue)$, where crucially $Y$ is independent 
+of $T$ and so we can avoid a union bound over $T$ (we just need to control $\robs-\rtrue$ 
+relative to $Y$).

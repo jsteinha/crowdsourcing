@@ -5,10 +5,10 @@ ratings $\robs$, $\robs'$.}
 \begin{algorithmic}[1]
 \State Input: number of raters $n$,  number of items $m$, and ratings per rater $k$.
 \State Initially assign each rater to each item independently with probability $k/m$.  
-\State For every rater assigned more than $2k$ items, un-assign items until 
+\State For each rater with more than $2k$ items, arbitrarily unassign items until 
        there are $2k$ remaining.
-\State For every item assigned to more than $2k$
-       raters, un-assign raters until there are $2k$ remaining.
+\State For each item with more than $2k$
+       raters, arbitrarily unassign raters until there are $2k$ remaining.
 \State Have the raters submit ratings of their assigned items, and let $\A$ 
        denote the resulting matrix of ratings with missing entries fill in with 
        zeros.

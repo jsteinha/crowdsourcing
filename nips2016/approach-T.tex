@@ -20,16 +20,16 @@ With probability $1-\delta$, Algorithm~\ref{alg:recover-T} outputs a set $T$ sat
 \end{equation}
 \end{proposition}
 The validity of this procedure hinges on two results. First, establish 
-a concentration bound showing that $\sum_j \M_{ij}\robs_j$ is close to 
-$\frac{k_0}{m}\sum_j \M_{ij}\rtrue_j$ for all $i \in \good$, which implies that 
-the $\goodfrac n$ best rows of $\M$ according to $\robs$ also look good 
+a concentration bound showing that $\sum_{i \in T} \sum_j \M_{ij}\robs_j$ is close to 
+$\frac{k_0}{m}\sum_{i \in T} \sum_j \M_{ij}\rtrue_j$ for all sets $T$ of size $\goodfrac n$, 
+which implies that the $\goodfrac n$ best rows of $\M$ according to $\robs$ also look good 
 according to $\ravg$. This yields the following lemma:
 \begin{lemma}
 \label{lem:robs-rtrue}
 Let $\goodapprox$ be the $\goodfrac n$ best rows according to $\robs$, as 
 in Algorithm~\ref{alg:recover-T}. 
 Suppose that $\robs$ satisfies Assumption~\ref{ass:independent} and that
-$k_0 \geq \Omega\p{\frac{\log(1/\alpha\failprob)}{\beta\epsilon^2}}$. 
+$k_0 \geq \Omega\p{\frac{\log(2/\failprob)}{\alpha\beta\epsilon^2}}$. 
 Then, with probability $1-\delta$, we have
 \begin{equation}
 \label{eq:robs-rtrue}
