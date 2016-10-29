@@ -8,7 +8,7 @@ approximates the $\beta$-quantile of $\ravg$ in the following sense:
 \label{prop:recover-M}
 Under the conditions of Theorem~\ref{thm:main}, Algorithm~\ref{alg:recover-M} 
 outputs a matrix $\M$ satisfying 
-\[ \frac{1}{|\good|} \frac{1}{\beta m} \sum_{i \in \good} \sum_{j \in [m]} (T^*_j - \M_{i,j})\Aavg_{ij} \leq \epsilon \]
+\[ \frac{1}{|\good|} \frac{1}{\beta m} \sum_{i \in \good} \sum_{j \in [m]} (T^*_j - \M_{ij})\Aavg_{ij} \leq \epsilon \]
 with probability $1-\delta$, where $T^*_j = 1$ if $j$ lies in the $\beta$-quantile of $\ravg$, and is $0$ otherwise.
 \end{proposition}
 Proposition~\ref{prop:recover-M} says that the row $\M_i$ 

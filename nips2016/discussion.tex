@@ -5,16 +5,17 @@
 ``best possible'' result would look like, and how adversarial and 
 stochastic settings compare}\fi
 
-\paragraph{Future Directions}
+\paragraph{Future Directions.}
 On the theoretical side, perhaps the most immediate open question is whether it is 
 possible to improve the dependence of $k$ (the amount of work required per worker) 
 on the parameters $\alpha, \beta,$ and $\eps$.  It is tempting to hope that 
 when $m = n$ a tight result would have 
-$k = \Theta\p{\frac{\log(1/\alpha)}{\min (\alpha,\beta)\eps^2}}$, in loose analogy
-to recent results for the stochastic block model \citepm{banks2016information}.
+$k = \Theta\p{\frac{\log(2/\alpha)}{\min (\alpha,\beta)\eps^2}}$, in loose analogy
+to recent results for the stochastic block model \citepm{abbe2015detection,abbe2015community,banks2016information}.
+\todo{is this the right answer here / citations? double-check}
 
 Our results also leave some open questions for variations on our setting. 
-One concerns the regime where $m \ll n$: in this case, can we get by 
+One concerns the regime where $n \ll m$: in this case, can we get by 
 with much less work per rater?
 Another question concerns adaptivity: if the choice of queries is based 
 on previous worker ratings, can we reduce the amount of work?
@@ -53,7 +54,7 @@ to behave arbitrarily but require the rest to be stochastic.
 %content is primarily moderated by the crowd, building resilient ratings 
 %mechanisms is important for maintaining quality.
 
-The work most close to ours is \citetm{christiano2014provably,
+The work closest to ours is \citetm{christiano2014provably,
 christiano2016robust}, which studies online collaborative prediction in 
 the presence of adversaries; roughly, when raters interact with an item 
 they predict its quality and afterwards observe the actual quality; the 
@@ -64,3 +65,12 @@ and (ii) there is no requirement to induce a final global estimate of the
 high-quality items, which is necessary for estimating quantiles.
 It seems possible however that there are theoretical ties between this 
 setting and ours, which would be interesting to explore.
+
+{\small
+\paragraph{Acknowledgments.}
+JS was supported by a Fannie \& John Hertz Foundation Fellowship,
+an NSF Graduate Research Fellowship, and a Future of Life Institute 
+grant. GV was supported by NSF CAREER 
+award CCF-1351108, a Sloan Foundation Research Fellowship, and a research 
+grant from the Okawa Foundation. MC was supported by NSF grants 
+CCF-1565581, CCF-1617577, CCF-1302518 and a Simons Investigator Award.}
