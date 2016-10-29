@@ -30,13 +30,13 @@ the adversaries to influence $\M_{\good}$ too much. (For a matrix $X$
 we let $X_{\good}$ denote the rows indexed by $\sC$ and $X_{\bad}$ the remaining rows.)
 
 In a bit 
-more detail, if we let $\Mm$ denote a denoised version of $\M$, and $\Aa$ 
+more detail, if we let $\Mm$ denote the ``ideal'' value of $\M$, and $\Aa$ 
 denote a denoised version of $\A$, we first show 
 (Lemma~\ref{lem:objective-bound}) that 
 $\langle B, \M - \Mm \rangle \geq -\epsilon'$ for some $\epsilon'$ 
 determined below. This is established via the matrix concentration 
-inequalities in \citetm{le2015concentration}. Lemma~\ref{lem:objective-bound} already 
-suffices for standard approaches \citepm[e.g.,][]{guedon2014community}, 
+inequalities in \citetm{le2015concentration}. Lemma~\ref{lem:objective-bound} 
+would already suffice for standard approaches \citep[e.g.,][]{guedon2014community}, 
 but in our case we must grapple with the issue that the rows of $B$ could be 
 arbitrary outside of $\sC$, and hence closeness according to $B$ may not 
 imply actual closeness between $\M$ and $\Mm$. Our main 
@@ -88,7 +88,7 @@ $i \in \good$. Lemma~\ref{lem:objective-bound} shows that $\M$ is ``close'' to $
 \begin{lemma}
 \label{lem:objective-bound}
 Let $m \geq n$. Suppose that Assumption~\ref{ass:independent} holds and that 
-$k = \Omega\p{ \frac{\log^3(1/\delta)}{\beta\alpha^3\eps^4}\frac{m}{n}}$. 
+$k = \Omega\p{ \frac{\log^3(2/\delta)}{\beta\alpha^3\eps^4}\frac{m}{n}}$. 
 Then, the solution $\M$ to \eqref{eq:optimization-noisy} performs nearly as 
 well as $\Mm$ under $B$; specifically, with probability $1-\delta$,
 \begin{equation}
@@ -164,7 +164,7 @@ If we formalize this and analyze $Z$ in detail, we obtain the
 following result:
 \begin{lemma}
 \label{lem:subgradient}
-Let $m \geq n$. Suppose that $k = \Omega\p{\frac{\log^3(1/\delta)}{\alpha\beta\epsilon^2}\frac{m}{n}}$. 
+Let $m \geq n$. Suppose that $k = \Omega\p{\frac{\log^3(2/\delta)}{\alpha\beta\epsilon^2}\frac{m}{n}}$. 
 Then with probability at least $1-\delta$ there exists a matrix $Z$ with 
 $\rank(Z) = 1$, $\|Z\|_F \leq \epsilon k\sqrt{\alpha\beta n/m}$ such that
 \begin{align}

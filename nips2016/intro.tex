@@ -15,7 +15,7 @@ of customer reviews \citepa{harmon2004amazon}, and the generation/curation of la
 high information quality despite the fact that many people interacting with 
 the system may be unreliable or even adversarial.
 This is particularly relevant when raters have an incentive to collude and 
-cheat as in the setting of peer grading, as well as reviews on sites like 
+cheat as in the setting of peer grading, as well as for reviews on sites like 
 Amazon and Yelp, 
 where artists and firms are incentivized to manufacture positive reviews 
 for their own products and negative reviews for their rivals \citepa{harmon2004amazon,mayzlin2012promotional}.
@@ -70,18 +70,23 @@ In this work, we answer this question in the affirmative, under surprisingly
 weak assumptions:
 %\begin{itemize}
 \begin{itemize}[itemsep=2pt,topsep=0pt,parsep=0pt,partopsep=0pt,leftmargin=30pt]
-\item We do not assume that there is a ``gold set'' or other cheap way to judge 
-      worker performance; instead, we rely on a small number of our own (potentially noisy) post hoc judgments. 
 \item We do not assume that the majority of workers are reliable.
 \item We do not assume that the unreliable workers conform to any statistical 
       model; they could behave fully adversarially, in collusion with each other 
       and with full knowledge of how the reliable workers behave.
-\item We do not assume that the reliable worker ratings match our own, but only that they are 
-      ``approximately monotonic'' in our ratings, in a sense that will be 
+\item We do not assume that the reliable worker ratings match the true ratings, but only that they are 
+      ``approximately monotonic'' in the true ratings, in a sense that will be 
       formalized later.
+\item We do not assume that there is a ``gold set'' of items with known ratings 
+      presented to each user (as an adversary could identify and exploit this). 
+      Instead, we rely on a small number of reliable judgments on randomly selected items, 
+      obtained after the workers submit their own ratings; 
+      in practice, these could be obtained by rating those items oneself.
 \end{itemize}
 For concreteness, we describe a simple formalization of the crowdsourcing 
 setting (our actual results hold in a more general setting). 
+We imagine that we are the dataset curator, so that ``us'' and ``ourselves'' refers 
+in general to whoever is curating the data.
 There are $n$ raters and $m$ items to evaluate, which have an unknown 
 quality level in $[0,1]$. At least $\alpha n$ workers are ``reliable'' in that 
 their judgments match our own in expectation, and they make independent errors.
@@ -95,20 +100,20 @@ Our main result is the following:
 
 \begin{theorem}
 \label{thm:intro}
-In the setting above, suppose $n \geq m$, 
+In the setting above, suppose $n = m$, 
 $k \geq \Omega(\tfrac{1}{\beta\alpha^3\epsilon^4})$, and 
-$k_0 \geq \Omega(\tfrac{1}{\beta\alpha\epsilon^2})$. Then, with probability 
+$k_0 \geq \Omega(\tfrac{\log(2/\alpha\beta)}{\beta\epsilon^2})$. Then, with probability 
 at least $99\%$, we can identify $\beta n$ items with average quality at most 
 $\epsilon$ worse than $T^*$.
 \end{theorem}
-Amazingly, the amount of work that each worker (and we ourselves) has 
+Interestingly, the amount of work that each worker (and we ourselves) has 
 to do does not grow with $n$; it depends only on the fraction $\alpha$ of 
 reliable workers and the desired accuracy $\epsilon$. While the number 
 of evaluations $k$ for each worker is likely not optimal, we note that 
 the amount of work $k_0$ required of us is close to optimal: 
 for $\alpha \le \beta$, it is information theoretically necessary for 
 us to evaluate $\Omega(1/\beta\eps^2)$ items, via a reduction to estimating 
-noisy coin flips \citepa{mannor2004sample}.
+noisy coin flips. % \citepa{mannor2004sample}.
 %\footnote{This can be shown via a reduction to the task of selecting a coin of bias $1/2+\eps$ from among $1/\beta$ coins of bias $1/2$. \iffalse To see this, consider the setting where $\alpha = \beta$ and imagine that the items are partitioned into $1/\beta$ sets; suppose the workers are also partitioned into $1/\beta$ sets with the reliable workers consisting of one such set.  Suppose the $i$th set of workers behaves as if the $i$th set of items have quality $1/2+\eps$, and the rest of the items have quality $1/2$.  By the symmetry of the setting, the ratings give no information into which set of items actually have quality $1/2+\eps$, hence we must determine this via our own evaluations, which is analogous to the task of selecting the coin of bias $1/2+\eps$ from among $1/\beta$ coins of bias $1/2$, which requires $1/\beta \eps^2$ flips, in expectation.\fi }
 
 Why is it necessary to include some of our own ratings? 

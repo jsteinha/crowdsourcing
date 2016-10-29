@@ -24,7 +24,7 @@ Our main assumption is that the reliable raters make independent errors:
 %independence assumption and the notion of agreement below.
 \begin{assumption}[Independence]
 \label{ass:independent}
-When we query a pair $(i,j)$, and $i \in \good$, we obtain an output 
+When we query a pair $(i,j)$ with $i \in \good$, we obtain an output 
 $\A_{ij}$ whose value is independent of all of the other queries so far.
 Similarly, when we query an item $j$, we obtain an output $\robs_j$ that 
 is independent of all of the other queries so far.
@@ -41,7 +41,7 @@ else, which ensures that at least $\robs$ is independent of the adversaries.
 %item highly or vice versa.
 
 We need a way to formalize the idea that the reliable raters 
-agree with us. To this end, for $i \in \good$ let $\Aavg_{ij}$ be
+agree with us. To this end, for $i \in \good$ let $\Aavg_{ij} = \bE[\A_{ij}]$ be
 the expected rating that rater $i$ assigns to item $j$.
 We want $\Aavg$ to be roughly increasing in $\ravg$:
 \begin{definition}[Monotonic raters]
@@ -55,7 +55,7 @@ We say that the reliable raters are \emph{$(L,\epsilon)$-monotonic} if
 \ravg_j - \ravg_{j'} \leq L \cdot (\Aavg_{ij} - \Aavg_{ij'}) + \epsilon
 \end{equation}
 \vskip -0.07in
-whenever $\ravg_j \geq \ravg_{j'}$, and
+whenever $\ravg_j \geq \ravg_{j'}$, 
 for all $i \in \good$ and all $j,j' \in [m]$.
 \end{definition}
 The $(L,\epsilon)$-monotonicity property says that if we think that one item is 
@@ -76,11 +76,14 @@ Under the model given in Assumption~\ref{ass:independent},
 our algorithm for collecting ratings is given in 
 Algorithm~\ref{alg:create-A}. Given integers $k$ and $k_0$, 
 Algorithm~\ref{alg:create-A} assigns each rater at most $2k$ 
-ratings, and assigns us $2k_0$ ratings in expectation. The output is a 
+%ratings, and assigns us $2k_0$ ratings in expectation. The output is a 
+%noisy rating matrix $\A \in [0,1]^{n \times m}$ as well 
+%as noisy rating vectors $\robs, \robs' \in [0,1]^m$ (we need 
+%to create two independent rating vectors for technical reasons; 
+%in practice we can use a single vector).
+ratings, and assigns us $k_0$ ratings in expectation. The output is a 
 noisy rating matrix $\A \in [0,1]^{n \times m}$ as well 
-as noisy rating vectors $\robs, \robs' \in [0,1]^m$ (we need 
-to create two independent rating vectors for technical reasons; 
-in practice we can use a single vector).
+as a noisy rating vector $\robs \in [0,1]^m$.
 Our main result states that we can use $\A$ and $\robs$ to 
 estimate the $\beta$-quantile $T^*$; throughout we will assume 
 that $m$ is at least $n$.
@@ -90,8 +93,8 @@ Let $m \geq n$.
 Suppose that Assumption~\ref{ass:independent} holds, that 
 the reliable raters are $(L,\epsilon_0)$-monotonic, and 
 that we run Algorithm~\ref{alg:create-A} to obtain noisy ratings, 
-with $k \geq \Omega\p{\frac{\log^3(1/\delta)}{\beta\alpha^3\epsilon^4}\frac{m}{n}}$ and
-$k_0 \geq \Omega\p{\frac{\log(1/\alpha\beta\epsilon\delta)}{\beta\epsilon^2}}$.
+with $k \geq \Omega\p{\frac{\log^3(2/\delta)}{\beta\alpha^3\epsilon^4}\frac{m}{n}}$ and
+$k_0 \geq \Omega\p{\frac{\log(2/\alpha\beta\epsilon\delta)}{\beta\epsilon^2}}$.
 Then, with probability $1-\delta$, 
 Algorithms~\ref{alg:recover-M} and \ref{alg:recover-T} recover a set $T$ satisfying 
 \vskip -0.18in

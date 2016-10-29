@@ -1,5 +1,7 @@
 \documentclass{article}
 \usepackage{amsmath,amsfonts,amsthm,amssymb}
+\usepackage{sectsty}
+\usepackage{setspace}
 
 
 % if you need to pass options to natbib, use, e.g.:
@@ -32,8 +34,12 @@
 \usepackage{framed}
 \usepackage{enumitem}
 \usepackage{multibib}
-\newcites{m}{References}
-\newcites{a}{References}
+%\newcites{m}{References}
+%\newcites{a}{References}
+\newcommand{\citepa}[1]{\citep{#1}}
+\newcommand{\citeta}[1]{\citet{#1}}
+\newcommand{\citepm}[1]{\citep{#1}}
+\newcommand{\citetm}[1]{\citet{#1}}
 
 
 \usepackage{blkarray, bigstrut}
@@ -103,18 +109,18 @@
 \author{
   Jacob Steinhardt \\
 %  Computer Science Department \\
-  Stanford University \\
-  {\tt jsteinhardt@cs.stanford.edu}
+  Stanford University %\\
+%  {\tt jsteinhardt@cs.stanford.edu}
 \And
 	Gregory Valiant \\
 %  Computer Science Department \\
-  Stanford University \\
-  {\tt valiant@stanford.edu}
+  Stanford University %\\
+%  {\tt valiant@stanford.edu}
 \And
 	Moses Charikar \\
 %  Computer Science Department \\
-  Stanford University \\
-  {\tt moses@cs.stanford.edu}
+  Stanford University %\\
+%  {\tt moses@cs.stanford.edu}
 }
 
 \begin{document}
@@ -138,17 +144,29 @@
 %\input experiments
 \input discussion
 
-%\section*{Acknowledgments}
-\nocitem{decelle2011asymptotic,
-mossel2012stochastic,massoulie2014community,
-guedon2014community,abbe2015community}
-\nocitem{feige2001heuristics,coja2004coloring}
-{\small
-\setlength{\bibsep}{0pt plus 1.0ex}
-\bibliographystylem{plainnat}
+
+{%\scriptsize
+\sectionfont{\small}
+\def\bibfont{\small}
+\setlength{\baselineskip}{0pt}
+\setlength{\bibsep}{0pt plus 0ex}
+\setstretch{0.85}
+\bibliographystyle{plainnat}
 %\bibliography{short}
-\bibliographym{refdb/all}
+\bibliography{refs}
 }
+
+%%\section*{Acknowledgments}
+%\nocitem{decelle2011asymptotic,
+%mossel2012stochastic,massoulie2014community,
+%guedon2014community,abbe2015community}
+%\nocitem{feige2001heuristics,coja2004coloring}
+%{\small
+%\setlength{\bibsep}{0pt plus 1.0ex}
+%\bibliographystylem{plainnat}
+%%\bibliography{short}
+%\bibliographym{refdb/all}
+%}
 
 
 
@@ -159,19 +177,19 @@ guedon2014community,abbe2015community}
 
 \input adversary-examples
 
-\section{Extended Bibliography}
-In this section we provide an extended bibliography
-including some references that did not fit into the main
-text due to space constraints.
-%\renewcommand\bibname{}
-\nocitea{
-chen2014improved,guedon2014community,banks2016information,miller2005eliciting,resnick2007influence,
-dasgupta2013crowdsourced,shah2015double,vuurens2011spam,priedhorsky2007creating,piech2013tuned,kulkarni2015peer,
-deng2009imagenet,mannor2004sample,holland1983stochastic,condon2001algorithms,kamble2015truth,shnayder2016strong,
-karger2014budget,zhang2014crowdsourcing,zhou2015regularized,shah2015approval,le2015concentration,
-guedon2014community,vuurens2011spam,harmon2004amazon,christiano2014provably,makarychev2015learning,cai2015robust,
-christiano2016robust}
-\bibliographystylea{plainnat}
-\bibliographya{refdb/all}
+%\section{Extended Bibliography}
+%In this section we provide an extended bibliography
+%including some references that did not fit into the main
+%text due to space constraints.
+%%\renewcommand\bibname{}
+%\nocitea{
+%chen2014improved,guedon2014community,banks2016information,miller2005eliciting,resnick2007influence,
+%dasgupta2013crowdsourced,shah2015double,vuurens2011spam,priedhorsky2007creating,piech2013tuned,kulkarni2015peer,
+%deng2009imagenet,mannor2004sample,holland1983stochastic,condon2001algorithms,kamble2015truth,shnayder2016strong,
+%karger2014budget,zhang2014crowdsourcing,zhou2015regularized,shah2015approval,le2015concentration,
+%guedon2014community,vuurens2011spam,harmon2004amazon,christiano2014provably,makarychev2015learning,cai2015robust,
+%christiano2016robust}
+%\bibliographystylea{plainnat}
+%\bibliographya{refdb/all}
 
 \end{document}

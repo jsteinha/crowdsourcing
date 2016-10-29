@@ -1,9 +1,10 @@
 default: refdb sfig
-	#node figures.js
-	pdflatex main
-	#bibtex main
-	bibtex m
-	bibtex a
+	##node figures.js
+	#pdflatex main
+	##bibtex main
+	#bibtex m
+	#bibtex a
+	latexmk -pdf main
 
 cut:
 	pdftk main.pdf cat 1-9 output paper.pdf
