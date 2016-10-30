@@ -12,9 +12,9 @@ to denote $\sum_{j \in [m]} T_jr_j$. Formally, we show the following:
 \label{prop:recover-T}
 %Suppose that the output $\M$ of Algorithm~\ref{alg:recover-M} satisfies 
 %$\frac{1}{|\good|} \frac{1}{\beta m}\sum_{i \in \good}\sum_{j \in [m]} \M_{ij}\ravg_j \geq \p{\frac{1}{\beta m} \sum_{j \in T^*} \ravg_j} - \epsilon_1$. 
-Suppose Assumption~\ref{ass:independent} holds and that
-$k_0 \geq \Omega\p{\frac{\log(2/\alpha\beta\epsilon\delta)}{\beta\epsilon^2}}$. 
-With probability $1-\delta$, Algorithm~\ref{alg:recover-T} outputs a set $T$ satisfying 
+Suppose Assumption~\ref{ass:independent} holds. For some 
+$k_0 = \oo\p{\frac{\log(2/\alpha\beta\epsilon\delta)}{\beta\epsilon^2}}$, 
+with probability $1-\delta$, Algorithm~\ref{alg:recover-T} outputs a set $T$ satisfying 
 \begin{equation}
 \label{eq:recover-T}
 \langle T^* - T, \ravg \rangle  \leq \frac{2}{|\good|}\Big(\sum_{i \in \good} \langle T^* - \M_{i}, \ravg \rangle\Big) + \epsilon\beta m.
@@ -39,9 +39,10 @@ application of a Chernoff bound (see Section~\ref{sec:concentration-proof} for a
 \begin{lemma}
 \label{lem:robs-rtrue}
 Let $i^*$ be the row selected in Algorithm~\ref{alg:recover-T}. 
-Suppose that $\robs$ satisfies Assumption~\ref{ass:independent} and that
-$k_0 \geq \Omega\p{\frac{\log(2/\alpha\failprob)}{\beta\epsilon^2}}$. 
-Then, with probability $1-\delta$, we have
+Suppose that $\robs$ satisfies Assumption~\ref{ass:independent}. 
+For some 
+$k_0 = \oo\p{\frac{\log(2/\alpha\failprob)}{\beta\epsilon^2}}$, 
+with probability $1-\delta$, we have
 \begin{equation}
 \label{eq:robs-rtrue}
 \langle T^*-\M_{i^*}, \rtrue_j \rangle \leq \frac{2}{|\good|} \sum_{i \in \good} \langle T^* - \M_i, \rtrue \rangle + \frac{\epsilon}{4}\beta m.

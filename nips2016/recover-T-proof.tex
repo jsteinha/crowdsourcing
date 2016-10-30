@@ -16,11 +16,12 @@ loop is at least $\frac{\epsilon}{4}\beta$, and so the probability of
 accepting at least once in $\frac{4\log(1/\delta)}{\epsilon\beta}$ iterations is 
 indeed at least $1 - \delta$.
 
-Next, for $k_0 \geq \Omega\p{\frac{\log(2/\epsilon\beta\delta)}{\beta \epsilon^2}}$, 
-we can make the probability that $|\langle T, \robs - \frac{k_0}{m}\ravg \rangle| \geq \frac{\epsilon}{4} \beta k_0$ be at most $\frac{\delta\epsilon\beta}{4\log(1/\delta)+1}$ (this follows from a standard Chernoff argument which we omit; 
-Lemma~\ref{lem:chernoff} contains a superset of the necessary ideas). 
+Next, for $k_0 \geq \Omega\p{\frac{\log(2/\alpha\beta\epsilon\delta)}{\beta \epsilon^2}}$, 
+we can make the probability that $|\langle T, \robs - \frac{k_0}{m}\ravg \rangle| \geq \frac{\epsilon}{4} \beta k_0$ be at most $\frac{\alpha\beta\epsilon\delta}{16\log^2(2/\delta)}$ (this follows from a standard Bernstein argument which we omit as it is essentially the same as the one 
+in Lemma~\ref{lem:robs-rtrue}). 
 Therefore, by union bounding over the $\frac{4\log(1/\delta)}{\epsilon\beta}$ 
-possible $T$ as well as $T_0$, with probability $1-2\delta$ we have $|\langle T, \robs - \frac{k_0}{m} \ravg \rangle| \leq \frac{\epsilon}{4}\beta k_0$ for whichever $T$ we end up accepting, as well as for $T = T_0$.
+possible $T$ and the $\frac{2\log(2/\delta)}{\alpha}$ possible values of $T_0$ (one for each possible $i^*$), 
+with probability $1-2\delta$ we have $|\langle T, \robs - \frac{k_0}{m} \ravg \rangle| \leq \frac{\epsilon}{4}\beta k_0$ for whichever $T$ we end up accepting, as well as for $T = T_0$.
 
 Consequently, we have
 \begin{align}

@@ -1,20 +1,48 @@
 \subsection{Concentration Bounds for $\robs$ (Proof of Lemma~\ref{lem:robs-rtrue})}
 \label{sec:concentration-proof}
 
-We start with the following claim:
-\newcommand{\avg}{\mathrm{avg}}
-\begin{lemma}
-\label{lem:ellipse}
-Suppose that $\M_{\avg} = \sum_{i=1}^n c_i \M_i$, where 
-$0 \leq c_i \leq \frac{1}{\alpha n}$ for all $i$. 
-Then, for any vector $r$, we have $\langle r, \M_{\avg} \rangle^2 
-\leq r^{\top}Yr$, where $Y = \frac{1}{\alpha n} \sum_{i=1}^n \M_i\M_i^{\top}$, 
-and in particular $\tr(Y) \leq \frac{\beta m}{\alpha}$.
-\end{lemma}
-First, we will show that Lemma~\ref{lem:robs-rtrue} follows from 
-Lemma~\ref{lem:ellipse}.
-Indeed, for any set $T$ of size at least $\goodfrac n$, Lemma~\ref{lem:ellipse} 
-implies that $\langle \robs - \rtrue, \frac{1}{|T|} \sum_{i=1}^n \M_i \rangle^2 
-\leq (\robs - \rtrue)^{\top}Y(\robs - \rtrue)$, where crucially $Y$ is independent 
-of $T$ and so we can avoid a union bound over $T$ (we just need to control $\robs-\rtrue$ 
-relative to $Y$).
+First, let $I$ be the set of $\frac{2\log(1/\delta)}{\alpha}$ 
+indices that are randomly selected in Algorithm~\ref{alg:recover-T}. 
+We claim that with probability $1-\frac{\delta}{2}$ (over the choice of $I$), 
+$\min_{i \in I} \langle T^* - \M_i, \rtrue \rangle \leq \frac{2}{|\good|} \sum_{i \in \good} \langle T^* - \M_i, \rtrue \rangle$.
+Indeed, the probability that this is true for a single element of 
+$I$ is at least $\frac{\alpha}{2}$ by Markov's inequality (probability $\alpha$ that $i \in \good$, 
+and probability at least $\frac{1}{2}$ that the inequality holds conditioned on $i \in \good$). 
+Therefore, the probability that it is false for all $i \in I$ is at most 
+$\p{1 - \frac{\alpha}{2}}^{|I|} \leq \exp^{-\frac{\alpha}{2}|I|} \leq \frac{\delta}{2}$.
+
+Now, fix $I$ and consider the randomness in $\robs$. For any $i \in I$, 
+we would like to bound $\langle \M_i, \robs - \frac{k_0}{m} \rtrue \rangle = \sum_{j \in [m]} \M_{ij} \p{\robs_j - \frac{k_0}{m} \rtrue_j}$. 
+The quantity $\M_{ij} \p{\robs_j - \frac{k_0}{m} \rtrue_j}$ is a zero-mean random variable 
+bounded in $[0,1]$, and has variance at most $\frac{k_0}{m}\M_{ij}^2$. Therefore, by Bernstein's inequality, 
+and the fact that $\sum_j \M_{ij}^2 \leq \beta m$, we have 
+\begin{equation}
+\bP\left[|\langle \M_i, \robs - \frac{k_0}{m}\rtrue \rangle| \geq t\right] \leq 2\exp\p{-\frac{t^2}{2\beta k_0 + \frac{2}{3}t}}.
+\end{equation}
+Setting $t = 2\max\p{\sqrt{2\beta k_0\log(2/\delta_0)}, \frac{2}{3}\log(2/\delta_0)}$, 
+we see that a given $i$ satisfies 
+\begin{align}
+\bP\left[|\langle \M_i, \robs - \frac{k_0}{m}\rtrue \rangle|\right] 
+ &\leq 2\max\p{\sqrt{2\beta k_0\log(2/\delta_0)}, \frac{2}{3}\log(2/\delta_0)} \\
+ &= \oo\p{\max\p{\sqrt{\beta k_0\log(2/\delta_0)}, \log(2/\delta_0)}}
+\end{align}
+with probability $1-\delta_0$. Union bounding over all $i \in I$ and 
+setting $\delta_0 = \frac{\alpha\delta}{4\log(1/\delta)}$, we have that 
+$\left|\langle \M_i, \robs - \frac{k_0}{m}\rtrue \rangle\right| \leq \oo\p{\max\p{\sqrt{\beta k_0\log(\frac{2}{\alpha\delta})},\log(\frac{2}{\alpha\delta})}}$ 
+with probability $1-\frac{\delta}{2}$.
+%
+Multiplying through by $\frac{m}{k_0}$, we get that
+$\left|\langle \M_i, \frac{m}{k_0}\robs - \rtrue \rangle\right| \leq \beta m\cdot \oo\p{\max\p{t, t^2}}$ with probability $1-\delta$, 
+where $t = \sqrt{\frac{\log(\frac{2}{\alpha\delta})}{\beta k_0}}$.
+For some $k_0 = \oo\p{\frac{\log(\frac{2}{\alpha\delta})}{\beta\epsilon^2}}$, we have that 
+$\left|\langle \M_i, \frac{m}{k_0}\robs - \rtrue \rangle\right| \leq \frac{1}{8}\epsilon\beta m$
+for all $i \in I$. In particular, if $i_0$ is the element of $I$ that 
+minimizes $\langle T^* - \M_i, \rtrue \rangle$, then we have
+\begin{align}
+\langle T^* - \M_{i^*}, \rtrue \rangle 
+ &\leq \langle T^* - \M_{i^*}, \frac{m}{k_0}\robs \rangle + \frac{1}{8}\epsilon\beta m \\
+ &\leq \langle T^* - \M_{i_0}, \frac{m}{k_0}\robs \rangle + \frac{1}{8}\epsilon\beta m \\
+ &\leq \langle T^* - \M_{i_0}, \rtrue \rangle + \frac{1}{4}\epsilon\beta m \\
+ &\leq \frac{2}{|\good|} \Big(\sum_{i \in \good} \langle T^* - \M_i, \rtrue \rangle\Big) + \frac{1}{4}\epsilon\beta m,
+\end{align}
+as was to be shown.

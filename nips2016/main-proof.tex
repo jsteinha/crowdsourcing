@@ -1,16 +1,17 @@
 \subsection{Proof of Theorem~\ref{thm:main}}
 \label{thm:main-proof}
 
-By Proposition~\ref{prop:recover-M}, for $k = \Omega\p{\frac{1}{\beta\alpha^3\epsilon^4}\max\p{1,\frac{m}{n}}}$, 
+By Proposition~\ref{prop:recover-M}, for 
+some $k = \oo\p{\frac{\log^3(2/\delta)}{\beta\alpha^3\epsilon^4}{\frac{m}{n}}}$, 
 we can recover a matrix $\M$ satisfying 
-$\frac{1}{|\good|}\frac{1}{\beta m}\sum_{i \in \good}\sum_{j \in [m]} (\M_{ij}-T^*_{j})\Aavg_{ij} \leq \epsilon$, 
+$\frac{1}{|\good|}\frac{1}{\beta m}\sum_{i \in \good}\sum_{j \in [m]} (T^*_j - \M_{ij})\Aavg_{ij} \leq \epsilon$, 
 and hence by \eqref{eq:lipschitz-usage} $\M$ also satisfies
-$\frac{1}{|\good|}\frac{1}{\beta m}\sum_{i \in \good}\sum_{j \in [m]} (\M_{ij}-T^*_{j})\ravg_{j} \leq L \cdot \epsilon + \epsilon_0$.
+$\frac{1}{|\good|}\frac{1}{\beta m}\sum_{i \in \good}\sum_{j \in [m]} (T^*_j - \M_{ij})\ravg_{j} \leq L \cdot \epsilon + \epsilon_0$.
 
 By Proposition~\ref{prop:recover-T}, we then recover a set $T$ satisfying
 \begin{align}
-\frac{1}{\beta m}\sum_{j \in T}\ravg_j &\geq \p{\frac{1}{\beta m}\frac{1}{|\good|}\sum_{i \in \good}\sum_{j \in [m]} \M_{ij}\ravg_j} - \epsilon \\
- &\geq \p{\frac{1}{\beta m}\frac{1}{|\good|}\sum_{i \in \good}\sum_{j \in [m]} T^*_{j}\ravg_j} - [(L+1)\cdot\epsilon+\epsilon_0] \\
- &= \p{\frac{1}{\beta m}\sum_{j \in T^*} \ravg_j} - [(L+1)\cdot\epsilon+\epsilon_0],
+\frac{1}{\beta m}\langle T^* - T, \ravg \rangle &\leq \p{\frac{1}{\beta m}\frac{2}{|\good|}\sum_{i \in \good}\langle T^* - \M_{ij}, \ravg_j \rangle} + \epsilon \\
+ &\leq 2 \cdot \p{L \cdot \epsilon + \epsilon_0} + \epsilon \\
+ &= (2L+1)\cdot\epsilon+2\epsilon_0,
 \end{align}
 as was to be shown.

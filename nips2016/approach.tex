@@ -92,11 +92,10 @@ that $m$ is at least $n$.
 Let $m \geq n$. 
 Suppose that Assumption~\ref{ass:independent} holds, that 
 the reliable raters are $(L,\epsilon_0)$-monotonic, and 
-that we run Algorithm~\ref{alg:create-A} to obtain noisy ratings, 
-with $k \geq \Omega\p{\frac{\log^3(2/\delta)}{\beta\alpha^3\epsilon^4}\frac{m}{n}}$ and
-$k_0 \geq \Omega\p{\frac{\log(2/\alpha\beta\epsilon\delta)}{\beta\epsilon^2}}$.
-Then, with probability $1-\delta$, 
-Algorithms~\ref{alg:recover-M} and \ref{alg:recover-T} recover a set $T$ satisfying 
+that we run Algorithm~\ref{alg:create-A} to obtain noisy ratings. 
+Then there is $k = \oo\p{\frac{\log^3(2/\delta)}{\beta\alpha^3\epsilon^4}\frac{m}{n}}$ and
+$k_0 = \oo\p{\frac{\log(2/\alpha\beta\epsilon\delta)}{\beta\epsilon^2}}$ such that,
+with probability $1-\delta$, Algorithms~\ref{alg:recover-M} and \ref{alg:recover-T} output a set $T$ with
 \vskip -0.18in
 \[ \frac{1}{\beta m} \p{\sum_{j \in T^*} \ravg_j - \sum_{j \in T} \ravg_j} 
 \leq (2L+1) \cdot \epsilon + 2\epsilon_0. \]
