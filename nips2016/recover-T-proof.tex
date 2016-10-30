@@ -1,7 +1,7 @@
 \subsection{Correctness of Algorithm~\ref{alg:recover-T} (Proof of Proposition~\ref{prop:recover-T})}
 \label{sec:recover-T-proof}
 
-First, we claim that with probability $1-\delta$, we will invoke 
+First, we claim that with probability $1-\delta$ (over the random choice of $T$), we will invoke 
 \texttt{RandomizedRound} at most $\frac{4\log(1/\delta)}{\epsilon\beta}$ times. 
 To see this, note that $\bE[\langle T, \robs' \rangle] = \langle T_0, \robs' \rangle$, and 
 $\langle T, \robs' \rangle \in [0, k_0]$ almost surely. 
@@ -17,7 +17,8 @@ accepting at least once in $\frac{4\log(1/\delta)}{\epsilon\beta}$ iterations is
 indeed at least $1 - \delta$.
 
 Next, for $k_0 \geq \Omega\p{\frac{\log(2/\alpha\beta\epsilon\delta)}{\beta \epsilon^2}}$, 
-we can make the probability that $|\langle T, \robs - \frac{k_0}{m}\ravg \rangle| \geq \frac{\epsilon}{4} \beta k_0$ be at most $\frac{\alpha\beta\epsilon\delta}{16\log^2(2/\delta)}$ (this follows from a standard Bernstein argument which we omit as it is essentially the same as the one 
+we can make the probability that $|\langle T, \robs - \frac{k_0}{m}\ravg \rangle| \geq \frac{\epsilon}{4} \beta k_0$ be at most $\frac{\alpha\beta\epsilon\delta}{16\log^2(2/\delta)}$, with 
+respect to the randomness in $\robs$ (this follows from a standard Bernstein argument which we omit as it is essentially the same as the one 
 in Lemma~\ref{lem:robs-rtrue}). 
 Therefore, by union bounding over the $\frac{4\log(1/\delta)}{\epsilon\beta}$ 
 possible $T$ and the $\frac{2\log(2/\delta)}{\alpha}$ possible values of $T_0$ (one for each possible $i^*$), 

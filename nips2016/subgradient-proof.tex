@@ -15,7 +15,7 @@ too large. Let $\Obs$ be the set of $(i,j)$ for which ratings are observed,
 and define the matrix $B'$ as 
 $(B')_{ij} = \frac{k}{m} + \bI[(i,j) \in \Obs]\p{B_{ij} - 1}$; note 
 that $(B-B')_{ij} = \bI[(i,j) \in \Obs] - \frac{k}{m}$.
-For any $M \in \sP_0$, we have 
+For any $M \in \sP_0$, we have, with probability $1-\delta$ (over the randomness in $\A$)
 \begin{align}
 \langle \Aa, M \rangle &\leq \langle B', M \rangle + \langle \Aa - B', M \rangle \\
  &\leq \beta kn + \|\Aa - B'\|_{\op}\|M\|_* \\
