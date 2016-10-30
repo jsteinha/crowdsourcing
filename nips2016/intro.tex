@@ -92,9 +92,9 @@ quality level in $[0,1]$. At least $\alpha n$ workers are ``reliable'' in that
 their judgments match our own in expectation, and they make independent errors.
 We assign each worker to evaluate at most $k$ randomly selected items. 
 In addition, we ourselves judge $k_0$ items. Our goal is to 
-recover the \emph{$\beta$-quantile}: the set $T^*$ of the $\beta n$ highest-quality items. 
+recover the \emph{$\beta$-quantile}: the set $T^*$ of the $\beta m$ highest-quality items. 
 %
-Our main result is the following:
+Our main result implies the following:
 
 \input matrix-figure
 
@@ -192,10 +192,10 @@ Our setting corresponds to the sparse case of graphs with constant degree,
 which has recently seen great interest \citepa{decelle2011asymptotic,
 mossel2012stochastic,mossel2013proof,mossel2013belief,
 massoulie2014community,guedon2014community,mossel2015consistency,
-chin2015stochastic,abbe2015community,makarychev2015learning}. 
+chin2015stochastic,abbe2015community,abbe2015detection,makarychev2015learning}. 
 \citetm{makarychev2015learning} in particular provide an algorithm that is 
 robust to adversarial perturbations, but only if the perturbation has 
-size $o(n)$; see also \citetm{cai2015robust} for robusness results when 
+size $o(n)$; see also \citetm{cai2015robust} for robustness results when 
 the degree of the graph is logarithmic.
 % NOTE: decelle2011asymptotic make a conjecture that implies 
 % 1/alpha^2epsilon^2 is tight even in a very simple case

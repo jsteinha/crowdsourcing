@@ -5,7 +5,7 @@
 \begin{algorithmic}[1]
 \State Parameters: tolerance $\epsilon$, reliable fraction $\alpha$
 \State Input: matrix $\M$ of approximate $\beta$-quantiles, noisy ratings $\robs$ %, $\robs'$
-\State Select $2\log(2/\delta)/\alpha$ indices $i$ at random.
+\State Select $2\log(2/\delta)/\alpha$ indices $i \in [n]$ at random.
 \State Let $i^*$ be the index among these for which $\langle \M_{i}, \robs \rangle$ is largest, and let $T_0 \gets \M_{i^*}$.
 %\State $T_0 \gets \frac{1}{|\goodapprox|} \sum_{i \in \goodapprox} \M_i$. 
 \Comment{$T_0 \in [0,1]^m$}

@@ -3,7 +3,7 @@
 ratings $\robs$, $\robs'$.}
 \label{alg:create-A}
 \begin{algorithmic}[1]
-\State Input: number of raters $n$,  number of items $m$, and ratings per rater $k$.
+\State Input: number of raters $n$,  number of items $m$, and number of ratings $k$ and $k_0$.
 \State Initially assign each rater to each item independently with probability $k/m$.  
 \State For each rater with more than $2k$ items, arbitrarily unassign items until 
        there are $2k$ remaining.

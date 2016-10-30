@@ -3,15 +3,15 @@
 
 By Proposition~\ref{prop:recover-M}, for 
 some $k = \oo\p{\frac{\log^3(2/\delta)}{\beta\alpha^3\epsilon^4}{\frac{m}{n}}}$, 
-we can recover a matrix $\M$ satisfying 
+we can with probability $1-\delta$ recover a matrix $\M$ such that
 $\frac{1}{|\good|}\frac{1}{\beta m}\sum_{i \in \good}\sum_{j \in [m]} (T^*_j - \M_{ij})\Aavg_{ij} \leq \epsilon$, 
 and hence by \eqref{eq:lipschitz-usage} $\M$ also satisfies
 $\frac{1}{|\good|}\frac{1}{\beta m}\sum_{i \in \good}\sum_{j \in [m]} (T^*_j - \M_{ij})\ravg_{j} \leq L \cdot \epsilon + \epsilon_0$.
 
-By Proposition~\ref{prop:recover-T}, we then recover a set $T$ satisfying
+By Proposition~\ref{prop:recover-T}, we then (with overall probability $1-2\delta$) recover a set $T$ satisfying
 \begin{align}
 \frac{1}{\beta m}\langle T^* - T, \ravg \rangle &\leq \p{\frac{1}{\beta m}\frac{2}{|\good|}\sum_{i \in \good}\langle T^* - \M_{ij}, \ravg_j \rangle} + \epsilon \\
  &\leq 2 \cdot \p{L \cdot \epsilon + \epsilon_0} + \epsilon \\
- &= (2L+1)\cdot\epsilon+2\epsilon_0,
+ &= (2L+1)\cdot\epsilon+2\epsilon_0.
 \end{align}
-as was to be shown.
+Theorem~\ref{thm:main} follows by scaling down $\delta$ by a factor of $2$.

@@ -68,7 +68,7 @@ first, rate $k_0$ items at random, obtaining the vector $\robs$:
 $\robs_j = 0$ if we did not rate item $j$, and otherwise $\robs_j$ is 
 the (possibly noisy) rating that we assign to item $j$. Next, score each 
 row $\M_{i}$ based on the noisy ratings $\sum_j \M_{ij}\robs_j$, and let 
-$T_0$ be the highest-scoring $\M_i$ among $\oo(\log(2/\alpha)/\epsilon^2)$ randomly 
+$T_0$ be the highest-scoring $\M_i$ among $\oo(\log(2/\delta)/\alpha)$ randomly 
 selected $i$.
 Finally, randomly round the vector $T_0 \in [0,1]^m$ to 
 a discrete vector $T \in \{0,1\}^m$, and treat $T$ as the indicator function 
@@ -78,7 +78,7 @@ of a set approximating the $\beta$-quantile
 In summary, given a noisy rating matrix $\Aobs$, we will first run 
 Algorithm~\ref{alg:recover-M} to recover a $\beta$-quantile matrix $\M$ for 
 each rater, and then run Algorithm~\ref{alg:recover-T} to recover our 
-personal $\beta$-quantile from $\M$.
+personal $\beta$-quantile using $\M$.
 
 \paragraph{Possible attacks by adversaries.} In our algorithm, 
 the adversaries can influence $\M_i$ for reliable raters $i$ via 
@@ -100,9 +100,9 @@ loose analysis.
 The constraint $\sum_j M_{ij} \leq \beta m$ is 
 not typical in the literature. For instance, \citepm{chen2014improved} 
 place no 
-constraint on the sum of each row in $M$ (instead of recovering 
-the $\beta$-quantile, they normalize $\A$ to lie in $[-1,1]^{m \times m}$ and recover 
-the items with a positive rating).
+constraint on the sum of each row in $M$ (they instead normalize 
+$\M$ to lie in $[-1,1]^{n \times m}$, which 
+recovers the items with positive rating rather than the $\beta$-quantile).
 Our row normalization constraint prevents an attack 
 in which a spammer rates a random subset of items as high as possible and 
 rates the remaining items as low as possible. If the actual set of 

@@ -5,7 +5,7 @@
 
 In this section we show that if $\M$ satisfies the conclusion of 
 Proposition~\ref{prop:recover-M}, then Algorithm~\ref{alg:recover-T} 
-recovers a set $T$ that approximates $T^*$ well. We treat $T$ and $T^*$ 
+recovers a set $T$ that approximates $T^*$ well. We represent the sets $T$ and $T^*$ 
 as $\{0,1\}$-vectors, and use the notation $\langle T, r \rangle$ 
 to denote $\sum_{j \in [m]} T_jr_j$. Formally, we show the following:
 \begin{proposition}
@@ -21,10 +21,10 @@ with probability $1-\delta$, Algorithm~\ref{alg:recover-T} outputs a set $T$ sat
 \end{equation}
 \end{proposition}
 To establish Proposition~\ref{prop:recover-T}, 
-first note that with probability $1-\delta$, 
-at least one of the $\frac{2\log(1/\delta)}{\alpha}$ randomly selected 
-$i$ will have cost $\langle T^* - \M_i, \ravg \rangle$ 
-within twice the average cost across $\good$. This 
+first note that with probability $1-\frac{\delta}{2}$, 
+at least one of the $\frac{2\log(2/\delta)}{\alpha}$ randomly selected 
+$i$ from Algorithm~\ref{alg:recover-T} will have cost $\langle T^* - \M_i, \ravg \rangle$ 
+within twice the average cost across $i \in \good$. This 
 is because with probability $\alpha$, a randomly selected 
 $i$ will lie in $\good$, and with probability $\frac{1}{2}$, 
 an $i \in \good$ will have cost at 
@@ -33,9 +33,9 @@ most twice the average cost (by Markov's inequality).
 The remainder of the proof hinges on two results. First, we establish 
 a concentration bound showing that $\sum_j \M_{ij}\robs_j$ is close to 
 $\frac{k_0}{m}\sum_j \M_{ij}\rtrue_j$ for any fixed $i$, and hence (by a union bound) 
-also for the $\frac{2\log(1/\delta)}{\alpha}$ randomly selected $i$. 
+also for the $\frac{2\log(2/\delta)}{\alpha}$ randomly selected $i$. 
 This yields the following lemma, which is a straightforward 
-application of a Chernoff bound (see Section~\ref{sec:concentration-proof} for a proof):
+application of Bernstein's inequality (see Section~\ref{sec:concentration-proof} for a proof):
 \begin{lemma}
 \label{lem:robs-rtrue}
 Let $i^*$ be the row selected in Algorithm~\ref{alg:recover-T}. 
@@ -46,7 +46,7 @@ with probability $1-\delta$, we have
 \vskip -0.15in
 \begin{equation}
 \label{eq:robs-rtrue}
-\langle T^*-\M_{i^*}, \rtrue_j \rangle \leq \frac{2}{|\good|} \sum_{i \in \good} \langle T^* - \M_i, \rtrue \rangle + \frac{\epsilon}{4}\beta m.
+\langle T^*-\M_{i^*}, \rtrue \rangle \leq \frac{2}{|\good|} \Big(\sum_{i \in \good} \langle T^* - \M_i, \rtrue \rangle\Big) + \frac{\epsilon}{4}\beta m.
 \end{equation}
 \end{lemma}
 \vskip -0.1in
@@ -64,7 +64,7 @@ Having recovered a good row $T_0 = \M_{i^*}$,
 we need to turn $T_0$ into a binary vector so that 
 Algorithm~\ref{alg:recover-T} can output a set;
 we do so via randomized rounding, obtaining a vector $T \in \{0,1\}^m$ such that 
-$\bE[T] = T_0$ (where the randomness is with respect to choices made by the algorithm).
+$\bE[T] = T_0$ (where the randomness is with respect to the choices made by the algorithm).
 Our rounding procedure is given in Algorithm~\ref{alg:round}; the following 
 lemma, proved in \ref{sec:rounding-proof}, asserts its correctness:
 \begin{lemma}

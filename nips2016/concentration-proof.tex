@@ -1,7 +1,7 @@
 \subsection{Concentration Bounds for $\robs$ (Proof of Lemma~\ref{lem:robs-rtrue})}
 \label{sec:concentration-proof}
 
-First, let $I$ be the set of $\frac{2\log(1/\delta)}{\alpha}$ 
+First, let $I$ be the set of $\frac{2\log(2/\delta)}{\alpha}$ 
 indices that are randomly selected in Algorithm~\ref{alg:recover-T}. 
 We claim that with probability $1-\frac{\delta}{2}$ (over the choice of $I$), 
 $\min_{i \in I} \langle T^* - \M_i, \rtrue \rangle \leq \frac{2}{|\good|} \sum_{i \in \good} \langle T^* - \M_i, \rtrue \rangle$.
@@ -9,7 +9,7 @@ Indeed, the probability that this is true for a single element of
 $I$ is at least $\frac{\alpha}{2}$ by Markov's inequality (probability $\alpha$ that $i \in \good$, 
 and probability at least $\frac{1}{2}$ that the inequality holds conditioned on $i \in \good$). 
 Therefore, the probability that it is false for all $i \in I$ is at most 
-$\p{1 - \frac{\alpha}{2}}^{|I|} \leq \exp^{-\frac{\alpha}{2}|I|} \leq \frac{\delta}{2}$.
+$\p{1 - \frac{\alpha}{2}}^{|I|} \leq \exp\p{-\frac{\alpha}{2}|I|} \leq \frac{\delta}{2}$.
 
 Now, fix $I$ and consider the randomness in $\robs$. For any $i \in I$, 
 we would like to bound $\langle \M_i, \robs - \frac{k_0}{m} \rtrue \rangle = \sum_{j \in [m]} \M_{ij} \p{\robs_j - \frac{k_0}{m} \rtrue_j}$. 
